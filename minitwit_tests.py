@@ -11,7 +11,8 @@
 import minitwit
 import unittest
 import tempfile
-
+import flask
+flask.wrappers.Response.data = property(lambda self: self.get_data(as_text=True))
 
 class MiniTwitTestCase(unittest.TestCase):
 
