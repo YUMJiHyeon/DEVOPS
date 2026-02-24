@@ -3,7 +3,7 @@ Call me for example like:
 
 $ python minitwit_simulator.py "http://localhost:5001"
 """
-
+import warnings
 import traceback
 import os
 import csv
@@ -29,6 +29,7 @@ HEADERS = {
     "Content-Type": "application/json",
     f"Authorization": f"Basic {ENCODED_CREDENTIALS}",
 }
+
 
 
 def get_actions():
