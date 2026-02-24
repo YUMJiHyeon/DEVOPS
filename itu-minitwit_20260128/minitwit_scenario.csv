@@ -1,0 +1,4 @@
+0	0	x	register	alice	alice@example.com	super_safe!
+1	0	x	register	bob	bob@example.com	super_safe!
+2	0	x	tweet	alice	hello world
+3	0	x	follow	alice	bob
