@@ -8,7 +8,7 @@ Vagrant.configure("2") do |config|
 
   # [1] DigitalOcean setup
   config.vm.provider :digital_ocean do |provider|
-    provider.token = "dop_v1_84dc8b6077b2f72958fb29ac9bd387aa671b05af270561c3a8f64c60a73729d4"
+    provider.token = ENV['DIGITAL_OCEAN_TOKEN']
     provider.ssh_key_name = "yumwlgus7@gmail.com"
     provider.ssh_key_path = "/Users/yumjihyeon/.ssh/id_rsa"
     provider.image = "ubuntu-22-04-x64"
@@ -16,7 +16,6 @@ Vagrant.configure("2") do |config|
     provider.size = "s-1vcpu-1gb"
   end
 
-  # rsync 설정 (로컬 파일을 서버로 동기화)
   config.vm.synced_folder ".", "/vagrant", type: "rsync"
 
   # [2] DB server
@@ -41,7 +40,6 @@ Vagrant.configure("2") do |config|
       sudo apt-get update
       sudo apt-get install -y python-is-python3 python3-pip
       pip3 install Flask-PyMongo Flask
-      # nohup으로 백그라운드 실행
       nohup python3 /vagrant/minitwit.py > /vagrant/out.log &
     SHELL
   end
