@@ -76,6 +76,28 @@ def public_timeline():
     messages = query_db('message', limit=PER_PAGE)
     return render_template('timeline.html', messages=messages)    
 
+@app.route('/msgs/<username>', methods=['POST'])
+def add_message_by_username(username):
+    data = request.get_json() if request.is_json else request.form
+    user = mongo.db.user.find_one({"username": username})
+    if not user:
+        return "User not found", 404
+
+    mongo.db.message.insert_one({
+        'author_id': str(user['_id']), 
+        'text': data.get('content') or data.get('text'), 
+        'pub_date': int(time.time()),
+        'username': user['username'], 
+        'email': user['email']
+    })
+    return "", 204
+
+@app.route('/fllws/<username>', methods=['POST'])
+def follow_user_api(username):
+    data = request.get_json() if request.is_json else request.form
+    
+    return "", 204
+
 @app.route('/<username>')
 def user_timeline(username):
     profile_user = mongo.db.user.find_one({"username": username})
@@ -168,27 +190,35 @@ def register():
         return redirect(url_for('timeline'))
     error = None
     if request.method == 'POST':
-        user = mongo.db.user.find_one({"username": request.form['username']})
-        if not request.form['username']:
+        data = request.get_json(silent=True) or request.form
+        
+        username = data.get('username')
+        email = data.get('email')
+        password = data.get('password')
+
+        if not username:
             error = 'You have to enter a username'
-        elif not request.form['email'] or '@' not in request.form['email']:
+        elif not email or '@' not in email:
             error = 'You have to enter a valid email address'
-        elif not request.form['password']:
+        elif not password:
             error = 'You have to enter a password'
-        elif request.form['password'] != request.form['password2']:
-            error = 'The two passwords do not match'
-        elif user is not None:
+        elif mongo.db.user.find_one({"username": username}):
+            if request.is_json:
+                return "", 204
             error = 'The username is already taken'
         else:
             mongo.db.user.insert_one({
-                'username': request.form['username'],
-                'email': request.form['email'],
-                'pw_hash': generate_password_hash(request.form['password'])
+                'username': username,
+                'email': email,
+                'pw_hash': generate_password_hash(password)
             })
+            if request.is_json:
+                return "", 204
+            
             flash('You were successfully registered and can login now')
             return redirect(url_for('login'))
+            
     return render_template('register.html', error=error)
-
 @app.route('/logout')
 def logout():
     flash('You were logged out')
@@ -202,6 +232,7 @@ app.jinja_env.filters['datetimeformat'] = format_datetime
 app.jinja_env.filters['gravatar'] = gravatar_url
 app.secret_key = SECRET_KEY
 app.debug = DEBUG
+
 
 
 if __name__ == '__main__':
