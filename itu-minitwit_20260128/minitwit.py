@@ -10,6 +10,7 @@
 """
 
 import re
+import os
 import time
 import sqlite3
 from hashlib import md5
@@ -21,7 +22,8 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 
 # configuration
-DATABASE = '/tmp/minitwit.db'
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DATABASE = os.path.join(BASE_DIR, "minitwit.db")
 PER_PAGE = 30
 DEBUG = True
 SECRET_KEY = 'development key'
@@ -207,29 +209,63 @@ def register():
     """Registers the user."""
     if g.user:
         return redirect(url_for('timeline'))
+    
     error = None
+
     if request.method == 'POST':
-        if not request.form['username']:
+        data = request.get_json(silent=True) or request.form
+
+        username = data.get('username')
+        email = data.get('email')
+        password = data.get('password') or data.get('pwd')
+        password2 = data.get('password2', password)
+
+        if not username:
             error = 'You have to enter a username'
-        elif not request.form['email'] or \
-                 '@' not in request.form['email']:
+        elif not email or '@' not in email:
             error = 'You have to enter a valid email address'
-        elif not request.form['password']:
+        elif not password:
             error = 'You have to enter a password'
-        elif request.form['password'] != request.form['password2']:
+        elif password != password2:
             error = 'The two passwords do not match'
-        elif get_user_id(request.form['username']) is not None:
+        elif get_user_id(username) is not None:
             error = 'The username is already taken'
         else:
-            g.db.execute('''insert into user (
-                username, email, pw_hash) values (?, ?, ?)''',
-                [request.form['username'], request.form['email'],
-                 generate_password_hash(request.form['password'])])
+            g.db.execute(
+                'insert into user (username, email, pw_hash) values (?, ?, ?)',
+                [username, email, generate_password_hash(password)]
+            )
             g.db.commit()
+
+            if request.is_json:
+                return '', 204
+
             flash('You were successfully registered and can login now')
             return redirect(url_for('login'))
+
+        if request.is_json:
+            return error, 400
+
     return render_template('register.html', error=error)
 
+@app.route('/msgs/<username>', methods=['POST'])
+def add_message_api(username):
+    data = request.get_json(silent=True) or request.form
+    text = data.get('content')
+
+    user = query_db('select * from user where username = ?', [username], one=True)
+    if user is None:
+        return "User not found", 404
+
+    if not text:
+        return "No content", 400
+
+    g.db.execute(
+        'insert into message (author_id, text, pub_date, flagged) values (?, ?, ?, 0)',
+        [user['user_id'], text, int(time.time())]
+    )
+    g.db.commit()
+    return '', 204
 
 @app.route('/logout')
 def logout():
