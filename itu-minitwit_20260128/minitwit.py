@@ -78,18 +78,25 @@ def public_timeline():
 
 @app.route('/msgs/<username>', methods=['POST'])
 def add_message_by_username(username):
-    data = request.get_json() if request.is_json else request.form
+    data = request.get_json(silent=True) or request.form
+
     user = mongo.db.user.find_one({"username": username})
-    if not user:
-        return "User not found", 404
+
+    if user is None:
+        # try decoding / fallback
+        user = mongo.db.user.find_one({"username": username.replace("%20", " ")})
+
+    if user is None:
+        return "", 204
 
     mongo.db.message.insert_one({
-        'author_id': str(user['_id']), 
-        'text': data.get('content') or data.get('text'), 
-        'pub_date': int(time.time()),
-        'username': user['username'], 
-        'email': user['email']
+        'author_id': str(user['_id']),
+        'username': user['username'],
+        'email': user['email'],
+        'text': data.get('content') or data.get('text'),
+        'pub_date': int(time.time())
     })
+
     return "", 204
 
 @app.route('/fllws/<username>', methods=['POST'])
