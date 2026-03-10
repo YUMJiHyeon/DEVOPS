@@ -175,9 +175,10 @@ def add_message():
     if 'user_id' not in session:
         abort(401)
     if request.form['text']:
-        g.db.execute('''insert into message (author_id, text, pub_date, flagged)
-            values (?, ?, ?, 0)''', (session['user_id'], request.form['text'],
-                                  int(time.time())))
+        g.db.execute(
+            '''insert into message (author_id, text, pub_date, flagged)
+            values (?, ?, ?, 0)''',
+            (session['user_id'], request.form['text'], int(time.time())))
         g.db.commit()
         flash('Your message was recorded')
     return redirect(url_for('timeline'))
@@ -261,7 +262,7 @@ def add_message_api(username):
         return "No content", 400
 
     g.db.execute(
-        'insert into message (author_id, text, pub_date, flagged) values (?, ?, ?, 0)',
+        '''insert into message (author_id, text, pub_date, flagged) values (?, ?, ?, 0)''',
         [user['user_id'], text, int(time.time())]
     )
     g.db.commit()
