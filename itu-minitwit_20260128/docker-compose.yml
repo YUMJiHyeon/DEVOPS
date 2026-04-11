@@ -24,5 +24,24 @@ services:
     depends_on:
       - prometheus
 
+  loki:
+    image: grafana/loki:2.9.0
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+
+  alloy:
+    image: grafana/alloy:latest
+    container_name: alloy
+    ports:
+      - "12345:12345"
+    volumes:
+      - .:/etc/alloy:ro
+      - /var/log:/var/log 
+      - /vagrant:/vagrant 
+    command: run --server.http.listen-addr=0.0.0.0:12345 /etc/alloy/config.alloy
+    depends_on:
+      - loki
+
 volumes:
   grafana-data:

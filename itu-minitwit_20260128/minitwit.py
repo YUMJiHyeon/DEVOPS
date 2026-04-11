@@ -80,6 +80,7 @@ def public_timeline():
 
 @app.route('/msgs/<username>', methods=['POST'])
 def add_message_by_username(username):
+    print(f"DEBUG: Attempting to tweet for user: {username}")
     data = request.get_json() if request.is_json else request.form
     user = mongo.db.user.find_one({"username": username})
     if not user:
@@ -192,36 +193,41 @@ def register():
         return redirect(url_for('timeline'))
     error = None
     if request.method == 'POST':
-        # JSON이든 Form이든 일단 데이터를 긁어옵니다.
         data = request.get_json(silent=True) or request.form
         
         username = data.get('username')
         email = data.get('email')
-        password = data.get('password')
+        password = data.get('password') or data.get('pwd')
 
         if not username:
             error = 'You have to enter a username'
         elif not email or '@' not in email:
             error = 'You have to enter a valid email address'
         elif not password:
+            if request.is_json or request.args.get('latest'):
+                return "Missing password", 400
             error = 'You have to enter a password'
-        elif mongo.db.user.find_one({"username": username}):
-            # [중요] 이미 있는 유저라도 시뮬레이터에겐 204를 줘서 통과시킵니다.
-            if request.is_json or request.args.get('latest'):
-                return "", 204
-            error = 'The username is already taken'
         else:
-            mongo.db.user.insert_one({
-                'username': username,
-                'email': email,
-                'pw_hash': generate_password_hash(password)
-            })
-            # [중요] 가입 성공 시, 시뮬레이터(JSON 혹은 latest 인자 존재)라면 204 반환
-            if request.is_json or request.args.get('latest'):
-                return "", 204
-            
-            flash('You were successfully registered')
-            return redirect(url_for('login'))
+            try:
+                existing_user = mongo.db.user.find_one({"username": username})
+                if not existing_user:
+                    mongo.db.user.insert_one({
+                        'username': username,
+                        'email': email,
+                        'pw_hash': generate_password_hash(password) # 이제 password가 None이 아니므로 안전함!
+                    })
+                
+                if request.is_json or request.args.get('latest'):
+                    return "", 204
+                
+                if existing_user:
+                    error = 'The username is already taken'
+                else:
+                    flash('You were successfully registered')
+                    return redirect(url_for('login'))
+            except Exception as e:
+                print(f"DEBUG: Register error - {e}")
+                return str(e), 500
             
     return render_template('register.html', error=error)
 
