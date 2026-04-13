@@ -1,4 +1,3 @@
-
 # -*- coding: utf-8 -*-
 """
     MiniTwit
@@ -21,22 +20,24 @@ from flask import Flask, request, session, url_for, redirect, \
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_pymongo import PyMongo
 from bson.objectid import ObjectId
+from prometheus_flask_exporter import PrometheusMetrics
 
 
 # configuration
 DATABASE = '/tmp/minitwit.db'
 PER_PAGE = 30
-DEBUG = True
+DEBUG = False
 SECRET_KEY = 'development key'
 
 # create our little application :)
 app = Flask(__name__)
-app.config["MONGO_URI"] = "mongodb://127.0.0.1:27017/minitwit"
+app.config["MONGO_URI"] = "mongodb://68.183.13.121:27017/minitwit"
 app.config["SECRET_KEY"] = 'development key'
 app.config["DEBUG"] = True
 
 mongo = PyMongo(app)
 
+metrics = PrometheusMetrics(app, endpoint='/metrics')
 
 def query_db(collection, query=None, one=False, limit=None):
     if query is None:
@@ -191,11 +192,12 @@ def register():
         return redirect(url_for('timeline'))
     error = None
     if request.method == 'POST':
+        # JSON이든 Form이든 일단 데이터를 긁어옵니다.
         data = request.get_json(silent=True) or request.form
         
         username = data.get('username')
         email = data.get('email')
-        password = data.get('password') or data.get('pwd')
+        password = data.get('password')
 
         if not username:
             error = 'You have to enter a username'
@@ -204,7 +206,8 @@ def register():
         elif not password:
             error = 'You have to enter a password'
         elif mongo.db.user.find_one({"username": username}):
-            if request.is_json:
+            # [중요] 이미 있는 유저라도 시뮬레이터에겐 204를 줘서 통과시킵니다.
+            if request.is_json or request.args.get('latest'):
                 return "", 204
             error = 'The username is already taken'
         else:
@@ -213,14 +216,12 @@ def register():
                 'email': email,
                 'pw_hash': generate_password_hash(password)
             })
-            if request.is_json:
+            # [중요] 가입 성공 시, 시뮬레이터(JSON 혹은 latest 인자 존재)라면 204 반환
+            if request.is_json or request.args.get('latest'):
                 return "", 204
             
-            flash('You were successfully registered and can login now')
+            flash('You were successfully registered')
             return redirect(url_for('login'))
-
-        if request.is_json:
-            return error, 400
             
     return render_template('register.html', error=error)
 
