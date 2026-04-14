@@ -22,8 +22,52 @@
   "panels": [
     {
       "datasource": {
+        "type": "loki",
+        "uid": "cfinh4p37j18gf"
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "id": 2,
+      "options": {
+        "dedupStrategy": "none",
+        "enableInfiniteScrolling": false,
+        "enableLogDetails": true,
+        "showControls": false,
+        "showTime": false,
+        "sortOrder": "Descending",
+        "unwrappedColumns": false,
+        "wrapLogMessage": false
+      },
+      "pluginVersion": "12.4.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "cfinh4p37j18gf"
+          },
+          "direction": "backward",
+          "editorMode": "code",
+          "expr": "{filename=\"/vagrant/out.log\"}",
+          "key": "Q-c2010e5d-1a5c-4461-a3cb-acdcffeb1353-0",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "title": "Logs",
+      "type": "logs"
+    },
+    {
+      "datasource": {
         "type": "prometheus",
-        "uid": "bfgpn8651qebkf"
+        "uid": "cfgpqq6db9u68c"
       },
       "fieldConfig": {
         "defaults": {
@@ -85,7 +129,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 0
+        "y": 8
       },
       "id": 1,
       "options": {
@@ -115,7 +159,7 @@
           "refId": "A"
         }
       ],
-      "title": "New panel",
+      "title": "Monitoring",
       "type": "timeseries"
     }
   ],
@@ -133,7 +177,6 @@
   "timezone": "browser",
   "title": "1st dashboard",
   "uid": "adlfjbs",
-  "version": 2,
+  "version": 1,
   "weekStart": ""
 }
-

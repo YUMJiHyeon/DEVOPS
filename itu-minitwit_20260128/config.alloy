@@ -1,0 +1,17 @@
+ local.file_match "minitwit_logs" {
+    path_targets = [
+        {"__address__" = "localhost", "__path__" = "/vagrant/out.log"},
+    ]
+}
+
+loki.source.file "minitwit_scrape" {
+    targets    = local.file_match.minitwit_logs.targets
+    forward_to = [loki.write.local_loki.receiver]
+    tail_from_end = false
+}
+
+loki.write "local_loki" {
+    endpoint {
+        url = "http://loki:3100/loki/api/v1/push"
+    }
+}
