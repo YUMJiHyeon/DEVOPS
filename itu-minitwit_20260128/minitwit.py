@@ -31,7 +31,7 @@ SECRET_KEY = 'development key'
 
 # create our little application :)
 app = Flask(__name__)
-app.config["MONGO_URI"] = "mongodb://68.183.13.121:27017/minitwit"
+app.config["MONGO_URI"] = "mongodb://groupo:devopsgroupo@68.183.13.121:27017/minitwit?authSource=admin"
 app.config["SECRET_KEY"] = 'development key'
 app.config["DEBUG"] = True
 
@@ -70,7 +70,6 @@ def before_request():
         user_count_gauge.set(mongo.db.user.count_documents({}))
     except Exception:
         pass
-
 
 
 @app.route('/')
