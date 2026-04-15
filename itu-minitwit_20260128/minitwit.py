@@ -68,8 +68,8 @@ def before_request():
 
     try:
         user_count_gauge.set(mongo.db.user.count_documents({}))
-    except Exception:
-        pass
+    except Exception as e:
+        print(f"DEBUG user_count_gauge error: {e}")
 
 
 @app.route('/')
