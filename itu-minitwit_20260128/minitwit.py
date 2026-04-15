@@ -21,7 +21,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from flask_pymongo import PyMongo
 from bson.objectid import ObjectId
 from prometheus_flask_exporter import PrometheusMetrics
-
+from prometheus_client import Gauge
 
 # configuration
 DATABASE = '/tmp/minitwit.db'
@@ -38,6 +38,8 @@ app.config["DEBUG"] = True
 mongo = PyMongo(app)
 
 metrics = PrometheusMetrics(app, endpoint='/metrics')
+
+user_count_gauge = Gauge("minitwit_user_count", "Total number of users")
 
 def query_db(collection, query=None, one=False, limit=None):
     if query is None:
@@ -63,6 +65,11 @@ def before_request():
     g.user = None
     if 'user_id' in session:
         g.user = mongo.db.user.find_one({"_id": ObjectId(session['user_id'])})
+
+    try:
+        user_count_gauge.set(mongo.db.user.count_documents({}))
+    except Exception:
+        pass
 
 
 
