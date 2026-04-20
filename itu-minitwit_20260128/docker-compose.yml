@@ -25,7 +25,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 300M
+          memory: 400M
 
   grafana:
     image: grafana/grafana:latest
@@ -41,7 +41,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 300M
+          memory: 250M
 
   loki:
     image: grafana/loki:2.9.0
@@ -51,7 +51,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 150M
+          memory: 100M
 
   alloy:
     image: grafana/alloy:latest
