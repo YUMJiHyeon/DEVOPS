@@ -10,6 +10,7 @@
 """
 
 import re
+import os, shutil
 import time
 import sqlite3
 from hashlib import md5
@@ -20,9 +21,14 @@ from flask import Flask, request, session, url_for, redirect, \
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_pymongo import PyMongo
 from bson.objectid import ObjectId
-from prometheus_flask_exporter import PrometheusMetrics
-from prometheus_client import Counter, Gauge
+from prometheus_flask_exporter import PrometheusMetrics 
+from prometheus_flask_exporter.multiprocess import GunicornPrometheusMetrics
+from prometheus_client import Counter, Gauge, generate_latest, CONTENT_TYPE_LATEST
 
+metrics_dir = os.environ.get('PROMETHEUS_MULTIPROC_DIR', '/tmp/prometheus_metrics')
+if os.path.exists(metrics_dir):
+    shutil.rmtree(metrics_dir)
+os.makedirs(metrics_dir, exist_ok=True)
 
 # configuration
 DATABASE = '/tmp/minitwit.db'
@@ -41,7 +47,7 @@ app.config["DEBUG"] = True
 
 mongo = PyMongo(app)
 
-metrics = PrometheusMetrics(app, endpoint='/metrics')
+metrics = GunicornPrometheusMetrics(app, path=None)
 
 def update_db_counts():
     try:
@@ -254,8 +260,9 @@ def logout():
 
 @app.route('/metrics')
 def metrics_with_update():
-    update_db_counts()
-    return metrics.export()
+    user_count = query_db('select count(*) from user', one=True)[0]
+    USER_COUNT.set(user_count)
+    return generate_latest(), 200, {'Content-Type': CONTENT_TYPE_LATEST}
 
 
 # add some filters to jinja and set the secret key and debug mode

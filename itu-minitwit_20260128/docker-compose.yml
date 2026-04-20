@@ -11,6 +11,9 @@ services:
       resources:
         limits:
           memory: 400M
+    environment:
+      - PROMETHEUS_MULTIPROC_DIR=/tmp/prometheus_metrics
+      - DB_URL=mongodb://groupo:devopsgroupo@68.183.13.121:27017/minitwit?authSource=admin
 
   prometheus:
     image: prom/prometheus:latest
@@ -45,6 +48,7 @@ services:
 
   loki:
     image: grafana/loki:2.9.0
+    container_name: loki
     ports:
       - "3100:3100"
     command: -config.file=/etc/loki/local-config.yaml
@@ -72,8 +76,9 @@ services:
           memory: 100M
 
   cadvisor:
-    image: gcr.io/cadvisor/cadvisor:v0.47.0   
+    image: gcr.io/cadvisor/cadvisor:v0.49.1   
     container_name: cadvisor
+    privileged: true 
     ports:
       - "8080:8080"
     volumes:
@@ -85,7 +90,6 @@ services:
       - /dev/disk/:/dev/disk:ro
     devices:
       - /dev/kmsg
-    privileged: true 
     command:              
       - '--docker_only=true'
       - '--housekeeping_interval=10s'
