@@ -21,6 +21,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from flask_pymongo import PyMongo
 from bson.objectid import ObjectId
 from prometheus_flask_exporter import PrometheusMetrics
+from prometheus_client import Counter, Gauge
 
 
 # configuration
@@ -28,16 +29,26 @@ DATABASE = '/tmp/minitwit.db'
 PER_PAGE = 30
 DEBUG = False
 SECRET_KEY = 'development key'
+TWEET_COUNT = Counter('minitwit_tweets_total', 'Total number of tweets posted')
+USER_COUNT = Gauge('minitwit_users_total', 'Total registered users in DB')
+FOLLOWER_COUNT = Gauge('minitwit_followers_total', 'Total follow relationships in DB')
 
 # create our little application :)
 app = Flask(__name__)
-app.config["MONGO_URI"] = "mongodb://68.183.13.121:27017/minitwit"
+app.config["MONGO_URI"] = "mongodb://groupo:devopsgroupo@68.183.13.121:27017/minitwit?authSource=admin"
 app.config["SECRET_KEY"] = 'development key'
 app.config["DEBUG"] = True
 
 mongo = PyMongo(app)
 
 metrics = PrometheusMetrics(app, endpoint='/metrics')
+
+def update_db_counts():
+    try:
+        USER_COUNT.set(mongo.db.user.count_documents({}))
+        FOLLOWER_COUNT.set(mongo.db.follower.count_documents({}))
+    except Exception as e:
+        print(f"Error updating counts: {e}")
 
 def query_db(collection, query=None, one=False, limit=None):
     if query is None:
@@ -93,6 +104,7 @@ def add_message_by_username(username):
         'username': user['username'], 
         'email': user['email']
     })
+    TWEET_COUNT.inc()
     return "", 204
 
 @app.route('/fllws/<username>', methods=['POST'])
@@ -165,6 +177,9 @@ def add_message():
             'pub_date': int(time.time()),
             'flagged': 0
         })
+        TWEET_COUNT.inc() 
+        update_db_counts() 
+        flash('Your message was recorded')
         flash('Your message was recorded')
     return redirect(url_for('timeline'))
 
@@ -236,6 +251,11 @@ def logout():
     flash('You were logged out')
     session.pop('user_id', None)
     return redirect(url_for('public_timeline'))
+
+@app.route('/metrics')
+def metrics_with_update():
+    update_db_counts()
+    return metrics.export()
 
 
 # add some filters to jinja and set the secret key and debug mode

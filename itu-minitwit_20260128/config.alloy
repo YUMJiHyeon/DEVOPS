@@ -1,17 +1,26 @@
- local.file_match "minitwit_logs" {
-    path_targets = [
-        {"__address__" = "localhost", "__path__" = "/vagrant/out.log"},
-    ]
+discovery.docker "linux_containers" {
+  host = "unix:///var/run/docker.sock"
 }
 
-loki.source.file "minitwit_scrape" {
-    targets    = local.file_match.minitwit_logs.targets
-    forward_to = [loki.write.local_loki.receiver]
-    tail_from_end = false
+discovery.relabel "docker_labels" {
+  targets = discovery.docker.linux_containers.targets
+
+  rule {
+    source_labels = ["__meta_docker_container_name"]
+    regex         = "/(.*)"
+    target_label  = "container"
+  }
+}
+
+loki.source.docker "minitwit_logs" {
+  host       = "unix:///var/run/docker.sock"
+  targets    = discovery.relabel.docker_labels.output
+  labels     = { "job" = "minitwit" } 
+  forward_to = [loki.write.local_loki.receiver]
 }
 
 loki.write "local_loki" {
-    endpoint {
-        url = "http://loki:3100/loki/api/v1/push"
-    }
+  endpoint {
+    url = "http://loki:3100/loki/api/v1/push"
+  }
 }
