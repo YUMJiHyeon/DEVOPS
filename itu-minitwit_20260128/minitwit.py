@@ -55,6 +55,8 @@ def update_db_counts():
     except Exception as e:
         print(f"Error updating counts: {e}")
 
+user_count_gauge = Gauge("minitwit_user_count", "Total number of users")
+
 def query_db(collection, query=None, one=False, limit=None):
     if query is None:
         query = {}
@@ -80,6 +82,10 @@ def before_request():
     if 'user_id' in session:
         g.user = mongo.db.user.find_one({"_id": ObjectId(session['user_id'])})
 
+    try:
+        user_count_gauge.set(mongo.db.user.count_documents({}))
+    except Exception as e:
+        print(f"DEBUG user_count_gauge error: {e}")
 
 
 @app.route('/')
