@@ -2,24 +2,22 @@ FROM python:3.9-slim
 
 WORKDIR /app
 
-# Create user first (better layer caching)
+RUN apt-get update && apt-get upgrade -y && rm -rf /var/lib/apt/lists/*
+
 RUN useradd -m myuser
 
-# Copy only necessary files (assuming you fix with .dockerignore)
 COPY . .
 
-# Install dependencies with pinned versions
-RUN pip install --no-cache-dir \
-    Flask==2.3.2 \
-    Flask-PyMongo==2.3.0 \
-    prometheus-flask-exporter==0.22.4 \
-    blinker==1.6.2
+RUN pip install --no-cache-dir --upgrade pip wheel setuptools && \
+    pip install --no-cache-dir \
+    Flask==3.1.3 \
+    Flask-PyMongo \
+    prometheus-flask-exporter \
+    blinker
 
-# Create directory and set permissions in one layer
-RUN mkdir -p /app/prometheus_metrics \
-    && chown -R myuser:myuser /app
+RUN mkdir -p /app/prometheus_metrics && \
+    chown -R myuser:myuser /app
 
-# Switch to non-root user
 USER myuser
 
 ENV PROMETHEUS_MULTIPROC_DIR=/app/prometheus_metrics
