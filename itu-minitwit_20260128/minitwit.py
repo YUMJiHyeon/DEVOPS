@@ -25,7 +25,7 @@ from prometheus_flask_exporter import PrometheusMetrics
 from prometheus_flask_exporter.multiprocess import GunicornPrometheusMetrics
 from prometheus_client import Counter, Gauge, generate_latest, CONTENT_TYPE_LATEST
 
-metrics_dir = os.environ.get('PROMETHEUS_MULTIPROC_DIR', '/tmp/prometheus_metrics')
+metrics_dir = os.environ.get('PROMETHEUS_MULTIPROC_DIR', '/app/prometheus_metrics')
 if os.path.exists(metrics_dir):
     shutil.rmtree(metrics_dir)
 os.makedirs(metrics_dir, mode=0o755, exist_ok=True)

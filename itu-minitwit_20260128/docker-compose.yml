@@ -14,7 +14,7 @@ services:
     env_file:
       - .env
     environment:
-      - PROMETHEUS_MULTIPROC_DIR=/tmp/prometheus_metrics
+      - PROMETHEUS_MULTIPROC_DIR=/app/prometheus_metrics
       - MONGO_URI=${MONGO_URI}
 
   prometheus:
