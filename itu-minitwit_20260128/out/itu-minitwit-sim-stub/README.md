@@ -48,3 +48,10 @@ cd src/Org.OpenAPITools
 docker build -t org.openapitools .
 docker run -p 5000:8080 org.openapitools
 ```
+
+## Docker Image Hardening Steps:
+- Used python:3.9-slim as a minimal base image
+- Added non-root user (USER myuser)
+- Pinned dependency versions
+- Added .dockerignore to exclude unnecessary files (.git, __pycache__, etc.)
+- Reduced image size and attack surface
