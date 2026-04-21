@@ -1,6 +1,22 @@
 version: '3.8'
 
 services:
+  webserver:
+    build: .             
+    container_name: webserver
+    ports:
+      - "5000:5000"      
+    restart: unless-stopped
+    deploy:                
+      resources:
+        limits:
+          memory: 400M
+    env_file:
+      - .env
+    environment:
+      - PROMETHEUS_MULTIPROC_DIR=/app/prometheus_metrics
+      - MONGO_URI=${MONGO_URI}
+
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus
@@ -11,6 +27,10 @@ services:
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
     restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 400M
 
   grafana:
     image: grafana/grafana:latest
@@ -23,12 +43,21 @@ services:
     restart: unless-stopped
     depends_on:
       - prometheus
+    deploy:
+      resources:
+        limits:
+          memory: 250M
 
   loki:
     image: grafana/loki:2.9.0
+    container_name: loki
     ports:
       - "3100:3100"
     command: -config.file=/etc/loki/local-config.yaml
+    deploy:
+      resources:
+        limits:
+          memory: 100M
 
   alloy:
     image: grafana/alloy:latest
@@ -38,10 +67,36 @@ services:
     volumes:
       - .:/etc/alloy:ro
       - /var/log:/var/log 
-      - /vagrant:/vagrant 
+      - /vagrant:/vagrant
+      - /var/run/docker.sock:/var/run/docker.sock 
     command: run --server.http.listen-addr=0.0.0.0:12345 /etc/alloy/config.alloy
     depends_on:
       - loki
+    deploy:
+      resources:
+        limits:
+          memory: 100M
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.49.1   
+    container_name: cadvisor
+    #privileged: true 
+    ports:
+      - "8080:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    devices:
+      - /dev/kmsg
+    command:              
+      - '--docker_only=true'
+      - '--housekeeping_interval=10s'
+      - '--store_container_labels=false'
+    restart: unless-stopped
 
 volumes:
   grafana-data:

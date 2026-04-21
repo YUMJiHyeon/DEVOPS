@@ -10,6 +10,7 @@
 """
 
 import re
+import os, shutil
 import time
 import sqlite3
 from hashlib import md5
@@ -20,14 +21,22 @@ from flask import Flask, request, session, url_for, redirect, \
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_pymongo import PyMongo
 from bson.objectid import ObjectId
-from prometheus_flask_exporter import PrometheusMetrics
-from prometheus_client import Gauge
+from prometheus_flask_exporter.multiprocess import GunicornPrometheusMetrics
+from prometheus_client import Counter, Gauge, generate_latest, CONTENT_TYPE_LATEST
+
+metrics_dir = os.environ.get('PROMETHEUS_MULTIPROC_DIR', '/app/prometheus_metrics')
+if os.path.exists(metrics_dir):
+    shutil.rmtree(metrics_dir)
+os.makedirs(metrics_dir, mode=0o755, exist_ok=True)
 
 # configuration
 DATABASE = '/tmp/minitwit.db'
 PER_PAGE = 30
 DEBUG = False
 SECRET_KEY = 'development key'
+TWEET_COUNT = Counter('minitwit_tweets_total', 'Total number of tweets posted')
+USER_COUNT = Gauge('minitwit_users_total', 'Total registered users in DB')
+FOLLOWER_COUNT = Gauge('minitwit_followers_total', 'Total follow relationships in DB')
 
 # create our little application :)
 app = Flask(__name__)
@@ -37,7 +46,14 @@ app.config["DEBUG"] = True
 
 mongo = PyMongo(app)
 
-metrics = PrometheusMetrics(app, endpoint='/metrics')
+metrics = GunicornPrometheusMetrics(app, path=None)
+
+def update_db_counts():
+    try:
+        USER_COUNT.set(mongo.db.user.count_documents({}))
+        FOLLOWER_COUNT.set(mongo.db.follower.count_documents({}))
+    except Exception as e:
+        print(f"Error updating counts: {e}")
 
 user_count_gauge = Gauge("minitwit_user_count", "Total number of users")
 
@@ -99,6 +115,7 @@ def add_message_by_username(username):
         'username': user['username'], 
         'email': user['email']
     })
+    TWEET_COUNT.inc()
     return "", 204
 
 @app.route('/fllws/<username>', methods=['POST'])
@@ -171,6 +188,9 @@ def add_message():
             'pub_date': int(time.time()),
             'flagged': 0
         })
+        TWEET_COUNT.inc() 
+        update_db_counts() 
+        flash('Your message was recorded')
         flash('Your message was recorded')
     return redirect(url_for('timeline'))
 
@@ -242,6 +262,16 @@ def logout():
     flash('You were logged out')
     session.pop('user_id', None)
     return redirect(url_for('public_timeline'))
+
+@app.route('/metrics')
+def metrics_with_update():
+    try:
+        user_count = mongo.db.user.count_documents({})
+        USER_COUNT.set(user_count)
+        return generate_latest(), 200, {'Content-Type': CONTENT_TYPE_LATEST}
+    except Exception as e:
+        app.logger.error(f"Metrics update failed: {e}")
+        return generate_latest(), 200, {'Content-Type': CONTENT_TYPE_LATEST}
 
 
 # add some filters to jinja and set the secret key and debug mode
