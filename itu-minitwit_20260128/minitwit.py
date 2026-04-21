@@ -260,9 +260,13 @@ def logout():
 
 @app.route('/metrics')
 def metrics_with_update():
-    user_count = query_db('select count(*) from user', one=True)[0]
-    USER_COUNT.set(user_count)
-    return generate_latest(), 200, {'Content-Type': CONTENT_TYPE_LATEST}
+    try:
+        user_count = mongo.db.user.count_documents({})
+        USER_COUNT.set(user_count)
+        return generate_latest(), 200, {'Content-Type': CONTENT_TYPE_LATEST}
+    except Exception as e:
+        app.logger.error(f"Metrics update failed: {e}")
+        return generate_latest(), 200, {'Content-Type': CONTENT_TYPE_LATEST}
 
 
 # add some filters to jinja and set the secret key and debug mode
