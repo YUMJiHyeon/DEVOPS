@@ -11,9 +11,11 @@ services:
       resources:
         limits:
           memory: 400M
+    env_file:
+      - .env
     environment:
       - PROMETHEUS_MULTIPROC_DIR=/tmp/prometheus_metrics
-      - DB_URL=mongodb://groupo:devopsgroupo@68.183.13.121:27017/minitwit?authSource=admin
+      - MONGO_URI=${MONGO_URI}
 
   prometheus:
     image: prom/prometheus:latest
