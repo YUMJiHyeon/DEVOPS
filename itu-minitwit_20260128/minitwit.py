@@ -28,7 +28,7 @@ from prometheus_client import Counter, Gauge, generate_latest, CONTENT_TYPE_LATE
 metrics_dir = os.environ.get('PROMETHEUS_MULTIPROC_DIR', '/tmp/prometheus_metrics')
 if os.path.exists(metrics_dir):
     shutil.rmtree(metrics_dir)
-os.makedirs(metrics_dir, exist_ok=True)
+os.makedirs(metrics_dir, mode=0o755, exist_ok=True)
 
 # configuration
 DATABASE = '/tmp/minitwit.db'
