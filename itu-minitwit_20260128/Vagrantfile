@@ -60,11 +60,27 @@ Vagrant.configure("2") do |config|
 				override.vm.allowed_synced_folder_types = [:rsync]
 			end
 
-			web.vm.provision "shell", inline: <<-SHELL
-				set -e
+			web.vm.provision "shell",
+        env: {
+          "DIGITAL_OCEAN_TOKEN" => ENV["DIGITAL_OCEAN_TOKEN"],
+          "DIGITAL_OCEAN_RESERVED_IP" => ENV["DIGITAL_OCEAN_RESERVED_IP"],
+          "LETSENCRYPT_EMAIL" => ENV["LETSENCRYPT_EMAIL"]
+        },
+        inline: <<-SHELL
+          set -e
 
-				apt-get update
-				apt-get install -y docker.io docker-compose-plugin nginx certbot python3-certbot-nginx ufw
+          apt-get update
+          apt-get install -y docker.io docker-compose-plugin nginx certbot python3-certbot-nginx ufw snapd
+
+          if [ "#{server_name}" = "webserver" ] && [ -n "$DIGITAL_OCEAN_RESERVED_IP" ]; then
+            snap install doctl
+
+            /snap/bin/doctl auth init -t "$DIGITAL_OCEAN_TOKEN"
+
+            DROPLET_ID=$(curl -s http://169.254.169.254/metadata/v1/id)
+
+            /snap/bin/doctl compute reserved-ip-action assign "$DIGITAL_OCEAN_RESERVED_IP" "$DROPLET_ID"
+          fi
 
 				systemctl enable docker
 				systemctl start docker
