@@ -45,7 +45,7 @@ app.config["DEBUG"] = True
 
 mongo = PyMongo(app)
 
-metrics = GunicornPrometheusMetrics(app, path=None)
+metrics = GunicornPrometheusMetrics(app, path="/metrics")
 
 def update_db_counts():
     try:
@@ -80,11 +80,12 @@ def before_request():
     g.user = None
     if 'user_id' in session:
         g.user = mongo.db.user.find_one({"_id": ObjectId(session['user_id'])})
-
-    try:
+    if request.path == "/metrics":
+        update_db_counts()
+    """try:
         user_count_gauge.set(mongo.db.user.count_documents({}))
     except Exception as e:
-        print(f"DEBUG user_count_gauge error: {e}")
+        print(f"DEBUG user_count_gauge error: {e}")"""
 
 
 @app.route('/')
@@ -262,15 +263,6 @@ def logout():
     session.pop('user_id', None)
     return redirect(url_for('public_timeline'))
 
-@app.route('/metrics')
-def metrics_with_update():
-    try:
-        user_count = mongo.db.user.count_documents({})
-        USER_COUNT.set(user_count)
-        return generate_latest(), 200, {'Content-Type': CONTENT_TYPE_LATEST}
-    except Exception as e:
-        app.logger.error(f"Metrics update failed: {e}")
-        return generate_latest(), 200, {'Content-Type': CONTENT_TYPE_LATEST}
 
 
 # add some filters to jinja and set the secret key and debug mode
