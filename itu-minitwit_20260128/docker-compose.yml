@@ -16,7 +16,6 @@ services:
     environment:
       - PROMETHEUS_MULTIPROC_DIR=/app/prometheus_metrics
       - MONGO_URI=${MONGO_URI}
-      - PROMETHEUS_MULTIPROC_DIR: /app/prometheus_metrics
 
   prometheus:
     image: prom/prometheus:latest
