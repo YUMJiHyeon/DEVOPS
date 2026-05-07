@@ -2,9 +2,11 @@ FROM python:3.9-slim
 
 WORKDIR /app
 
-COPY . .
+COPY requirements.txt .
 
-RUN pip install --no-cache-dir Flask Flask-PyMongo prometheus-flask-exporter blinker gunicorn
+RUN pip install --no-cache-dir --requirement requirements.txt
+
+COPY ..
 
 EXPOSE 5000
 
