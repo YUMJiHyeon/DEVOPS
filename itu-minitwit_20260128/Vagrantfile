@@ -2,56 +2,131 @@
 # vi: set ft=ruby :
 
 Vagrant.configure("2") do |config|
-  config.vm.box = "digital_ocean"
-  config.ssh.private_key_path = "/Users/yumjihyeon/.ssh/id_rsa"
-  config.ssh.username = "root"
+	config.vm.box = "digital_ocean"
+	config.ssh.username = "root"
+	config.ssh.private_key_path = ENV.fetch("SSH_PRIVATE_KEY", "~/.ssh/id_rsa")
 
-  # [1] DigitalOcean setup
-  config.vm.provider :digital_ocean do |provider|
-    provider.token = ENV['DIGITAL_OCEAN_TOKEN']
-    provider.ssh_key_name = "yumwlgus7@gmail.com"
-    provider.ssh_key_path = "/Users/yumjihyeon/.ssh/id_rsa"
-    provider.image = "ubuntu-22-04-x64"
-    provider.region = "ams3"
-    provider.size = "s-1vcpu-1gb"
-  end
+	config.vm.provider :digital_ocean do |provider|
+		provider.token = ENV.fetch("DIGITAL_OCEAN_TOKEN")
+		provider.ssh_key_name = ENV.fetch("DIGITAL_OCEAN_SSH_KEY_NAME")
+		provider.ssh_key_path = ENV.fetch("SSH_PRIVATE_KEY", "~/.ssh/id_rsa")
+		provider.image = "ubuntu-22-04-x64"
+		provider.region = "ams3"
+		provider.size = "s-1vcpu-1gb"
+	end
 
-#  config.vm.synced_folder ".", "/vagrant", type: "rsync"
+	config.vm.define "dbserver" do |db|
+		db.vm.hostname = "dbserver"
 
-  # [2] DB server
-  config.vm.define "dbserver" do |db|
-    db.vm.hostname = "dbserver"
-    db.vm.provision "shell", inline: <<-SHELL
-      sudo apt-get update
-      sudo apt-get install -y gnupg curl
-      curl -fsSL https://www.mongodb.org/static/pgp/server-8.0.asc | sudo gpg -o /usr/share/keyrings/mongodb-server-8.0.gpg --dearmor
-      echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-8.0.gpg ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/8.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-8.0.list
-      sudo apt-get update
-      sudo apt-get install -y mongodb-org
-      sudo sed -i '/bindIp:/ s/127.0.0.1/0.0.0.0/' /etc/mongod.conf
-      sudo systemctl start mongod
-    SHELL
-  end
+		db.vm.provider :digital_ocean do |provider|
+			provider.name = "dbserver"
+		end
 
-  # [3] Web server
-  config.vm.define "webserver" do |web|
-    web.vm.hostname = "webserver"
-    web.vm.synced_folder ".", "/vagrant", 
-      type: "rsync",
-      id: "vagrant-root",
-      rsync__exclude: [".git/", "*.log", ".vagrant/"]
+		db.vm.provision "shell", inline: <<-SHELL
+			set -e
 
-    web.vm.provider :digital_ocean do |do_os, override|
-      override.vm.allowed_synced_folder_types = [:rsync]
-    end
+			apt-get update
+			apt-get install -y gnupg curl ufw
 
-    web.vm.provision "shell", inline: <<-SHELL
-      sudo pkill python3 || true
-      Sudo apt-get update
-      sudo apt-get install -y docker.io docker-compose
-      sudo systemctl start docker
-      sudo systemctl enable docker
-      echo "Docker installation complete. Please run 'docker-compose up -d' in /vagrant"
-    SHELL
-  end
+			curl -fsSL https://www.mongodb.org/static/pgp/server-8.0.asc | gpg -o /usr/share/keyrings/mongodb-server-8.0.gpg --dearmor
+
+			echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-8.0.gpg ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/8.0 multiverse" > /etc/apt/sources.list.d/mongodb-org-8.0.list
+
+			apt-get update
+			apt-get install -y mongodb-org
+
+			sed -i 's/bindIp: 127.0.0.1/bindIp: 0.0.0.0/' /etc/mongod.conf
+
+			ufw allow OpenSSH
+			ufw allow from 10.0.0.0/8 to any port 27017
+			ufw --force enable
+
+			systemctl enable mongod
+			systemctl restart mongod
+		SHELL
+	end
+
+	["webserver", "secondary"].each do |server_name|
+		config.vm.define server_name do |web|
+			web.vm.hostname = server_name
+
+			web.vm.synced_folder ".", "/vagrant",
+				type: "rsync",
+				id: "#{server_name}-project",
+				rsync__exclude: [".git/", ".vagrant/", "*.log"]
+
+			web.vm.provider :digital_ocean do |provider, override|
+				provider.name = server_name
+				override.vm.allowed_synced_folder_types = [:rsync]
+			end
+
+			web.vm.provision "shell",
+        env: {
+          "DIGITAL_OCEAN_TOKEN" => ENV["DIGITAL_OCEAN_TOKEN"],
+          "DIGITAL_OCEAN_RESERVED_IP" => ENV["DIGITAL_OCEAN_RESERVED_IP"],
+          "LETSENCRYPT_EMAIL" => ENV["LETSENCRYPT_EMAIL"]
+        },
+        inline: <<-SHELL
+          set -e
+
+          apt-get update
+          apt-get install -y docker.io docker-compose-plugin nginx certbot python3-certbot-nginx ufw snapd
+
+          if [ "#{server_name}" = "webserver" ] && [ -n "$DIGITAL_OCEAN_RESERVED_IP" ]; then
+            snap install doctl
+
+            /snap/bin/doctl auth init -t "$DIGITAL_OCEAN_TOKEN"
+
+            DROPLET_ID=$(curl -s http://169.254.169.254/metadata/v1/id)
+
+            /snap/bin/doctl compute reserved-ip-action assign "$DIGITAL_OCEAN_RESERVED_IP" "$DROPLET_ID"
+          fi
+
+				systemctl enable docker
+				systemctl start docker
+
+				ufw allow OpenSSH
+				ufw allow "Nginx Full"
+				ufw --force enable
+
+				cd /vagrant
+
+				docker compose up -d --build
+
+				cat > /etc/nginx/sites-available/minitwit <<'EOF'
+server {
+	listen 80;
+	listen [::]:80;
+
+	server_name devopsgroupo.me www.devopsgroupo.me;
+
+	location / {
+		proxy_pass http://127.0.0.1:5000;
+		proxy_set_header Host $host;
+		proxy_set_header X-Real-IP $remote_addr;
+		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+		proxy_set_header X-Forwarded-Proto $scheme;
+	}
+}
+EOF
+
+				rm -f /etc/nginx/sites-enabled/default
+				ln -sf /etc/nginx/sites-available/minitwit /etc/nginx/sites-enabled/minitwit
+
+				nginx -t
+				systemctl enable nginx
+				systemctl reload nginx
+
+				if [ -n "$LETSENCRYPT_EMAIL" ]; then
+					certbot --nginx \
+						-d devopsgroupo.me \
+						-d www.devopsgroupo.me \
+						--non-interactive \
+						--agree-tos \
+						-m "$LETSENCRYPT_EMAIL" \
+						--redirect || true
+				fi
+			SHELL
+		end
+	end
 end
