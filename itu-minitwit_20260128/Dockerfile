@@ -1,5 +1,8 @@
 FROM python:3.9-slim
 WORKDIR /app
+RUN apt-get update && \
+    apt-get upgrade -y libssl3t64 openssl && \
+    rm -rf /var/lib/apt/lists/*
 COPY . .
 RUN pip install --no-cache-dir Flask Flask-PyMongo prometheus-flask-exporter blinker gunicorn
 EXPOSE 5000
