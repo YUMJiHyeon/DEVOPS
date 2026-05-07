@@ -43,4 +43,4 @@ Use of Generative AI -> ✨ YES ✨
 
 We used it when we got stuck or encountered unexpected errors.  It has been a life saver for the most part.  
 
-3.3) How to hand-in? 
+### 3.3) How to hand-in? 
