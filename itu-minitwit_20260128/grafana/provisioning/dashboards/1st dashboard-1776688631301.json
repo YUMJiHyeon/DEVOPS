@@ -446,7 +446,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "bfgpn8651qebkf"
+            "uid": "cfgpqq6db9u68c"
           },
           "editorMode": "code",
           "expr": "flask_http_request_total",

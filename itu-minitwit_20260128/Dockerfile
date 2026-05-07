@@ -2,26 +2,18 @@ FROM python:3.9-slim
 
 WORKDIR /app
 
-RUN apt-get update && apt-get upgrade -y && rm -rf /var/lib/apt/lists/*
-
-RUN useradd -m myuser
-
 COPY . .
 
-RUN pip install --no-cache-dir --upgrade pip wheel setuptools && \
-    pip install --no-cache-dir \
-    Flask==3.1.3 \
-    Flask-PyMongo \
-    prometheus-flask-exporter \
-    blinker
+RUN pip install --no-cache-dir Flask Flask-PyMongo prometheus-flask-exporter blinker gunicorn
 
-RUN mkdir -p /app/prometheus_metrics && \
-    chown -R myuser:myuser /app
+EXPOSE 5000
+
+RUN mkdir -p /app/prometheus_metrics && chmod 755 /app/prometheus_metrics
+
+RUN useradd -m myuser && chown -R myuser:myuser /app
 
 USER myuser
 
 ENV PROMETHEUS_MULTIPROC_DIR=/app/prometheus_metrics
 
-EXPOSE 5000
-
-CMD ["python", "minitwit.py"]
+CMD ["python3", "-m", "gunicorn", "--config", "gunicorn_config.py", "minitwit:app"]
