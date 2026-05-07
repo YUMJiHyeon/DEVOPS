@@ -1,0 +1,7 @@
+.vagrant/
+*.vmdk
+*.lck
+*.log
+geckodriver
+__pycache__/
+.DS_Store
