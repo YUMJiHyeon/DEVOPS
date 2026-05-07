@@ -3,7 +3,7 @@
 
 #### Exam assignment by:
 
-Erle Sognnæe:
+Erle Sognnæs:
 s25128@itu.dk
 
 Jihyeon Yum:
