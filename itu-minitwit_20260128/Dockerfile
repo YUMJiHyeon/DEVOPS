@@ -4,7 +4,12 @@ RUN apt-get update && \
     apt-get upgrade -y libssl3t64 openssl && \
     rm -rf /var/lib/apt/lists/*
 COPY . .
-RUN pip install --no-cache-dir Flask Flask-PyMongo prometheus-flask-exporter blinker gunicorn
+RUN pip install --no-cache-dir --only-binary :all: \
+    Flask==1.8.2 \ 
+    Flask-PyMongo==2.3.0 \ 
+    prometheus-flask-exporter==0.23.0 \
+    blinker==1.8.2 \
+    gunicorn==22.0.0
 EXPOSE 5000
 RUN mkdir -p /app/prometheus_metrics && chmod 755 /app/prometheus_metrics
 RUN useradd -m myuser && chown -R myuser:myuser /app
