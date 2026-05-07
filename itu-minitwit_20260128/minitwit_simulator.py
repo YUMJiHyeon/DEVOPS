@@ -2,6 +2,8 @@
 Call me for example like:
 
 $ python minitwit_simulator.py "http://localhost:5001"
+
+testing testing
 """
 
 import warnings
