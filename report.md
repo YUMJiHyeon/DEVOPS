@@ -39,7 +39,7 @@ Process' perspective
 
 Reflection Perspective 
 
-Use of Generative AI -> ✨ YES just the entire project tihi ✨ 
+Use of Generative AI -> ✨ YES ✨ 
 
 We used it when we got stuck or encountered unexpected errors.  It has been a life saver for the most part.  
 
