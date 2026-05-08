@@ -41,7 +41,6 @@ def _register_user_via_gui(driver, data):
     driver.get(GUI_URL)
 
     wait = WebDriverWait(driver, 5)
-    buttons = wait.until(EC.presence_of_all_elements_located((By.CLASS_NAME, "actions")))
     input_fields = driver.find_elements(By.TAG_NAME, "input")
 
     for idx, str_content in enumerate(data):
@@ -65,7 +64,6 @@ def test_register_user_via_gui():
     """
     firefox_options = Options()
     firefox_options.add_argument("--headless")
-    # firefox_options = None
     with webdriver.Firefox(service=Service("./geckodriver"), options=firefox_options) as driver:
         generated_msg = _register_user_via_gui(driver, ["Me", "me@some.where", "secure123", "secure123"])[0].text
         expected_msg = "You were successfully registered and can login now"
@@ -83,7 +81,6 @@ def test_register_user_via_gui_and_check_db_entry():
     """
     firefox_options = Options()
     firefox_options.add_argument("--headless")
-    # firefox_options = None
     with webdriver.Firefox(service=Service("./geckodriver"), options=firefox_options) as driver:
         db_client = pymongo.MongoClient(DB_URL, serverSelectionTimeoutMS=5000)
 
