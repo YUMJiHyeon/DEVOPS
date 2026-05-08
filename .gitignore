@@ -6,3 +6,4 @@ geckodriver
 __pycache__/
 .DS_Store
 flask-minitwit-mongodb/
+itu-minitwit_init/
