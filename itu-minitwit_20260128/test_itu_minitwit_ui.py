@@ -40,7 +40,6 @@ DB_URL = "mongodb://localhost:27017/test"
 def _register_user_via_gui(driver, data):
     driver.get(GUI_URL)
 
-    wait = WebDriverWait(driver, 5)
     input_fields = driver.find_elements(By.TAG_NAME, "input")
 
     for idx, str_content in enumerate(data):
