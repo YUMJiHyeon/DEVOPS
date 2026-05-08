@@ -208,51 +208,57 @@ def login():
             return redirect(url_for('timeline'))
     return render_template('login.html', error=error)
 
+def validate_register_input(username, email, password):
+    if not username:
+        return 'You have to enter a username'
+    if not email or '@' not in email:
+        return 'You have to enter a valid email address'
+    if not password:
+        return 'You have to enter a password'
+    return None
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if g.user:
         return redirect(url_for('timeline'))
-    error = None
-    if request.method == 'POST':
-        data = request.get_json(silent=True) or request.form
+
+    if request.method == 'GET':
+        return render_template('register.html', error=None)
+
+    data = request.get_json(silent=True) or request.form
+    username = data.get('username')
+    email = data.get('email')
+    password = data.get('password') or data.get('pwd')
+    is_api = request.is_json or request.args.get('latest')
+
+    error = validate_register_input(username, email, password)
+    if error:
+        if is_api and error == 'You have to enter a password':
+            return "Missing password", 400
+        return render_template('register.html', error=error)
+    
+    try:
+        existing_user = mongo.db.user.find_one({"username": username})
+        if not existing_user:
+            mongo.db.user.insert_one({
+                'username': username,
+                'email': email,
+                'pw_hash': generate_password_hash(password) 
+            })
+
+        if is_api:
+            return "", 204
+                        
+        if existing_user:
+            return render_template('register.html', error='The username is already taken')
         
-        username = data.get('username')
-        email = data.get('email')
-        password = data.get('password') or data.get('pwd')
-
-        if not username:
-            error = 'You have to enter a username'
-        elif not email or '@' not in email:
-            error = 'You have to enter a valid email address'
-        elif not password:
-            if request.is_json or request.args.get('latest'):
-                return "Missing password", 400
-            error = 'You have to enter a password'
-        else:
-            try:
-                existing_user = mongo.db.user.find_one({"username": username})
-                if not existing_user:
-                    mongo.db.user.insert_one({
-                        'username': username,
-                        'email': email,
-                        'pw_hash': generate_password_hash(password) # 이제 password가 None이 아니므로 안전함!
-                    })
-                
-                if request.is_json or request.args.get('latest'):
-                    return "", 204
-                
-                if existing_user:
-                    error = 'The username is already taken'
-                else:
-                    flash('You were successfully registered')
-                    return redirect(url_for('login'))
-            except Exception as e:
-                print(f"DEBUG: Register error - {e}")
-                return str(e), 500
+        flash('You were successfully registered')
+        return redirect(url_for('login'))
+    
+    except Exception as e:
+            print(f"DEBUG: Register error - {e}")
+            return str(e), 500
             
-    return render_template('register.html', error=error)
-
 @app.route('/logout', methods=['GET'])
 def logout():
     flash('You were logged out')
