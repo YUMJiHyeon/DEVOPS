@@ -14,7 +14,7 @@ import os, shutil
 import time
 import sqlite3
 from hashlib import md5
-from datetime import datetime
+from datetime import datetime, timezone
 from contextlib import closing
 from flask import Flask, request, session, url_for, redirect, \
      render_template, abort, g, flash
@@ -68,7 +68,7 @@ def query_db(collection, query=None, one=False, limit=None):
     return (rv[0] if rv else None) if one else rv
 
 def format_datetime(timestamp):
-    return datetime.utcfromtimestamp(timestamp).strftime('%Y-%m-%d @ %H:%M')
+    return datetime.fromtimestamp(timestamp, tz=timezone.utc).strftime('%Y-%m-%d @ %H:%M')
 
 def gravatar_url(email, size=80):
     return 'http://www.gravatar.com/avatar/%s?d=identicon&s=%d' % \
@@ -82,10 +82,6 @@ def before_request():
         g.user = mongo.db.user.find_one({"_id": ObjectId(session['user_id'])})
     if request.path == "/metrics":
         update_db_counts()
-    """try:
-        user_count_gauge.set(mongo.db.user.count_documents({}))
-    except Exception as e:
-        print(f"DEBUG user_count_gauge error: {e}")"""
 
 
 @app.route('/')
@@ -95,7 +91,7 @@ def timeline():
     messages = query_db('message', limit=PER_PAGE)
     return render_template('timeline.html', messages=messages)
 
-@app.route('/public')
+@app.route('/public', methods=['GET'])
 def public_timeline():
     messages = query_db('message', limit=PER_PAGE)
     return render_template('timeline.html', messages=messages)    
@@ -124,7 +120,7 @@ def follow_user_api(username):
     
     return "", 204
 
-@app.route('/<username>')
+@app.route('/<username>', methods=['GET'])
 def user_timeline(username):
     profile_user = mongo.db.user.find_one({"username": username})
     if profile_user is None:
@@ -143,7 +139,7 @@ def user_timeline(username):
     return render_template('timeline.html', messages=messages, 
                            followed=followed, profile_user=profile_user)
 
-@app.route('/<username>/follow')
+@app.route('/<username>/follow', methods=['GET'])
 def follow_user(username):
     if not g.user:
         abort(401)
@@ -159,7 +155,7 @@ def follow_user(username):
     return redirect(url_for('user_timeline', username=username))
 
 
-@app.route('/<username>/unfollow')
+@app.route('/<username>/unfollow', methods=['GET'])
 def unfollow_user(username):
     if not g.user:
         abort(401)
@@ -257,7 +253,7 @@ def register():
             
     return render_template('register.html', error=error)
 
-@app.route('/logout')
+@app.route('/logout', methods=['GET'])
 def logout():
     flash('You were logged out')
     session.pop('user_id', None)
