@@ -36,6 +36,7 @@ SECRET_KEY = 'development key'
 TWEET_COUNT = Counter('minitwit_tweets_total', 'Total number of tweets posted')
 USER_COUNT = Gauge('minitwit_users_total', 'Total registered users in DB')
 FOLLOWER_COUNT = Gauge('minitwit_followers_total', 'Total follow relationships in DB')
+REGISTER_TEMPLATE = 'register.html'
 
 # create our little application :)
 app = Flask(__name__)
@@ -116,7 +117,6 @@ def add_message_by_username(username):
 
 @app.route('/fllws/<username>', methods=['POST'])
 def follow_user_api(username):
-    data = request.get_json() if request.is_json else request.form
     
     return "", 204
 
@@ -223,7 +223,7 @@ def register():
         return redirect(url_for('timeline'))
 
     if request.method == 'GET':
-        return render_template('register.html', error=None)
+        return render_template(REGISTER_TEMPLATE, error=None)
 
     data = request.get_json(silent=True) or request.form
     username = data.get('username')
@@ -235,7 +235,7 @@ def register():
     if error:
         if is_api and error == 'You have to enter a password':
             return "Missing password", 400
-        return render_template('register.html', error=error)
+        return render_template(REGISTER_TEMPLATE, error=error)
     
     try:
         existing_user = mongo.db.user.find_one({"username": username})
@@ -250,7 +250,7 @@ def register():
             return "", 204
                         
         if existing_user:
-            return render_template('register.html', error='The username is already taken')
+            return render_template(REGISTER_TEMPLATE, error='The username is already taken')
         
         flash('You were successfully registered')
         return redirect(url_for('login'))
