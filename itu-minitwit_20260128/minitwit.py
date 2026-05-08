@@ -39,7 +39,7 @@ FOLLOWER_COUNT = Gauge('minitwit_followers_total', 'Total follow relationships i
 
 # create our little application :)
 app = Flask(__name__)
-app.config["MONGO_URI"] = "mongodb://groupo:devopsgroupo@68.183.13.121:27017/minitwit?authSource=admin"
+app.config["MONGO_URI"] = os.environ.get("MONGO_URI", "mongodb://localhost:27017/minitwit")
 app.config["SECRET_KEY"] = 'development key'
 app.config["DEBUG"] = True
 
@@ -275,4 +275,4 @@ app.debug = DEBUG
 
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=5000)
+    app.run(host="127.0.0.1", port=5000)
