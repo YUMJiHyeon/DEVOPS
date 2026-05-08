@@ -1,6 +1,7 @@
-Flask
-Flask-PyMongo
-prometheus-flask-exporter
-blinker
-gunicorn
+blinker==1.8.2
+Flask==3.0.3
+Flask-PyMongo==2.3.0
+gunicorn==22.0.0
+prometheus-flask-exporter==0.23.0
+
 
