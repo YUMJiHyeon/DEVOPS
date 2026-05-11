@@ -3,7 +3,6 @@ Call me for example like:
 
 $ python minitwit_simulator.py "http://localhost:5001"
 """
-
 import warnings
 import traceback
 import os
@@ -19,6 +18,7 @@ from datetime import datetime
 from contextlib import closing
 import sqlite3
 
+
 CSV_FILENAME = "./minitwit_scenario.csv"
 USERNAME = "simulator"
 PWD = "super_safe!"
@@ -29,6 +29,7 @@ HEADERS = {
     "Content-Type": "application/json",
     f"Authorization": f"Basic {ENCODED_CREDENTIALS}",
 }
+
 
 
 def get_actions():
@@ -133,8 +134,13 @@ def main(host):
 
                 # error handling (204 success, 400 user exists)
                 # 400 user exists already but not an error to log
-                if not ((response.status_code == 204) or (response.status_code == 400)):
-                    ts_str = datetime.strftime(datetime.utcnow(), "%Y-%m-%d %H:%M:%S")
+                if not (
+                    (response.status_code == 204)
+                    or (response.status_code == 400)
+                ):
+                    ts_str = datetime.strftime(
+                        datetime.utcnow(), "%Y-%m-%d %H:%M:%S"
+                    )
                     print(
                         ",".join(
                             [
@@ -166,7 +172,9 @@ def main(host):
 
                 # 403 bad request
                 if response.status_code != 200:
-                    ts_str = datetime.strftime(datetime.utcnow(), "%Y-%m-%d %H:%M:%S")
+                    ts_str = datetime.strftime(
+                        datetime.utcnow(), "%Y-%m-%d %H:%M:%S"
+                    )
                     print(
                         ",".join(
                             [
@@ -204,7 +212,9 @@ def main(host):
 
                 # 403 unauthorized or 404 Not Found
                 if response.status_code != 204:
-                    ts_str = datetime.strftime(datetime.utcnow(), "%Y-%m-%d %H:%M:%S")
+                    ts_str = datetime.strftime(
+                        datetime.utcnow(), "%Y-%m-%d %H:%M:%S"
+                    )
                     print(
                         ",".join(
                             [
@@ -242,7 +252,9 @@ def main(host):
 
                 # 403 unauthorized or 404 Not Found
                 if response.status_code != 204:
-                    ts_str = datetime.strftime(datetime.utcnow(), "%Y-%m-%d %H:%M:%S")
+                    ts_str = datetime.strftime(
+                        datetime.utcnow(), "%Y-%m-%d %H:%M:%S"
+                    )
                     print(
                         ",".join(
                             [
@@ -278,7 +290,9 @@ def main(host):
                 # error handling (204 success, 403 failure)
                 # 403 unauthorized
                 if response.status_code != 204:
-                    ts_str = datetime.strftime(datetime.utcnow(), "%Y-%m-%d %H:%M:%S")
+                    ts_str = datetime.strftime(
+                        datetime.utcnow(), "%Y-%m-%d %H:%M:%S"
+                    )
                     print(
                         ",".join(
                             [
@@ -295,7 +309,9 @@ def main(host):
 
             else:
                 # throw exception. Should not be hit
-                ts_str = datetime.strftime(datetime.utcnow(), "%Y-%m-%d %H:%M:%S")
+                ts_str = datetime.strftime(
+                    datetime.utcnow(), "%Y-%m-%d %H:%M:%S"
+                )
                 print(
                     ",".join(
                         [
@@ -309,15 +325,25 @@ def main(host):
 
         except requests.exceptions.ConnectionError as e:
             ts_str = datetime.strftime(datetime.utcnow(), "%Y-%m-%d %H:%M:%S")
-            print(",".join([ts_str, host, str(action["latest"]), "ConnectionError"]))
+            print(
+                ",".join(
+                    [ts_str, host, str(action["latest"]), "ConnectionError"]
+                )
+            )
         except requests.exceptions.ReadTimeout as e:
             ts_str = datetime.strftime(datetime.utcnow(), "%Y-%m-%d %H:%M:%S")
-            print(",".join([ts_str, host, str(action["latest"]), "ReadTimeout"]))
+            print(
+                ",".join([ts_str, host, str(action["latest"]), "ReadTimeout"])
+            )
         except Exception as e:
             print("========================================")
             print(traceback.format_exc())
             ts_str = datetime.strftime(datetime.utcnow(), "%Y-%m-%d %H:%M:%S")
-            print(",".join([ts_str, host, str(action["latest"]), type(e).__name__]))
+            print(
+                ",".join(
+                    [ts_str, host, str(action["latest"]), type(e).__name__]
+                )
+            )
 
         sleep(delay / (1000 * 100000))
 

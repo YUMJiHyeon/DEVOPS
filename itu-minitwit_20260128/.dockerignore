@@ -1,5 +1,7 @@
+**/*.pyc
+**/__pycache__
 .git
-__pycache__
-*.pyc
-.env
-node_modules
+venv/
+.vagrant/
+*.log
+prometheus_metrics/

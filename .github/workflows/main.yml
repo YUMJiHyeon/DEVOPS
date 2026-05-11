@@ -21,7 +21,7 @@ jobs:
 
       
       - name: Install Linting Tools
-        run: pip install flake8 black
+        run: pip install --only-binary :all: flake8 black
 
       - name: Run Flake8 (Linter)
         run: flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
@@ -37,7 +37,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install pytest selenium pymongo flask flask-pymongo prometheus-flask-exporter
+          pip install --only-binary :all: pytest selenium pymongo flask flask-pymongo prometheus-flask-exporter
 
       - name: Run Pytest
         run: pytest test_itu_minitwit_ui.py || echo "Tests failed but continuing for now"

@@ -25,29 +25,31 @@ int main(int argc, char *argv[]) {
   int rc;
   char query[256];
   const char *data = "Callback function called";
-
   rc = sqlite3_open("/tmp/minitwit.db", &db);
   if (rc) {
     fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
     return (0);
   }
+
   if (argc == 2 && strcmp(argv[1], "-h") == 0) {
     fprintf(stdout, "%s\n", docStr);
   }
+
   if (argc == 2 && strcmp(argv[1], "-i") == 0) {
-    strcpy(query, "SELECT * FROM message");
-    /* Execute SQL statement */
+    snprintf(query, sizeof(query), "SELECT * FROM message");
+    
     rc = sqlite3_exec(db, query, callback, (void *)data, &zErrMsg);
     if (rc != SQLITE_OK) {
       fprintf(stderr, "SQL error: %s\n", zErrMsg);
       sqlite3_free(zErrMsg);
     }
   }
+
   if (argc >= 2 && strcmp(argv[1], "-i") != 0 && strcmp(argv[1], "-h") != 0) {
     int i;
     for (i = 1; i < argc; i++) {
-      strcpy(query, "UPDATE message SET flagged=1 WHERE message_id=");
-      strcat(query, argv[i]);
+      snprintf(query, sizeof(query), "UPDATE message SET flagged=1 WHERE message_id=%s", argv[i]);
+      
       rc = sqlite3_exec(db, query, callback, (void *)data, &zErrMsg);
       if (rc != SQLITE_OK) {
         fprintf(stderr, "SQL error: %s\n", zErrMsg);
