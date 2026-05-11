@@ -34,8 +34,10 @@ matal@itu.dk
 #### 2.2) System Design
 
 #### 2.3) Dependencies
+The system is implemented mainly in Python using the Flask web framework. It uses MongoDB as the database through PyMongo. Passwords are handled with Werkzeug security utilities. Monitoring is supported through Prometheus using prometheus_client and prometheus_flask_exporter. The application is containerized with Docker and orchestrated through Docker Compose. Development and version control are handled with Git and GitHub, while CI/CD is handled through GitHub Actions. Code quality/security analysis is configured through Sonar using sonar-project.properties.
 
- 	The system is implemented mainly in Python using the Flask web framework. It uses MongoDB as the database through PyMongo. Passwords are handled with Werkzeug security utilities. Monitoring is supported through Prometheus using prometheus_client and prometheus_flask_exporter. The application is containerized with Docker and orchestrated through Docker Compose. Development and version control are handled with Git and GitHub, while CI/CD is handled through GitHub Actions. Code quality/security analysis is configured through Sonar using sonar-project.properties.
+
+#### 2.4) Current state
  
 	A description and illustration of the:
 
@@ -75,9 +77,9 @@ matal@itu.dk
 
 
 
-### 1.) TODO: Assure Information Correctness 
+#### 1.) TODO: Assure Information Correctness 
 
-### 2.) TODO: Polish Project Repositories and Documentation 
+#### 2.) TODO: Polish Project Repositories and Documentation 
 
 #### 2.1.) Create a .mailmap file in the root of your repositories 
 
