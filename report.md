@@ -39,7 +39,7 @@ matal@itu.dk
  #### System's Perspective
 
 
-![CI/CD pipeline](cicdig.png "CI/CD pipeline")
+![CI/CD pipeline](cicddig.png "CI/CD pipeline")
 
  	The system is implemented mainly in Python using the Flask web framework. It uses MongoDB as the database through PyMongo. Passwords are handled with Werkzeug security utilities. Monitoring is supported through Prometheus using prometheus_client and prometheus_flask_exporter. The application is containerized with Docker and orchestrated through Docker Compose. Development and version control are handled with Git and GitHub, while CI/CD is handled through GitHub Actions. Code quality/security analysis is configured through Sonar using sonar-project.properties.
  
