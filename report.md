@@ -68,13 +68,13 @@ matal@itu.dk
 
  ### 3.2) What to include in the report? 
 
-System's Perspective 
+TODO: System's Perspective 
 
-Process' perspective 
+TODO: Process' perspective 
 
-Reflection Perspective 
+TODO: Reflection Perspective 
 
-Use of Generative AI -> ✨ YES ✨ 
+TODO: Use of Generative AI -> ✨ YES ✨ 
 
-We used it when we got stuck or encountered unexpected errors.  It has been a life saver for the most part.  
+ idea: We used it when we got stuck or encountered unexpected errors.  It has been a life saver for the most part.  
 
