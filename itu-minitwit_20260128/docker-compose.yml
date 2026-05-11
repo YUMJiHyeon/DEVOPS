@@ -80,7 +80,8 @@ services:
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:v0.49.1   
     container_name: cadvisor
-    #privileged: true 
+    environment:
+      - DOCKER_API_VERSION=1.44
     ports:
       - "8080:8080"
     volumes:
