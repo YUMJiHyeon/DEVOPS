@@ -35,32 +35,50 @@ matal@itu.dk
 
 ## 3.) Write a Report 
 
- ### 3.1.) Formal Requirements 
- #### System's Perspective
+Report
+
+ ### (Formal Requirements)
+	Make sure that you link all artifacts that you consider constitutional to your projects together with short descriptions of the linked artifacts from your reports, i.e., link all necessary repositories, issue trackers, monitoring/logging systems, etc.
 
 
-![CI/CD pipeline](cicddig.png "CI/CD pipeline")
+	Since this is a group project and the report is written by a group make sure to indicate for each section the respective author(s).
+
+
+ ### 1) Introduction? (What to include in the report? )
+
+ ### 2) System's Perspective (Architecture)
+
 
  	The system is implemented mainly in Python using the Flask web framework. It uses MongoDB as the database through PyMongo. Passwords are handled with Werkzeug security utilities. Monitoring is supported through Prometheus using prometheus_client and prometheus_flask_exporter. The application is containerized with Docker and orchestrated through Docker Compose. Development and version control are handled with Git and GitHub, while CI/CD is handled through GitHub Actions. Code quality/security analysis is configured through Sonar using sonar-project.properties.
  
 	A description and illustration of the:
 
 		Design and architecture of your ITU-MiniTwit systems.
+		- Diagrams:
+				- Module View
+				- C&C View
+				- Allocation View
 		All dependencies of your ITU-MiniTwit systems on all levels of abstraction and development stages. That is, list and briefly describe all technologies and tools you applied and depend on.
 		Describe the current state of your systems, for example using results of static analysis and quality assessments.
 
- #### Process' perspective
+ ### 3) Process' perspective
 		This perspective should clarify how code or other artifacts come from idea into the running system and everything that happens on the way.
 
 		In particular, the following descriptions should be included:
 
 		A complete description and illustration of stages and tools included in the CI/CD pipelines, including deployment and release of your systems.
+			- Diagram: CI/CD Pipeline
+
+![CI/CD pipeline](cicddig.png "CI/CD pipeline")
+
 		How do you monitor your systems and what precisely do you monitor?
+## Demo videos here
 		What do you log in your systems and how do you aggregate logs?
 		Brief description of how you security hardened your systems.
+			- .dockerignore- and .env-files to keep sensitive information to getting uploaded online.
 		How do you handle availability and scaling in your systems?
 
- #### Reflection Perspective
+ ### 4) Reflection Perspective
 	Describe the biggest issues, how you solved them, and which are major lessons learned with regards to:
 
 		- evolution and refactoring
@@ -69,41 +87,9 @@ matal@itu.dk
 
 	Also reflect and describe what was the "DevOps" style of your work. For example, what did you do differently to previous development projects and how did it work?
 
- ### 3.2) What to include in the report? 
 
-	System's Perspective
-		A description and illustration of the:
 
-		Design and architecture of your ITU-MiniTwit systems.
-			- Diagrams:
-				- Module View
-				- C&C View
-				- Allocation View
-		All dependencies of your ITU-MiniTwit systems on all levels of abstraction and development stages. That is, list and briefly describe all technologies and tools you applied and depend on.
-		Describe the current state of your systems, for example using results of static analysis and quality assessments.
-		
-	Process' perspective
-		This perspective should clarify how code or other artifacts come from idea into the running system and everything that happens on the way.
-
-		In particular, the following descriptions should be included:
-
-		A complete description and illustration of stages and tools included in the CI/CD pipelines, including deployment and release of your systems.
-			- Diagram: CI/CD Pipeline
-		How do you monitor your systems and what precisely do you monitor?
-		What do you log in your systems and how do you aggregate logs?
-		Brief description of how you security hardened your systems.
-			- .dockerignore- and .env-files to keep sensitive information to getting uploaded online.
-		How do you handle availability and scaling in your systems?
-		
-	Reflection Perspective
-		Describe the biggest issues, how you solved them, and which are major lessons learned with regards to:
-
-		evolution and refactoring
-		operation, and
-		maintenance
-		of your ITU-MiniTwit systems. Link back to respective commit messages, issues, tickets, etc. to illustrate these.
-
-		Also reflect and describe what was the "DevOps" style of your work. For example, what did you do differently to previous development projects and how did it work?
+	
 TODO: System's Perspective 
 
 TODO: Process' perspective 
