@@ -15,27 +15,7 @@ s25117@itu.dk
 Mathias Anakin Alm:
 matal@itu.dk
 
-### 1.) TODO: Assure Information Correctness 
 
-### 2.) TODO: Polish Project Repositories and Documentation 
-
-#### 2.1.) Create a .mailmap file in the root of your repositories 
-
-#### 2.2.) TODO: Create Four Videos Demonstrating your ITU-MiniTwit System in Production 
-
-	a) Monitoring Dashboards in Action: Create a screen recording that provides an overview over all your monitoring dashboards from the production system. That is, demonstrate that the monitoring information in the dashboards changes over time, the more data is received from the simulator.
-
-	b) Logging Dashboards in Action: Create another screen recording that provides an overview over all your logging dashboards from the production system. That is, demonstrate that the logging information in the dashboards changes over time, the more data is received from the simulator.
-
-	c) IaC in Action: Create a third screen recording that shows your infrastructure as code, configuration management in action. This video should demonstrate that infrastructure can be spun-up from scratch and that it is configured accordingly. That is, something like vagrant up from your command line or a CI/CD pipeline.
-
-	d) CI/CD in Action: With infrastructure up and running, this last video should demonstrate how a change that is implemented in a feature branch, is deployed to production after traversing your CI/CD pipeline. That is, this video should start from checking out your code repository and applying a tiny change in a feature branch, how that change is pushed to the repository, how it is picked up by the CI/CD pipeline, i.e., tested and automatically deployed to production.
-
-#### 2.3.) TODO: Update the main readme file 
-
-## 3.) Write a Report 
-
-Report
 
  ### (Formal Requirements)
 	Make sure that you link all artifacts that you consider constitutional to your projects together with short descriptions of the linked artifacts from your reports, i.e., link all necessary repositories, issue trackers, monitoring/logging systems, etc.
@@ -48,6 +28,12 @@ Report
 
  ### 2) System's Perspective (Architecture)
 
+	F.ex:
+#### 2.1) System Architecture
+
+#### 2.2) System Design
+
+#### 2.3) Dependencies
 
  	The system is implemented mainly in Python using the Flask web framework. It uses MongoDB as the database through PyMongo. Passwords are handled with Werkzeug security utilities. Monitoring is supported through Prometheus using prometheus_client and prometheus_flask_exporter. The application is containerized with Docker and orchestrated through Docker Compose. Development and version control are handled with Git and GitHub, while CI/CD is handled through GitHub Actions. Code quality/security analysis is configured through Sonar using sonar-project.properties.
  
@@ -72,7 +58,7 @@ Report
 ![CI/CD pipeline](cicddig.png "CI/CD pipeline")
 
 		How do you monitor your systems and what precisely do you monitor?
-## Demo videos here
+#### Demo videos here
 		What do you log in your systems and how do you aggregate logs?
 		Brief description of how you security hardened your systems.
 			- .dockerignore- and .env-files to keep sensitive information to getting uploaded online.
@@ -89,6 +75,23 @@ Report
 
 
 
+### 1.) TODO: Assure Information Correctness 
+
+### 2.) TODO: Polish Project Repositories and Documentation 
+
+#### 2.1.) Create a .mailmap file in the root of your repositories 
+
+#### 2.2.) TODO: Create Four Videos Demonstrating your ITU-MiniTwit System in Production 
+
+	a) Monitoring Dashboards in Action: Create a screen recording that provides an overview over all your monitoring dashboards from the production system. That is, demonstrate that the monitoring information in the dashboards changes over time, the more data is received from the simulator.
+
+	b) Logging Dashboards in Action: Create another screen recording that provides an overview over all your logging dashboards from the production system. That is, demonstrate that the logging information in the dashboards changes over time, the more data is received from the simulator.
+
+	c) IaC in Action: Create a third screen recording that shows your infrastructure as code, configuration management in action. This video should demonstrate that infrastructure can be spun-up from scratch and that it is configured accordingly. That is, something like vagrant up from your command line or a CI/CD pipeline.
+
+	d) CI/CD in Action: With infrastructure up and running, this last video should demonstrate how a change that is implemented in a feature branch, is deployed to production after traversing your CI/CD pipeline. That is, this video should start from checking out your code repository and applying a tiny change in a feature branch, how that change is pushed to the repository, how it is picked up by the CI/CD pipeline, i.e., tested and automatically deployed to production.
+
+#### 2.3.) TODO: Update the main readme file 
 	
 TODO: System's Perspective 
 
