@@ -222,21 +222,31 @@ def add_message():
     return redirect(url_for("timeline"))
 
 
-@app.route("/login", methods=["GET", "POST"])
+@app.route("/login", methods=["GET"])
 def login():
     if g.user:
         return redirect(url_for("timeline"))
+
+    return render_template("login.html", error=None)
+
+
+@app.route("/login", methods=["POST"])
+def login_post():
+    if g.user:
+        return redirect(url_for("timeline"))
+
     error = None
-    if request.method == "POST":
-        user = mongo.db.user.find_one({"username": request.form["username"]})
-        if user is None:
-            error = "Invalid username"
-        elif not check_password_hash(user["pw_hash"], request.form["password"]):
-            error = "Invalid password"
-        else:
-            flash("You were logged in")
-            session["user_id"] = str(user["_id"])
-            return redirect(url_for("timeline"))
+    user = mongo.db.user.find_one({"username": request.form["username"]})
+
+    if user is None:
+        error = "Invalid username"
+    elif not check_password_hash(user["pw_hash"], request.form["password"]):
+        error = "Invalid password"
+    else:
+        flash("You were logged in")
+        session["user_id"] = str(user["_id"])
+        return redirect(url_for("timeline"))
+
     return render_template("login.html", error=error)
 
 
