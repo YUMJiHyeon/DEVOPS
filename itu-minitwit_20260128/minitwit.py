@@ -30,7 +30,7 @@ from flask import (
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_pymongo import PyMongo
 from bson.objectid import ObjectId
-from prometheus_flask_exporter import PrometheusMetrics
+from prometheus_flask_exporter.multiprocess import GunicornInternalPrometheusMetrics
 from prometheus_client import Counter, Gauge
 
 metrics_dir = os.environ.get("PROMETHEUS_MULTIPROC_DIR", "/app/prometheus_metrics")
@@ -56,7 +56,7 @@ app.config["DEBUG"] = True
 
 mongo = PyMongo(app)
 
-metrics = PrometheusMetrics(app, path="/metrics")
+metrics = GunicornInternalPrometheusMetrics(app, path="/metrics")
 
 
 def update_db_counts():
