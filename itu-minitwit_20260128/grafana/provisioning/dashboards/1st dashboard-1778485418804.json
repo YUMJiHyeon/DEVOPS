@@ -178,13 +178,13 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "rate(minitwit_tweets_total[1m])",
+          "expr": "rate(minitwit_tweets_total[5m])",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "minitwit_tweets_total[1m]",
+      "title": "minitwit_tweets_total[5m]",
       "type": "timeseries"
     },
     {
