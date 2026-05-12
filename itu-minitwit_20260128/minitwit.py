@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 """
-Adding comment to show pipeline
     MiniTwit
     ~~~~~~~~
 
