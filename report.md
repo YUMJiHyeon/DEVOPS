@@ -61,7 +61,7 @@ The system is implemented mainly in Python using the Flask web framework. It use
 
 		How do you monitor your systems and what precisely do you monitor?
 
-		We monitored our system by keeping track of logging, our webservers CPU usage, the total of users in our system, the rate of which users tweeted as well as our HTTP requests. For logging we used Grafana Loki while for the rest we used Grafana Prometheus. We tracked 4 diffrent types of HTTP requests such as: 
+We monitored our system by keeping track of logging, our webservers CPU usage, the total of users in our system, the rate of which users tweeted as well as our HTTP requests. For logging we used Grafana Loki while for the rest we used Grafana Prometheus. We tracked 4 diffrent types of HTTP requests such as: 
 		- successful request (200)
 		- redirects (302) 
 		- missing routes (404) 
