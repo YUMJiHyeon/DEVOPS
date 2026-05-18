@@ -46,6 +46,8 @@ The system is implemented mainly in Python using the Flask web framework. It use
 				- Module View
 				- C&C View
 				- Allocation View
+#### Allocation View
+![Allocation View](UML Deployment Diagram (Allocation viewpoint — static).png "Allocation viwe")
 
 #### Module View diagram
 ![CI/CD pipeline](moduleviewdig.png "CI/CD pipeline")
