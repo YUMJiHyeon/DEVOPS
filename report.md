@@ -50,7 +50,7 @@ The system is implemented mainly in Python using the Flask web framework. It use
 ![Allocation View](UML-Deployment-Diagram.png "Allocation view")
 
 #### Module View diagram
-![CI/CD pipeline](moduleviewdig.png "CI/CD pipeline")
+![Module view](moduleviewdig.png "CI/CD pipeline")
 
 		All dependencies of your ITU-MiniTwit systems on all levels of abstraction and development stages. That is, list and briefly describe all technologies and tools you applied and depend on.
 		Describe the current state of your systems, for example using results of static analysis and quality assessments.
