@@ -65,6 +65,25 @@ The system is implemented mainly in Python using the Flask web framework. It use
 ![CI/CD pipeline](cicddig.png "CI/CD pipeline")
 
 		How do you monitor your systems and what precisely do you monitor?
+
+We monitored our system by keeping track of logging, our webservers CPU usage, the total of users in our system, the rate of which users tweeted as well as our HTTP requests. For logging we used Grafana Loki while for the rest we used Grafana Prometheus. We tracked 4 diffrent types of HTTP requests such as: 
+
+		- successful request (200)
+		- redirects (302) 
+		- missing routes (404) 
+		- unsupported request methhods (405)
+		
+Our monotoring also help us see some unusual requests such as:
+
+		- BXJZ
+		- HIAS 
+		- PROPFIND
+		
+These were most likely vulnerability-scanning traffic against our server. 
+The user- and tweet total were pretty straight foward as we used these two simple PromQL queries: max(minitwit_users_total), rate(minitwit_tweets_total[1m]). For our CPU monotroing we used the following query: sum(rate(container_cpu_usage_seconds_total{id!="/"}[1m])) by (name) * 100. But that helped us see our resource consumption and preformance bottlenecks for induvidual containers. 
+		
+		### here we can refrence our demo vidos, explain our loggin further.
+		
 #### Demo videos here
 		What do you log in your systems and how do you aggregate logs?
 		Brief description of how you security hardened your systems.
