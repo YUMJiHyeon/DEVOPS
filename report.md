@@ -47,7 +47,7 @@ The system is implemented mainly in Python using the Flask web framework. It use
 				- C&C View
 				- Allocation View
 
-##### Module View diagram
+#### Module View diagram
 ![CI/CD pipeline](moduleviewdig.png "CI/CD pipeline")
 
 		All dependencies of your ITU-MiniTwit systems on all levels of abstraction and development stages. That is, list and briefly describe all technologies and tools you applied and depend on.
@@ -61,7 +61,7 @@ The system is implemented mainly in Python using the Flask web framework. It use
 		A complete description and illustration of stages and tools included in the CI/CD pipelines, including deployment and release of your systems.
 			- Diagram: CI/CD Pipeline
 
-##### CI/CD Pipeline diagram
+#### CI/CD Pipeline diagram
 ![CI/CD pipeline](cicddig.png "CI/CD pipeline")
 
 		How do you monitor your systems and what precisely do you monitor?
