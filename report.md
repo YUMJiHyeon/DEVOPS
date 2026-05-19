@@ -46,13 +46,13 @@ The system is implemented mainly in Python using the Flask web framework. It use
 				- Module View
 				- C&C View
 				- Allocation View
+#### Allocation View
+![Allocation View](img/UML-Deployment-Diagram.png "Allocation view")
 
-
-
-
+As seen in the Allocation View above, our system is split into three layers. We have the frontend/UI layer, which consists of the MiniTwit browser application that we received at the beginning of the course. The logic layer is comprised of two web servers: a primary web server and a secondary web server. We implemented Docker containers to run our application together with all required dependencies, ensuring that the application remains consistent across different servers and environments. We also implemented Gunicorn, which hosts the MiniTwit Flask application. Gunicorn handles incoming HTTP requests before forwarding them to the main application. Both web servers communicate with the MongoDB database server, which stores the application’s data. Finally, Prometheus monitors the system by scraping metrics data from the web servers. As a side note, our system is not a perfectly separated three-layer architecture, since parts of the logic layer also interact directly with the data layer.
 
 #### Module View diagram
-![Module view](moduleviewdig.png "Module view")
+![Module view](img/moduleviewdig.png "Module view")
 
 	The core of the application logic is handled by minitwit.py, which maps incoming web traffic to spesific python function. As shown in the diagram, we organized our main application features into different logical sections. Authentication controls user registration and login, Message handles posting new tweets or retweeting others posts, Follow handles starting to follow or unfollowing other users, Timeline queries the database to build the public and personal feeds. We also have a Metrics module that hooks into our Prometheus configuration to track system performance. All these functional pieces feed down into a shared data-access tier, MongoDB access, which is the "last stop" for the information before it translates to code readable for the database, and reaches the storage.
 
@@ -71,7 +71,7 @@ The system is implemented mainly in Python using the Flask web framework. It use
 			- Diagram: CI/CD Pipeline
 
 #### CI/CD Pipeline diagram
-![CI/CD pipeline](cicddig.png "CI/CD pipeline")
+![CI/CD pipeline](img/cicddig.png "CI/CD pipeline")
 
 		How do you monitor your systems and what precisely do you monitor?
 
@@ -119,8 +119,10 @@ The user- and tweet total were pretty straight foward as we used these two simpl
 #### 2.2.) TODO: Create Four Videos Demonstrating your ITU-MiniTwit System in Production 
 
 	a) Monitoring Dashboards in Action: Create a screen recording that provides an overview over all your monitoring dashboards from the production system. That is, demonstrate that the monitoring information in the dashboards changes over time, the more data is received from the simulator.
+![Monotoring dashboard](img/monotoring.gif "monotoring dashboard")
 
 	b) Logging Dashboards in Action: Create another screen recording that provides an overview over all your logging dashboards from the production system. That is, demonstrate that the logging information in the dashboards changes over time, the more data is received from the simulator.
+![Logging dashboard](img/logging.gif "logging dashboard")
 
 	c) IaC in Action: Create a third screen recording that shows your infrastructure as code, configuration management in action. This video should demonstrate that infrastructure can be spun-up from scratch and that it is configured accordingly. That is, something like vagrant up from your command line or a CI/CD pipeline.
 
