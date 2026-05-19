@@ -46,11 +46,18 @@ The system is implemented mainly in Python using the Flask web framework. It use
 				- Module View
 				- C&C View
 				- Allocation View
-#### Allocation View
-![Allocation View](UML-Deployment-Diagram.png "Allocation view")
+
+
+
+
 
 #### Module View diagram
 ![Module view](moduleviewdig.png "Module view")
+
+	The core of the application logic is handled by minitwit.py, which maps incoming web traffic to spesific python function. As shown in the diagram, we organized our main application features into different logical sections. Authentication controls user registration and login, Message handles posting new tweets or retweeting others posts, Follow handles starting to follow or unfollowing other users, Timeline queries the database to build the public and personal feeds. We also have a Metrics module that hooks into our Prometheus configuration to track system performance. All these functional pieces feed down into a shared data-access tier, MongoDB access, which is the "last stop" for the information before it translates to code readable for the database, and reaches the storage.
+
+#### Allocation View
+![Allocation View](UML-Deployment-Diagram.png "Allocation view")
 
 		All dependencies of your ITU-MiniTwit systems on all levels of abstraction and development stages. That is, list and briefly describe all technologies and tools you applied and depend on.
 		Describe the current state of your systems, for example using results of static analysis and quality assessments.
