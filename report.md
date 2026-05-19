@@ -49,7 +49,7 @@ The system is implemented mainly in Python using the Flask web framework. It use
 #### Allocation View
 ![Allocation View](img/UML-Deployment-Diagram.png "Allocation view")
 
-As we see above in our Allocation view our system is split into three layers. We have our front end or UI layer which is the minitwit app which we recived in the beging of our course. Our Logic layer is comprised of two web servers our Primary web server and Secondary.
+As seen in the Allocation View above, our system is split into three layers. We have the frontend/UI layer, which consists of the MiniTwit browser application that we received at the beginning of the course. The logic layer is comprised of two web servers: a primary web server and a secondary web server. We implemented Docker containers to run our application together with all required dependencies, ensuring that the application remains consistent across different servers and environments. We also implemented Gunicorn, which hosts the MiniTwit Flask application. Gunicorn handles incoming HTTP requests before forwarding them to the main application. Both web servers communicate with the MongoDB database server, which stores the application’s data. Finally, Prometheus monitors the system by scraping metrics data from the web servers. As a side note, our system is not a perfectly separated three-layer architecture, since parts of the logic layer also interact directly with the data layer.
 
 #### Module View diagram
 ![Module view](img/moduleviewdig.png "Module view")
