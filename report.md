@@ -47,12 +47,12 @@ The system is implemented mainly in Python using the Flask web framework. It use
 				- C&C View
 				- Allocation View
 #### Allocation View
-![Allocation View](UML-Deployment-Diagram.png "Allocation view")
+![Allocation View](img/UML-Deployment-Diagram.png "Allocation view")
 
 As we see above in our Allocation view our system is split into three layers. We have our front end or UI layer which is the minitwit app which we recived in the beging of our course. Our Logic layer is comprised of two web servers our Primary web server and Secondary.
 
 #### Module View diagram
-![Module view](moduleviewdig.png "Module view")
+![Module view](img/moduleviewdig.png "Module view")
 
 		All dependencies of your ITU-MiniTwit systems on all levels of abstraction and development stages. That is, list and briefly describe all technologies and tools you applied and depend on.
 		Describe the current state of your systems, for example using results of static analysis and quality assessments.
@@ -66,7 +66,7 @@ As we see above in our Allocation view our system is split into three layers. We
 			- Diagram: CI/CD Pipeline
 
 #### CI/CD Pipeline diagram
-![CI/CD pipeline](cicddig.png "CI/CD pipeline")
+![CI/CD pipeline](img/cicddig.png "CI/CD pipeline")
 
 		How do you monitor your systems and what precisely do you monitor?
 
@@ -114,8 +114,10 @@ The user- and tweet total were pretty straight foward as we used these two simpl
 #### 2.2.) TODO: Create Four Videos Demonstrating your ITU-MiniTwit System in Production 
 
 	a) Monitoring Dashboards in Action: Create a screen recording that provides an overview over all your monitoring dashboards from the production system. That is, demonstrate that the monitoring information in the dashboards changes over time, the more data is received from the simulator.
+![Monotoring dashboard](img/monotoring.gif "monotoring dashboard")
 
 	b) Logging Dashboards in Action: Create another screen recording that provides an overview over all your logging dashboards from the production system. That is, demonstrate that the logging information in the dashboards changes over time, the more data is received from the simulator.
+![Logging dashboard](img/logging.gif "logging dashboard")
 
 	c) IaC in Action: Create a third screen recording that shows your infrastructure as code, configuration management in action. This video should demonstrate that infrastructure can be spun-up from scratch and that it is configured accordingly. That is, something like vagrant up from your command line or a CI/CD pipeline.
 
