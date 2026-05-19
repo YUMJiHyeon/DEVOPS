@@ -8,7 +8,7 @@
     :copyright: (c) 2010 by Armin Ronacher.
     :license: BSD, see LICENSE for more details.
 """
-# Triggering CI/CD pipeline
+# Triggering CI/CD pipeline recording
 
 import re
 import os, shutil
