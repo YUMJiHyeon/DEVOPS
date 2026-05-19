@@ -49,6 +49,8 @@ The system is implemented mainly in Python using the Flask web framework. It use
 #### Allocation View
 ![Allocation View](UML-Deployment-Diagram.png "Allocation view")
 
+As we see above in our Allocation view our system is split into three layers. We have our front end or UI layer which is the minitwit app which we recived in the beging of our course. Our Logic layer is comprised of two web servers our Primary web server and Secondary.
+
 #### Module View diagram
 ![Module view](moduleviewdig.png "Module view")
 
