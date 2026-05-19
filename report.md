@@ -70,6 +70,13 @@ The core of the application logic is handled by minitwit.py, which maps incoming
 
 #### CI/CD Pipeline diagram
 ![CI/CD pipeline](img/cicddig.png "CI/CD pipeline")
+As seen in the diagram above our CI/CD pipeline starts when a developer pushes their code onto our Github reposoitory. Then the Github Actions is activated and and the tests and are run automaticlly and in parellel. 
+
+The pipeline includes automated build processes, dynamic page deployments, SonarCloud static code analysis, CodeQL security analysis, and Docker image build and scan operations. These automated checks help ensure code quality, security, and deployment consistency before changes are merged into the main branch.
+
+Once all checks have successfully passed, the changes are merged into the main branch. The updated application is then deployed to both the primary web server and the secondary web server using Docker Compose restart procedures.
+
+This CI/CD pipeline automates large parts of the development and deployment workflow, reducing manual configuration errors and supporting continuous integration and continuous deployment practices.
 
 		How do you monitor your systems and what precisely do you monitor?
 
