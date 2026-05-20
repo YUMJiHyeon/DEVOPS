@@ -2,56 +2,201 @@
 # vi: set ft=ruby :
 
 Vagrant.configure("2") do |config|
+  config.ssh.insert_key = false
   config.vm.box = "digital_ocean"
   config.ssh.private_key_path = "/Users/yumjihyeon/.ssh/id_rsa"
   config.ssh.username = "root"
+  config.vm.allowed_synced_folder_types = [:rsync] 
+  config.vm.provision "shell", inline: <<-SHELL
+    export DEBIAN_FRONTEND=noninteractive
+    systemctl disable unattended-upgrades || true
+    systemctl stop unattended-upgrades || true
+    systemctl kill unattended-upgrades || true
 
-  # [1] DigitalOcean setup
+    sed -i "s/#\\$nrconf{restart} = 'i';/\\$nrconf{restart} = 'a';/" /etc/needrestart/needrestart.conf 2>/dev/null || true
+
+  SHELL
+
   config.vm.provider :digital_ocean do |provider|
     provider.token = ENV['DIGITAL_OCEAN_TOKEN']
     provider.ssh_key_name = "yumwlgus7@gmail.com"
-    provider.ssh_key_path = "/Users/yumjihyeon/.ssh/id_rsa"
     provider.image = "ubuntu-22-04-x64"
     provider.region = "ams3"
     provider.size = "s-1vcpu-1gb"
+    provider.setup = false
   end
 
-#  config.vm.synced_folder ".", "/vagrant", type: "rsync"
-
-  # [2] DB server
   config.vm.define "dbserver" do |db|
     db.vm.hostname = "dbserver"
+    db.vm.synced_folder ".", "/vagrant", disabled: true
     db.vm.provision "shell", inline: <<-SHELL
-      sudo apt-get update
-      sudo apt-get install -y gnupg curl
-      curl -fsSL https://www.mongodb.org/static/pgp/server-8.0.asc | sudo gpg -o /usr/share/keyrings/mongodb-server-8.0.gpg --dearmor
-      echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-8.0.gpg ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/8.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-8.0.list
-      sudo apt-get update
-      sudo apt-get install -y mongodb-org
-      sudo sed -i '/bindIp:/ s/127.0.0.1/0.0.0.0/' /etc/mongod.conf
-      sudo systemctl start mongod
+      export DEBIAN_FRONTEND=noninteractive
+      until apt-get update -y; do sleep 5; done
+      until apt-get install -y gnupg curl; do sleep 5; done
+      curl -fsSL https://www.mongodb.org/static/pgp/server-8.0.asc | gpg -o /usr/share/keyrings/mongodb-server-8.0.gpg --dearmor
+      echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-8.0.gpg ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/8.0 multiverse" | tee /etc/apt/sources.list.d/mongodb-org-8.0.list
+      until apt-get update -y; do sleep 5; done
+      until apt-get install -y mongodb-org; do sleep 5; done
+      sed -i '/bindIp:/ s/127.0.0.1/0.0.0.0/' /etc/mongod.conf
+      systemctl start mongod
+      systemctl enable mongod
+
+      sleep 10
+      mongosh --quiet admin --eval 'db.createUser({user: "groupo", pwd: "#{ENV['DB_PASSWORD']}", roles: [{role: "readWrite", db: "minitwit"}]})' || echo "User already exists"
     SHELL
   end
 
-  # [3] Web server
   config.vm.define "webserver" do |web|
     web.vm.hostname = "webserver"
-    web.vm.synced_folder ".", "/vagrant", 
+    web.vm.synced_folder ".", "/vagrant",
       type: "rsync",
-      id: "vagrant-root",
+      id: "vagrant-web-root",
       rsync__exclude: [".git/", "*.log", ".vagrant/"]
-
     web.vm.provider :digital_ocean do |do_os, override|
       override.vm.allowed_synced_folder_types = [:rsync]
     end
-
     web.vm.provision "shell", inline: <<-SHELL
-      sudo pkill python3 || true
-      Sudo apt-get update
-      sudo apt-get install -y docker.io docker-compose
-      sudo systemctl start docker
-      sudo systemctl enable docker
-      echo "Docker installation complete. Please run 'docker-compose up -d' in /vagrant"
+      export DEBIAN_FRONTEND=noninteractive
+      pkill python3 || true
+      until apt-get update -y; do sleep 5; done
+      until apt-get install -y docker.io docker-compose nginx keepalived; do sleep 5; done
+      systemctl start docker
+      systemctl enable docker
+
+      cat > /vagrant/.env <<EOF
+MONGO_URI=mongodb://groupo:#{ENV['DB_PASSWORD']}@209.38.53.138:27017/minitwit?authSource=admin
+EOF
+
+      ufw allow 80/tcp
+      ufw allow 22/tcp
+      ufw --force enable
+
+      cat <<EOF > /etc/keepalived/keepalived.conf
+vrrp_script chk_nginx {
+    script "killall -0 nginx"
+    interval 2
+    weight -20
+}
+vrrp_instance VI_1 {
+    state MASTER
+    interface eth0
+    virtual_router_id 51
+    priority 100
+    advert_int 1
+    authentication {
+        auth_type PASS
+        auth_pass 1111
+    }
+    virtual_ipaddress {
+        10.0.0.100
+    }
+    track_script {
+        chk_nginx
+    }
+}
+EOF
+      systemctl restart keepalived
+      systemctl enable keepalived
+
+      cat > /etc/nginx/sites-available/default << 'NGINXCONF'
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+
+    server_name devopsgroupo.me www.devopsgroupo.me;
+
+    location / {
+        proxy_pass http://localhost:5000;
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+    }
+}
+NGINXCONF
+      nginx -t
+      systemctl reload nginx
+      systemctl enable nginx
+      systemctl start nginx
+
+      cd /vagrant
+      docker-compose up -d
+    SHELL
+  end
+
+  config.vm.define "secondary" do |sec|
+    sec.vm.hostname = "secondary"
+    sec.vm.synced_folder ".", "/vagrant",
+      type: "rsync",
+      id: "vagrant-sec-root",
+      rsync__exclude: [".git/", "*.log", ".vagrant/"]
+    sec.vm.provider :digital_ocean do |do_os, override|
+      override.vm.allowed_synced_folder_types = [:rsync]
+    end
+    sec.vm.provision "shell", inline: <<-SHELL
+      export DEBIAN_FRONTEND=noninteractive
+      pkill python3 || true
+      until apt-get update -y; do sleep 5; done
+      until apt-get install -y docker.io docker-compose nginx keepalived; do sleep 5; done
+      systemctl start docker
+      systemctl enable docker
+
+      cat > /vagrant/.env <<EOF
+MONGO_URI=mongodb://groupo:#{ENV['DB_PASSWORD']}@209.38.53.138:27017/minitwit?authSource=admin
+EOF
+
+      ufw allow 80/tcp
+      ufw allow 22/tcp
+      ufw --force enable
+
+      cat <<EOF > /etc/keepalived/keepalived.conf
+vrrp_script chk_nginx {
+    script "killall -0 nginx"
+    interval 2
+    weight -20
+}
+vrrp_instance VI_1 {
+    state BACKUP
+    interface eth0
+    virtual_router_id 51
+    priority 90
+    advert_int 1
+    authentication {
+        auth_type PASS
+        auth_pass 1111
+    }
+    virtual_ipaddress {
+        10.0.0.100
+    }
+    track_script {
+        chk_nginx
+    }
+}
+EOF
+      systemctl restart keepalived
+      systemctl enable keepalived
+
+      cat > /etc/nginx/sites-available/default << 'NGINXCONF'
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+
+    server_name devopsgroupo.me www.devopsgroupo.me;
+
+    location / {
+        proxy_pass http://localhost:5000;
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+    }
+}
+NGINXCONF
+      nginx -t
+      systemctl reload nginx
+      systemctl enable nginx
+      systemctl start nginx
+
+      cd /vagrant
+      docker-compose up -d
     SHELL
   end
 end
