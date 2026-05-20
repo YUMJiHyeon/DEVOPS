@@ -1,1 +1,0 @@
-{"rsync":{"vagrant-root":{"type":"rsync","id":"vagrant-root","rsync__exclude":[".git/","*.log",".vagrant/"],"guestpath":"/vagrant","hostpath":"/Users/yumjihyeon/Documents/HYU/ITU/devops/flask-minitwit-mongodb/itu-minitwit_20260128","disabled":false,"__vagrantfile":true,"exclude":[".git/","*.log",".vagrant/"],"owner":"root","group":"root"}}}
