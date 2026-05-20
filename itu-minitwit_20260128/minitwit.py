@@ -267,7 +267,7 @@ def register():
     
     except Exception as e:
             print(f"DEBUG: Register error - {e}")
-            return str(e), 500
+            return "Something went wrong. Please try again later.", 500
             
 @app.route('/logout', methods=['GET'])
 def logout():
