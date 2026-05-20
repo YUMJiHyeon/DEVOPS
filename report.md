@@ -78,6 +78,8 @@ Once all checks have successfully passed, the changes are merged into the main b
 
 This CI/CD pipeline automates large parts of the development and deployment workflow, reducing manual configuration errors and supporting continuous integration and continuous deployment practices.
 
+
+
 		How do you monitor your systems and what precisely do you monitor?
 
 We monitored our system by keeping track of logging, our webservers CPU usage, the total of users in our system, the rate of which users tweeted as well as our HTTP requests. For logging we used Grafana Loki while for the rest we used Grafana Prometheus. We tracked 4 diffrent types of HTTP requests such as: 
@@ -95,7 +97,11 @@ Our monotoring also help us see some unusual requests such as:
 		
 These were most likely vulnerability-scanning traffic against our server. 
 The user- and tweet total were pretty straight foward as we used these two simple PromQL queries: max(minitwit_users_total), rate(minitwit_tweets_total[1m]). For our CPU monotroing we used the following query: sum(rate(container_cpu_usage_seconds_total{id!="/"}[1m])) by (name) * 100. But that helped us see our resource consumption and preformance bottlenecks for induvidual containers. 
-		
+
+![Monotoring dashboard](img/monotoring.gif "monotoring dashboard")
+
+
+
 		### here we can refrence our demo vidos, explain our loggin further.
 		
 #### Demo videos here
@@ -123,8 +129,7 @@ The user- and tweet total were pretty straight foward as we used these two simpl
 
 #### 2.2.) TODO: Create Four Videos Demonstrating your ITU-MiniTwit System in Production 
 
-	a) Monitoring Dashboards in Action: Create a screen recording that provides an overview over all your monitoring dashboards from the production system. That is, demonstrate that the monitoring information in the dashboards changes over time, the more data is received from the simulator.
-![Monotoring dashboard](img/monotoring.gif "monotoring dashboard")
+
 
 	b) Logging Dashboards in Action: Create another screen recording that provides an overview over all your logging dashboards from the production system. That is, demonstrate that the logging information in the dashboards changes over time, the more data is received from the simulator.
 ![Logging dashboard](img/logging.gif "logging dashboard")
