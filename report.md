@@ -127,7 +127,7 @@ The user- and tweet total were pretty straight foward as we used these two simpl
 
 #### 2.1.) Create a .mailmap file in the root of your repositories 
 
-#### 2.2.) TODO: Create Four Videos Demonstrating your ITU-MiniTwit System in Production 
+#### 2.2.) Create Four Videos Demonstrating your ITU-MiniTwit System in Production 
 
 
 
