@@ -138,7 +138,7 @@ Logging Dashboards in Action:
 ![Logging dashboard](img/logging.gif "logging dashboard")
 
 IaC in Action:
-![IaC in Action](img/IaC1-1.gif "IaC in Action")	
+![IaC in Action](img/IaC5.gif "IaC in Action")	
 
 		What do you log in your systems and how do you aggregate logs?
 
