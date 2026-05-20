@@ -69,6 +69,7 @@ The core of the application logic is handled by minitwit.py, which maps incoming
 			- Diagram: CI/CD Pipeline
 
 #### CI/CD Pipeline diagram
+
 ![CI/CD pipeline](img/cicddig.png "CI/CD pipeline")
 As seen in the diagram above our CI/CD pipeline starts when a developer pushes their code onto our Github reposoitory. Then the Github Actions is activated and and the tests and are run automaticlly and in parellel. 
 
@@ -78,6 +79,7 @@ Once all checks have successfully passed, the changes are merged into the main b
 
 This CI/CD pipeline automates large parts of the development and deployment workflow, reducing manual configuration errors and supporting continuous integration and continuous deployment practices.
 
+![CI/CD pipeline gif](img/CiCdPl.gif "CI/CD pipeline gif")
 
 
 		How do you monitor your systems and what precisely do you monitor?
@@ -131,12 +133,13 @@ The user- and tweet total were pretty straight foward as we used these two simpl
 
 
 
-	b) Logging Dashboards in Action: Create another screen recording that provides an overview over all your logging dashboards from the production system. That is, demonstrate that the logging information in the dashboards changes over time, the more data is received from the simulator.
+Logging Dashboards in Action:
 ![Logging dashboard](img/logging.gif "logging dashboard")
 
-	c) IaC in Action: Create a third screen recording that shows your infrastructure as code, configuration management in action. This video should demonstrate that infrastructure can be spun-up from scratch and that it is configured accordingly. That is, something like vagrant up from your command line or a CI/CD pipeline.
+IaC in Action:
+![IaC in Action](img/IaC1-1.gif "IaC in Action")
 
-	d) CI/CD in Action: With infrastructure up and running, this last video should demonstrate how a change that is implemented in a feature branch, is deployed to production after traversing your CI/CD pipeline. That is, this video should start from checking out your code repository and applying a tiny change in a feature branch, how that change is pushed to the repository, how it is picked up by the CI/CD pipeline, i.e., tested and automatically deployed to production.
+
 
 #### 2.3.) TODO: Update the main readme file 
 	
