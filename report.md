@@ -68,6 +68,22 @@ The core of the application logic is handled by minitwit.py, which maps incoming
 		A complete description and illustration of stages and tools included in the CI/CD pipelines, including deployment and release of your systems.
 			- Diagram: CI/CD Pipeline
 
+For this project we used Flask which is a lightweight Python web framwork. It was chosen as it was recommended to us for this project and provided us a simple way to build the MiniTwit application in Python. Flask was used to implement routing, user authentication, and database integration. For the frontend it shows all the pages the users sees using HTML templates that we get from Jinja2, Flasks template engine. It also sends data from Python into the HTML like tweets and usernames. Flask has a internal support library Wekzeug. In our project it used for securely hashing passwords, validating requests, handling sessions and routing internally. 
+
+Regarding the backend, Flask handles all user requests and responses such as log ins, tweets, follow requests and logouts. Flask takes those requests and sends them to Flask-PyMongo which we use to send and recive data from our MongoDB server. Flask-PyMongo is built on top of PyMongo which is the official Python driver for MongoDB which allows us to access low-level functionality in our data base. 
+
+
+| Area             | Current state                            |
+| ---------------- | ---------------------------------------- |
+| Web framework    | Flask                                    |
+| Database         | MongoDB via Flask-PyMongo/PyMongo        |
+| Testing          | Pytest and Selenium                      |
+| Static analysis  | Flake8                                   |
+| Formatting       | Black                                    |
+| Deployment       | Gunicorn                                 |
+| Monitoring       | Prometheus exporter                      |
+| Main improvement | Record actual test/lint results in CI/CD |
+
 #### CI/CD Pipeline diagram
 
 ![CI/CD pipeline](img/cicddig.png "CI/CD pipeline")
@@ -101,7 +117,6 @@ These were most likely vulnerability-scanning traffic against our server.
 The user- and tweet total were pretty straight foward as we used these two simple PromQL queries: max(minitwit_users_total), rate(minitwit_tweets_total[1m]). For our CPU monotroing we used the following query: sum(rate(container_cpu_usage_seconds_total{id!="/"}[1m])) by (name) * 100. But that helped us see our resource consumption and preformance bottlenecks for induvidual containers. 
 
 ![Monotoring dashboard](img/monotoring.gif "monotoring dashboard")
-
 
 
 		### here we can refrence our demo vidos, explain our loggin further.
