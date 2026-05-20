@@ -45,9 +45,9 @@ The system is implemented mainly in Python using the Flask web framework. It use
 		- Diagrams:
 				- C&C View
 
-System's Perspective
-A description and illustration of the:
+#### System's Perspective
 
+A description and illustration of the:
 	-Design and architecture of your ITU-MiniTwit systems.
 	-All dependencies of your ITU-MiniTwit systems on all levels of abstraction and development stages. That is, list and briefly describe all technologies and tools you applied and depend on.
 	-Describe the current state of your systems, for example using results of static analysis and quality assessments.
@@ -57,29 +57,21 @@ For this project we used Flask which is a lightweight Python web framwork. It wa
 
 Regarding the backend, Flask handles all user requests and responses such as log ins, tweets, follow requests and logouts. Flask takes those requests and sends them to Flask-PyMongo which we use to send and recive data from our MongoDB server. Flask-PyMongo is built on top of PyMongo which is the official Python driver for MongoDB which allows us to access low-level functionality in our data base. 
 
-Our deployment dependencies 
+Our deployment dependencies are illustrated in our Allocation view diagram. 
 #### Allocation View
 ![Allocation View](img/UML-Deployment-Diagram.png "Allocation view")
 
 As seen in the Allocation View above, our system is split into three layers. We have the frontend/UI layer, which consists of the MiniTwit browser application that we received at the beginning of the course. The logic layer is comprised of two web servers: a primary web server and a secondary web server. We implemented Docker containers to run our application together with all required dependencies, ensuring that the application remains consistent across different servers and environments. We also implemented Gunicorn, which hosts the MiniTwit Flask application. Gunicorn handles incoming HTTP requests before forwarding them to the main application. Both web servers communicate with the MongoDB database server, which stores the application’s data. Finally, Prometheus monitors the system by scraping metrics data from the web servers. As a side note, our system is not a perfectly separated three-layer architecture, since parts of the logic layer also interact directly with the data layer.
 
+
 #### Module View diagram
 ![Module view](img/moduleviewdig.png "Module view")
 
-The core of the application logic is handled by minitwit.py, which maps incoming web traffic to spesific python function. As shown in the diagram, we organized our main application features into different logical sections. Authentication controls user registration and login, Message handles posting new tweets or retweeting others posts, Follow handles starting to follow or unfollowing other users, Timeline queries the database to build the public and personal feeds. We also have a Metrics module that hooks into our Prometheus configuration to track system performance. All these functional pieces feed down into a shared data-access tier, MongoDB access, which is the "last stop" for the information before it translates to code readable for the database, and reaches the storage.
+The core of the application logic is handled by minitwit.py, which maps incoming web traffic to spesific python function. As shown in the diagram, we organized our main application features into different logical sections. Authentication controls user registration and login, Message handles posting new tweets or retweeting others posts, Follow handles starting to follow or unfollowing other users, Timeline queries the database to build the public and personal feeds. We also have a Metrics module that hooks into our Prometheus configuration to track system performance. All these functional pieces feed down into a shared data-access tier, MongoDB access, which is the "last stop" for the information before it translates to code readable for the database, and reaches the storage. This modular structure improves maintainability by separating responsibilities into focused components. It also simplifies testing and future development, since changes to one feature area can often be made without affecting unrelated parts of the system.
 
 
 		All dependencies of your ITU-MiniTwit systems on all levels of abstraction and development stages. That is, list and briefly describe all technologies and tools you applied and depend on.
 		Describe the current state of your systems, for example using results of static analysis and quality assessments.
-
- ### 3) Process' perspective
-		This perspective should clarify how code or other artifacts come from idea into the running system and everything that happens on the way.
-
-		In particular, the following descriptions should be included:
-
-		A complete description and illustration of stages and tools included in the CI/CD pipelines, including deployment and release of your systems.
-			- Diagram: CI/CD Pipeline
-
 
 
 | Area             | Current state                            |
@@ -92,6 +84,15 @@ The core of the application logic is handled by minitwit.py, which maps incoming
 | Deployment       | Gunicorn                                 |
 | Monitoring       | Prometheus exporter                      |
 | Main improvement | Record actual test/lint results in CI/CD |
+
+### Process perspective
+		This perspective should clarify how code or other artifacts come from idea into the running system and everything that happens on the way.
+
+		In particular, the following descriptions should be included:
+
+		A complete description and illustration of stages and tools included in the CI/CD pipelines, including deployment and release of your systems.
+			- Diagram: CI/CD Pipeline
+
 
 #### CI/CD Pipeline diagram
 
@@ -129,9 +130,15 @@ The user- and tweet total were pretty straight foward as we used these two simpl
 
 
 		### here we can refrence our demo vidos, explain our loggin further.
-		
-#### Demo videos here
+
+Logging Dashboards in Action:
+![Logging dashboard](img/logging.gif "logging dashboard")
+
+IaC in Action:
+![IaC in Action](img/IaC1-1.gif "IaC in Action")	
+
 		What do you log in your systems and how do you aggregate logs?
+
 		Brief description of how you security hardened your systems.
 			- .dockerignore- and .env-files to keep sensitive information to getting uploaded online.
 		How do you handle availability and scaling in your systems?
@@ -141,7 +148,7 @@ The user- and tweet total were pretty straight foward as we used these two simpl
 
 		- evolution and refactoring
 		- operation, and maintenance of your ITU-MiniTwit systems. 
-			 - Link back to respective commit messages, issues, tickets, etc. to illustrate these.
+			- Link back to respective commit messages, issues, tickets, etc. to illustrate these.
 
 	Also reflect and describe what was the "DevOps" style of your work. For example, what did you do differently to previous development projects and how did it work?
 
@@ -154,15 +161,6 @@ The user- and tweet total were pretty straight foward as we used these two simpl
 #### 2.1.) Create a .mailmap file in the root of your repositories 
 
 #### 2.2.) Create Four Videos Demonstrating your ITU-MiniTwit System in Production 
-
-
-
-Logging Dashboards in Action:
-![Logging dashboard](img/logging.gif "logging dashboard")
-
-IaC in Action:
-![IaC in Action](img/IaC1-1.gif "IaC in Action")
-
 
 
 #### 2.3.) TODO: Update the main readme file 
