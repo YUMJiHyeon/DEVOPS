@@ -1,0 +1,24 @@
+name: Deploy Minitwit
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to Server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST_IP }}
+          username: ${{ secrets.USER_NAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
+            cd /vagrant
+            git pull origin main
+            sudo docker-compose pull
+            sudo docker-compose up -d --build
+            sudo docker image prune -f
