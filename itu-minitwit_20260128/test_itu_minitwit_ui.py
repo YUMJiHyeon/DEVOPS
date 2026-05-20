@@ -47,7 +47,9 @@ def _register_user_via_gui(driver, data):
     input_fields[4].send_keys(Keys.RETURN)
 
     wait = WebDriverWait(driver, 5)
-    flashes = wait.until(EC.presence_of_all_elements_located((By.CLASS_NAME, "flashes")))
+    flashes = wait.until(
+        EC.presence_of_all_elements_located((By.CLASS_NAME, "flashes"))
+    )
 
     return flashes
 
@@ -63,8 +65,12 @@ def test_register_user_via_gui():
     """
     firefox_options = Options()
     firefox_options.add_argument("--headless")
-    with webdriver.Firefox(service=Service("./geckodriver"), options=firefox_options) as driver:
-        generated_msg = _register_user_via_gui(driver, ["Me", "me@some.where", "secure123", "secure123"])[0].text
+    with webdriver.Firefox(
+        service=Service("./geckodriver"), options=firefox_options
+    ) as driver:
+        generated_msg = _register_user_via_gui(
+            driver, ["Me", "me@some.where", "secure123", "secure123"]
+        )[0].text
         expected_msg = "You were successfully registered and can login now"
         assert generated_msg == expected_msg
 
@@ -80,12 +86,16 @@ def test_register_user_via_gui_and_check_db_entry():
     """
     firefox_options = Options()
     firefox_options.add_argument("--headless")
-    with webdriver.Firefox(service=Service("./geckodriver"), options=firefox_options) as driver:
+    with webdriver.Firefox(
+        service=Service("./geckodriver"), options=firefox_options
+    ) as driver:
         db_client = pymongo.MongoClient(DB_URL, serverSelectionTimeoutMS=5000)
 
         assert _get_user_by_name(db_client, "Me") == None
 
-        generated_msg = _register_user_via_gui(driver, ["Me", "me@some.where", "secure123", "secure123"])[0].text
+        generated_msg = _register_user_via_gui(
+            driver, ["Me", "me@some.where", "secure123", "secure123"]
+        )[0].text
         expected_msg = "You were successfully registered and can login now"
         assert generated_msg == expected_msg
 
