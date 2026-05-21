@@ -52,7 +52,7 @@ app = Flask(__name__)
 app.config["MONGO_URI"] = os.environ.get(
     "MONGO_URI", "mongodb://localhost:27017/minitwit"
 )
-app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "devopsgroupo" + "2026-spring")
+app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY")
 app.config["DEBUG"] = True
 
 mongo = PyMongo(app)
