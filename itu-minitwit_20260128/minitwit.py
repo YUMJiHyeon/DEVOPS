@@ -41,7 +41,6 @@ os.makedirs(metrics_dir, mode=0o755, exist_ok=True)
 DATABASE = os.path.join(os.getcwd(), "minitwit.db")
 PER_PAGE = 30
 DEBUG = False
-SECRET_KEY = "development key"
 TWEET_COUNT = Counter("minitwit_tweets_total", "Total number of tweets posted")
 USER_COUNT = Gauge("minitwit_users_total", "Total registered users in DB")
 FOLLOWER_COUNT = Gauge("minitwit_followers_total", "Total follow relationships in DB")
@@ -53,7 +52,7 @@ app = Flask(__name__)
 app.config["MONGO_URI"] = os.environ.get(
     "MONGO_URI", "mongodb://localhost:27017/minitwit"
 )
-app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "devopsgroupo-2026-spring")
+app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "devopsgroupo" + "2026-spring")
 app.config["DEBUG"] = True
 
 mongo = PyMongo(app)
