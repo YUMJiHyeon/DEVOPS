@@ -24,23 +24,23 @@ Since this is a group project and the report is written by a group make sure to 
 
 
  ## Table of content
-	* **[1. Introduction](#1-introduction)** — Executive summary of the report scope and objectives.
-* **[2. System's Perspective (Architecture)](#2-systems-perspective-architecture)** — The physical blueprint and software patterns of the application.
-  * *[2.1 System Architecture](#21-system-architecture)* — High-level infrastructure tiering via our Allocation View.
-  * *[2.2 System Design](#22-system-design)* — Component logic breakdowns using Module and Sequence views.
-  * *[2.3 Dependencies](#23-dependencies)* — Frameworks, tools, and technical requirements.
-  * *[2.4 Current State](#24-current-state)* — Current operational status, metrics, and technical debt analysis.
-* **[3. Process Perspective](#3-process-perspective)** — Lifecycles tracing how changes move safely from an idea to production.
-  * *[3.1 Infrastructure as Code (IaC)](#31-infrastructure-as-code-iac)* — Automated provisioning workflows.
-  * *[3.2 CI/CD Pipeline](#32-cicd-pipeline)* — Continuous testing, validation, and rolling container deployments.
-  * *[3.3 Monitoring](#33-monitoring)* — Systems observability using Prometheus and custom PromQL metrics.
-  * *[3.4 Logging](#34-logging)* — Centralized log aggregation with Grafana Loki.
-  * *[3.5 Security Hardening](#35-security-hardening)* — Isolation practices for environment variables and secrets.
-  * *[3.6 Availability and Scaling](#36-availability-and-scaling)* — High availability tactics through multi-server design.
-* **[4. Reflection Perspective](#4-reflection-perspective)** — Engineering challenges faced, lessons learned, and our interpretation of "DevOps style" work.
+* **[1. Introduction](#1-introduction)**
+* **[2. System's Perspective (Architecture)](#2-systems-perspective-architecture)**
+  * *[2.1 System Architecture](#21-system-architecture)*
+  * *[2.2 System Design](#22-system-design)* 
+  * *[2.3 Dependencies](#23-dependencies)* 
+  * *[2.4 Current State](#24-current-state)* 
+* **[3. Process Perspective](#3-process-perspective)**
+  * *[3.1 Infrastructure as Code (IaC)](#31-infrastructure-as-code-iac)* 
+  * *[3.2 CI/CD Pipeline](#32-cicd-pipeline)* 
+  * *[3.3 Monitoring](#33-monitoring)* 
+  * *[3.4 Logging](#34-logging)* 
+  * *[3.5 Security Hardening](#35-security-hardening)* 
+  * *[3.6 Availability and Scaling](#36-availability-and-scaling)* 
+* **[4. Reflection Perspective](#4-reflection-perspective)** 
 
  
- ## 1) Introduction
+## 1) Introduction
  
 		
 ## 2) System's Perspective (Architecture)
@@ -140,7 +140,8 @@ This CI/CD pipeline automates large parts of the development and deployment work
 ![CI/CD pipeline gif](img/CiCdPl.gif "CI/CD pipeline gif")
 
 
-### 3.3) Monitoring (How do you monitor your systems and what precisely do you monitor? - remove)
+### 3.3) Monitoring 
+(Note - remove: How do you monitor your systems and what precisely do you monitor?)
 
 We monitored our system by keeping track of logging, our webservers CPU usage, the total of users in our system, the rate of which users tweeted as well as our HTTP requests. For logging we used Grafana Loki while for the rest we used Grafana Prometheus. We tracked 4 diffrent types of HTTP requests such as: 
 
@@ -181,13 +182,13 @@ How do you handle availability and scaling in your systems?
 
 
  ## 4) Reflection Perspective
-	Describe the biggest issues, how you solved them, and which are major lessons learned with regards to:
+Describe the biggest issues, how you solved them, and which are major lessons learned with regards to:
 
-		- evolution and refactoring
-		- operation, and maintenance of your ITU-MiniTwit systems. 
-			- Link back to respective commit messages, issues, tickets, etc. to illustrate these.
+	- evolution and refactoring
+	- operation, and maintenance of your ITU-MiniTwit systems. 
+		- Link back to respective commit messages, issues, tickets, etc. to illustrate these.
 
-	Also reflect and describe what was the "DevOps" style of your work. For example, what did you do differently to previous development projects and how did it work?
+Also reflect and describe what was the "DevOps" style of your work. For example, what did you do differently to previous development projects and how did it work?
 
 
 
