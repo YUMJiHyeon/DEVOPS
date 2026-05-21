@@ -70,8 +70,16 @@ As seen in the Allocation View above, our system is split into three layers. We 
 The core of the application logic is handled by minitwit.py, which maps incoming web traffic to spesific python function. As shown in the diagram, we organized our main application features into different logical sections. Authentication controls user registration and login, Message handles posting new tweets or retweeting others posts, Follow handles starting to follow or unfollowing other users, Timeline queries the database to build the public and personal feeds. We also have a Metrics module that hooks into our Prometheus configuration to track system performance. All these functional pieces feed down into a shared data-access tier, MongoDB access, which is the "last stop" for the information before it translates to code readable for the database, and reaches the storage. This modular structure improves maintainability by separating responsibilities into focused components. It also simplifies testing and future development, since changes to one feature area can often be made without affecting unrelated parts of the system.
 
 
-#### Component and Connector view diagram
+#### Component and Connector view diagram 
 ![Component and Connector view](img/c&cdiagram.png "Component and Connector view")
+
+This sequence diagram shows the lifecycle of registering a user in our system. The prosess starts when a client, either a User or a Simulator, sends their information through clicking submit. Gunicorn catches the data and forwards it to our Flask application. Flask queries MongoDB with find_one to look for the username in the database, and MongoDB returns if the username is taken or not.
+Here the logic splits into alternative branches.
+- Path A represents when the username is taken. If this is the case, execution stops and an error message is sent through the system which is shown to the user as "The username is already taken"
+- Path B represents when the username is free. In this case Flask hashes the password, and sends insert_one to the database.
+After successful registration the execution enters the inner alternative block, which handles whether the registration is done by a Simulator or a Human User.
+- If the client is a Simulator the system returns an empty string and a HTTP 204 to register the success, but not use necessary internet speed with opening the login page.
+- If the client is a Human user, Flask activates the redirect function, which sends the user to the login page.
 
 		All dependencies of your ITU-MiniTwit systems on all levels of abstraction and development stages. That is, list and briefly describe all technologies and tools you applied and depend on.
 		Describe the current state of your systems, for example using results of static analysis and quality assessments.
