@@ -77,6 +77,7 @@ This sequence diagram shows the lifecycle of registering a user in our system. T
 Here the logic splits into alternative branches.
 - Path A represents when the username is taken. If this is the case, execution stops and an error message is sent through the system which is shown to the user as "The username is already taken"
 - Path B represents when the username is free. In this case Flask hashes the password, and sends insert_one to the database.
+
 After successful registration the execution enters the inner alternative block, which handles whether the registration is done by a Simulator or a Human User.
 - If the client is a Simulator the system returns an empty string and a HTTP 204 to register the success, but not use necessary internet speed with opening the login page.
 - If the client is a Human user, Flask activates the redirect function, which sends the user to the login page.
