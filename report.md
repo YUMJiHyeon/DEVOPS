@@ -79,8 +79,8 @@ Here the logic splits into alternative branches.
 - Path B represents when the username is free. In this case Flask hashes the password, and sends insert_one to the database.
 
 After successful registration the execution enters the inner alternative block, which handles whether the registration is done by a Simulator or a Human User.
-- If the client is a Simulator the system returns an empty string and a HTTP 204 to register the success, but not use necessary internet speed with opening the login page.
-- If the client is a Human user, Flask activates the redirect function, which sends the user to the login page.
+- Path B1 represents if the client is a Simulator. The system returns an empty string and a HTTP 204 to register the success, but not use necessary internet speed with opening the login page.
+- Path B2 represents if the client is a Human user. Then Flask activates the redirect function, which sends the user to the login page.
 
 		All dependencies of your ITU-MiniTwit systems on all levels of abstraction and development stages. That is, list and briefly describe all technologies and tools you applied and depend on.
 		Describe the current state of your systems, for example using results of static analysis and quality assessments.
