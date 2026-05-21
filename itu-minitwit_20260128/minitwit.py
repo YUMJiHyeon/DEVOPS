@@ -318,7 +318,6 @@ def logout():
 # from the configuration.
 app.jinja_env.filters["datetimeformat"] = format_datetime
 app.jinja_env.filters["gravatar"] = gravatar_url
-app.secret_key = SECRET_KEY
 app.debug = DEBUG
 
 
