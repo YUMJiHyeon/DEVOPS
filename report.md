@@ -108,7 +108,13 @@ A complete description and illustration of stages and tools included in the CI/C
 	- Diagram: CI/CD Pipeline
 
 
-### CI/CD Pipeline
+### 3.1) Infrastructure as Code (IaC)
+
+#### IaC in Action
+![IaC in Action](img/IaC5.gif "IaC in Action")	
+
+
+### 3.2) CI/CD Pipeline
 
 ![CI/CD pipeline](img/cicddig.png "CI/CD pipeline")
 As seen in the diagram above our CI/CD pipeline starts when a developer pushes their code onto our Github reposoitory. Then the Github Actions is activated and and the tests and are run automaticlly and in parellel. 
@@ -123,7 +129,7 @@ This CI/CD pipeline automates large parts of the development and deployment work
 ![CI/CD pipeline gif](img/CiCdPl.gif "CI/CD pipeline gif")
 
 
-### Monitoring (How do you monitor your systems and what precisely do you monitor? - remove)
+### 3.3) Monitoring (How do you monitor your systems and what precisely do you monitor? - remove)
 
 We monitored our system by keeping track of logging, our webservers CPU usage, the total of users in our system, the rate of which users tweeted as well as our HTTP requests. For logging we used Grafana Loki while for the rest we used Grafana Prometheus. We tracked 4 diffrent types of HTTP requests such as: 
 
@@ -146,22 +152,20 @@ The user- and tweet total were pretty straight foward as we used these two simpl
 ![Monotoring dashboard](img/monotoring.gif "monotoring dashboard")
 
 
-### Logging
+### 3.4) Logging
 (here we can refrence our demo vidos, explain our loggin further.
 What do you log in your systems and how do you aggregate logs?)
 
 #### Logging Dashboards in Action
 ![Logging dashboard](img/logging.gif "logging dashboard")
 
-#### IaC in Action
-![IaC in Action](img/IaC5.gif "IaC in Action")	
 
 		
-### Security
+### 3.5) Security hardening
 Brief description of how you security hardened your systems.
 - .dockerignore- and .env-files to keep sensitive information to getting uploaded online.
 
-### Availability and scaling
+### 3.6) Availability and scaling
 How do you handle availability and scaling in your systems?
 
 
