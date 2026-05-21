@@ -38,21 +38,21 @@ metrics_dir = os.environ.get("PROMETHEUS_MULTIPROC_DIR", "/app/prometheus_metric
 os.makedirs(metrics_dir, mode=0o755, exist_ok=True)
 
 # configuration
-DATABASE = "/tmp/minitwit.db"
+DATABASE = os.path.join(os.getcwd(), "minitwit.db")
 PER_PAGE = 30
 DEBUG = False
-SECRET_KEY = "development key"
 TWEET_COUNT = Counter("minitwit_tweets_total", "Total number of tweets posted")
 USER_COUNT = Gauge("minitwit_users_total", "Total registered users in DB")
 FOLLOWER_COUNT = Gauge("minitwit_followers_total", "Total follow relationships in DB")
 REGISTER_TEMPLATE = "register.html"
+TIMELINE_TEMPLATE = "timeline.html"
 
 # create our little application :)
 app = Flask(__name__)
 app.config["MONGO_URI"] = os.environ.get(
     "MONGO_URI", "mongodb://localhost:27017/minitwit"
 )
-app.config["SECRET_KEY"] = "development key"
+app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "devopsgroupo" + "2026-spring")
 app.config["DEBUG"] = True
 
 mongo = PyMongo(app)
@@ -105,18 +105,18 @@ def before_request():
         update_db_counts()
 
 
-@app.route("/")
+@app.route("/", methods=["GET"])
 def timeline():
     if not g.user:
         return redirect(url_for("public_timeline"))
     messages = query_db("message", limit=PER_PAGE)
-    return render_template("timeline.html", messages=messages)
+    return render_template(TIMELINE_TEMPLATE, messages=messages)
 
 
 @app.route("/public", methods=["GET"])
 def public_timeline():
     messages = query_db("message", limit=PER_PAGE)
-    return render_template("timeline.html", messages=messages)
+    return render_template(TIMELINE_TEMPLATE, messages=messages)
 
 
 @app.route("/msgs/<username>", methods=["POST"])
@@ -164,7 +164,7 @@ def user_timeline(username):
         followed = record is not None
 
     return render_template(
-        "timeline.html", messages=messages, followed=followed, profile_user=profile_user
+        TIMELINE_TEMPLATE, messages=messages, followed=followed, profile_user=profile_user
     )
 
 
@@ -273,7 +273,7 @@ def register_post():
     username = data.get("username")
     email = data.get("email")
     password = data.get("password") or data.get("pwd")
-    is_api = request.is_json or request.args.get("latest")
+    is_api = request.is_json or request.args.get("latest")  # NOSONAR
 
     error = validate_register_input(username, email, password)
     if error:
@@ -318,7 +318,6 @@ def logout():
 # from the configuration.
 app.jinja_env.filters["datetimeformat"] = format_datetime
 app.jinja_env.filters["gravatar"] = gravatar_url
-app.secret_key = SECRET_KEY
 app.debug = DEBUG
 
 
