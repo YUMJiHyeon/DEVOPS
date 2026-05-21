@@ -141,16 +141,18 @@ Our monotoring also help us see some unusual requests such as:
 These were most likely vulnerability-scanning traffic against our server. 
 The user- and tweet total were pretty straight foward as we used these two simple PromQL queries: max(minitwit_users_total), rate(minitwit_tweets_total[5m]). For our CPU monotroing we used the following query: sum(rate(container_cpu_usage_seconds_total{id!="/"}[1m])) by (name) * 100. But that helped us see our resource consumption and preformance bottlenecks for induvidual containers. 
 
+
+#### Monitoring Dashboard in Action
 ![Monotoring dashboard](img/monotoring.gif "monotoring dashboard")
 
 
 ### Logging
 (here we can refrence our demo vidos, explain our loggin further.)
 
-Logging Dashboards in Action:
+#### Logging Dashboards in Action:
 ![Logging dashboard](img/logging.gif "logging dashboard")
 
-IaC in Action:
+#### IaC in Action:
 ![IaC in Action](img/IaC5.gif "IaC in Action")	
 
 		What do you log in your systems and how do you aggregate logs?
