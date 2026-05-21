@@ -40,4 +40,11 @@ jobs:
         run: pip install pytest selenium pymongo flask flask-pymongo prometheus-flask-exporter
 
       - name: Run Pytest
+        env:
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
         run: pytest test_itu_minitwit_ui.py || echo "Tests failed"
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
