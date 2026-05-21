@@ -76,6 +76,7 @@ MONGO_URI=mongodb://groupo:#{ENV['DB_PASSWORD']}@209.38.53.138:27017/minitwit?au
 EOF
 
       ufw allow 80/tcp
+      ufw allow 443/tcp
       ufw allow 22/tcp
       ufw --force enable
 
@@ -161,6 +162,7 @@ MONGO_URI=mongodb://groupo:#{ENV['DB_PASSWORD']}@209.38.53.138:27017/minitwit?au
 EOF
 
       ufw allow 80/tcp
+      ufw allow 443/tcp
       ufw allow 22/tcp
       ufw --force enable
 
