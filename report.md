@@ -128,7 +128,9 @@ A complete description and illustration of stages and tools included in the CI/C
 (150/2500 word)
 #### IaC in Action
 ![IaC in Action](img/IaC5.gif "IaC in Action")	
+We implemented Infrastructure as Code (IaC) using Vagrant combined with the DigitalOcean provider to ensure our production environment is reproducible and standardized. Our entire infrastructure is orchestrated via a single Vagrantfile, which automates the creation and configuration of three virtual droplets: dbserver, webserver (Primary), and secondary.
 
+The Vagrantfile includes shell provisioning scripts that automate the installation of core dependencies, including Docker, Docker Compose, and Nginx. It also handles complex network configurations, such as setting up Keepalived on both web servers to manage a Virtual IP (VIP) for automated failover. Furthermore, the IaC layer handles the specific preparation required for Observability in a multi-process environment. This includes the automated creation of shared memory directories (e.g., /app/prometheus_metrics) with restricted permissions (755) to enable consistent metric aggregation across Gunicorn workers. By executing a single command, vagrant up, the entire production-grade infrastructure is built from scratch in minutes, eliminating manual configuration errors and ensuring high system reliability
 
 ### 3.2) CI/CD Pipeline
 (200/2500 word)
@@ -150,6 +152,7 @@ This CI/CD pipeline automates large parts of the development and deployment work
 (Note - remove: How do you monitor your systems and what precisely do you monitor?)
 
 We monitored our system using a Prometheus and Grafana stack to ensure infrastructure health, application performance, and business visibility. Monitoring focused on numerical metrics to identify trends and system states. 
+
 To monitor resource consumption, we utilized cAdvisor, collecting real-time data from Docker containers. We specifically tracked CPU usage per container using the query:sum(rate(container_cpu_usage_seconds_total{id!="/"}[1m])) by (name) * 100. This allowed us to identify performance bottlenecks in services like MongoDB or the web server.
 Application health was monitored via prometheus-flask-exporter in minitwit.py. We tracked flask_http_request_total for 4 diffrent types of HTTP requests such as: 
 
@@ -160,6 +163,7 @@ Application health was monitored via prometheus-flask-exporter in minitwit.py. W
 		
 This numerical tracking enabled the detection of security anomalies, such as vulnerability-scanning traffic (e.g., BXJZ, PROPFIND, HIAS). 
 Business KPIs were tracked with straightforward PromQL queries. We monitored total registered users using max(minitwit_users_total). The max function was essential in our Gunicorn multiprocess environment to ensure a consistent total was displayed despite multiple workers reporting independently. User activity was visualized through tweet frequency using rate(minitwit_tweets_total[5m]), providing insights into real-time system engagement.
+
 To handle Gunicorn’s multiprocess architecture, we implemented GunicornInternalPrometheusMetrics and configured the PROMETHEUS_MULTIPROC_DIR environment variable. This ensures that metrics from all workers are aggregated into a single consistent state rather than reporting inconsistent partial data.
 
 #### Monitoring Dashboard in Action
@@ -188,6 +192,7 @@ Brief description of how you security hardened your systems.
 
 To secure our system, we implemented multiple defensive layers focusing on secrets management, the principle of least privilege, and application level security.
 A critical turning point occurred when an .env file containing the dbserver admin credentials was accidentally pushed to our public repository. We responded by performing credential rotation, changing the admin password via mongosh, and strictly configuring.gitignore and .dockerignore to ensure secrets remained local. Specifically, the .dockerignore file prevented sensitive data and .git history from entering the Docker build context, reducing the attack surface.
+
 Following the principle of least privilege, we configured our Dockerfile to run the application under a non-root user, myuser, instead of the default root account. We also restricted directory permissions for the shared metrics folder to 755 to prevent unauthorized access. On the application level, we used werkzeug.security to store user passwords as secure hashes, protecting user data even if the database were compromised. Finally, our monitoring setup allowed us to detect security anomalies—such as vulnerability-scanning traffic requesting paths like BXJZ and PROPFIND—providing vital real-time visibility into potential threats against our production environment.
 
 ### 3.6) Availability and scaling
