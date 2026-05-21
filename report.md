@@ -17,13 +17,13 @@ matal@itu.dk
 
 
 
- ### (Formal Requirements - remove)
+### (Formal Requirements - remove)
 Make sure that you link all artifacts that you consider constitutional to your projects together with short descriptions of the linked artifacts from your reports, i.e., link all necessary repositories, issue trackers, monitoring/logging systems, etc.
 
 Since this is a group project and the report is written by a group make sure to indicate for each section the respective author(s).
 
 
- ## Table of content
+## Table of content
 * **[1. Introduction](#1-introduction)**
 * **[2. System's Perspective (Architecture)](#2-systems-perspective-architecture)**
   * *[2.1 System Architecture](#21-system-architecture)*
@@ -41,9 +41,12 @@ Since this is a group project and the report is written by a group make sure to 
 
  
 ## 1) Introduction
- 
+Write here
+This report comprehensively documents our team's operational journey, architecture decisions, and software maintenance workflows during the evolution of the *ITU-MiniTwit* application. Starting with a legacy codebase, we re-architected, containerized, secured, and deployed the system into a high-availability infrastructure. The following sections evaluate our engineering choices across three major domains: the *System's Perspective* (our physical and structural layouts), the *Process Perspective* (our automated integration, testing, provisioning, and observation loops), and the *Reflection Perspective* (the lessons, friction points, and culture shifts encountered along the way).
 		
 ## 2) System's Perspective (Architecture)
+Write something here?
+The System's Perspective details the static layout, component boundaries, and runtime behaviors of the ITU-MiniTwit infrastructure. By analyzing the system on multiple planes of abstraction from physical machine tiers down to individual code packages. We highlight how our modular approach ensures consistency, isolation, and horizontal scalability across our entire execution environment.
 
 A description and illustration of the:
 	-Design and architecture of your ITU-MiniTwit systems.
@@ -51,6 +54,7 @@ A description and illustration of the:
 	-Describe the current state of your systems, for example using results of static analysis and quality assessments.
 
 ### 2.1) System Architecture
+Our system architecture focuses on separating UI logic, business logic, and long-term storage to ensure compatibilitiy across our resources and make software updates safer to manage.
 
 #### Allocation View
 ![Allocation View](img/UML-Deployment-Diagram.png "Allocation view")
@@ -108,6 +112,8 @@ Note (remove): Describe the current state of your systems, for example using res
 | Monitoring       | Prometheus exporter                      |
 | Main improvement | Record actual test/lint results in CI/CD |
 
+Write here - description of current state
+The production setup currently remains stable across both web nodes, processing heavy, concurrent client traffic from our automated simulator. By introducing automated formatting via Black and code quality linting via Flake8, our code maintainability metrics have improved significantly. However, a remaining architectural gap is our tight coupling between the application logic and the database layer; parts of `minitwit.py` circumvent an isolated data-access layer to communicate directly with MongoDB. Our near-term goal is to fully decouple this integration so database schema variations will not disrupt business logic downstream.
 
 
 ## 3) Process perspective
@@ -118,15 +124,21 @@ In particular, the following descriptions should be included:
 A complete description and illustration of stages and tools included in the CI/CD pipelines, including deployment and release of your systems.
 	- Diagram: CI/CD Pipeline
 
+Write here
+The Process Perspective highlights the automated lifecycles that construct, validate, provision, and maintain our systems. This section outlines how an updated code snippet evolves from an engineer's machine into a stable piece of infrastructure running in production, along with the continuous runtime monitoring that keeps it healthy.
 
 ### 3.1) Infrastructure as Code (IaC)
+Write here
+To ensure environments are entirely reproducible and resilient against hardware failures, our absolute state configuration is managed as code rather than manual server commands.
 
 #### IaC in Action
 ![IaC in Action](img/IaC5.gif "IaC in Action")	
 
+Our provisioning setup builds up our isolated environment from a blank slate. As captured in the animation above, our scripts handle downloading core dependency layers, initializing the Docker daemon engines, structuring the virtual container bridges, and linking our web nodes cleanly to our isolated database servers without causing configuration drift between staging and production nodes.
 
 ### 3.2) CI/CD Pipeline
-
+Write here
+Our software deployment loop runs automatically whenever a branch update is committed to source control.
 ![CI/CD pipeline](img/cicddig.png "CI/CD pipeline")
 As seen in the diagram above our CI/CD pipeline starts when a developer pushes their code onto our Github reposoitory. Then the Github Actions is activated and and the tests and are run automaticlly and in parellel. 
 
@@ -167,18 +179,28 @@ The user- and tweet total were pretty straight foward as we used these two simpl
 ### 3.4) Logging
 (here we can refrence our demo vidos, explain our loggin further.
 What do you log in your systems and how do you aggregate logs?)
+Write here
+To debug real-world user failures or observe malicious request vectors over time, application stdout lines are collected directly out of our Flask and Gunicorn containers.
 
 #### Logging Dashboards in Action
 ![Logging dashboard](img/logging.gif "logging dashboard")
 
+As visualized in the logging dashboard above, our system continuously aggregates internal application traces into Grafana Loki. Whenever an application exception triggers, or an unrecognized scanner resource pathway is encountered, the stack traces are indexed and searchable in real time. This keeps our debugging workflow fast and data-driven without requiring explicit, manual shell access to our active production servers.
 
 		
 ### 3.5) Security hardening
 Brief description of how you security hardened your systems.
 - .dockerignore- and .env-files to keep sensitive information to getting uploaded online.
+Write here
+We security hardened our deployment by ensuring production host data boundaries are fully isolated from our public code history:
+* **Secrets Isolation (`.env`):** Sensitive credentials, database keys, and configuration states are managed locally using environment variable definitions to prevent accidental public disclosure.
+* **Packaging Filters (`.dockerignore`):** Prevents tracking local testing logs, transient local data artifacts, or unhashed staging keys during production Docker builds.
+* **Runtime Scans:** Integrated automated CodeQL scanning loops directly into our GitHub pipelines to continuously parse incoming pull requests for memory vulnerabilities, unescaped queries, or credential leaks.
 
 ### 3.6) Availability and scaling
 How do you handle availability and scaling in your systems?
+Write here
+Our application ensures high availability through a redundant web server layer. By deploying identical primary and secondary web server instances behind Gunicorn, the system can withstand unexpected traffic spikes or individual container restarts. If a rolling update is triggered during a CI/CD pipeline execution, one server continues processing incoming simulator loads while its partner reinitializes, completely mitigating downtime for active clients. Storage constraints are mitigated by utilizing document-based MongoDB instances which can be scaled horizontally through sharding as our tweet metrics and user data volumes expand.
 
 
  ## 4) Reflection Perspective
