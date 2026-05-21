@@ -1,0 +1,8 @@
+Flask==3.0.3
+Flask-PyMongo==2.3.0
+pymongo==4.7.2
+prometheus-flask-exporter==0.23.1
+pytest==8.2.0
+selenium==4.21.0
+gunicorn==22.0.0
+blinker==1.8.2
