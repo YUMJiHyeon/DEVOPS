@@ -23,13 +23,24 @@ Make sure that you link all artifacts that you consider constitutional to your p
 Since this is a group project and the report is written by a group make sure to indicate for each section the respective author(s).
 
 
- ## 1) Introduction? (What to include in the report? )
+ ## Table of content
+	* **[1. Introduction](#1-introduction)** — Executive summary of the report scope and objectives.
+* **[2. System's Perspective (Architecture)](#2-systems-perspective-architecture)** — The physical blueprint and software patterns of the application.
+  * *[2.1 System Architecture](#21-system-architecture)* — High-level infrastructure tiering via our Allocation View.
+  * *[2.2 System Design](#22-system-design)* — Component logic breakdowns using Module and Sequence views.
+  * *[2.3 Dependencies](#23-dependencies)* — Frameworks, tools, and technical requirements.
+  * *[2.4 Current State](#24-current-state)* — Current operational status, metrics, and technical debt analysis.
+* **[3. Process Perspective](#3-process-perspective)** — Lifecycles tracing how changes move safely from an idea to production.
+  * *[3.1 Infrastructure as Code (IaC)](#31-infrastructure-as-code-iac)* — Automated provisioning workflows.
+  * *[3.2 CI/CD Pipeline](#32-cicd-pipeline)* — Continuous testing, validation, and rolling container deployments.
+  * *[3.3 Monitoring](#33-monitoring)* — Systems observability using Prometheus and custom PromQL metrics.
+  * *[3.4 Logging](#34-logging)* — Centralized log aggregation with Grafana Loki.
+  * *[3.5 Security Hardening](#35-security-hardening)* — Isolation practices for environment variables and secrets.
+  * *[3.6 Availability and Scaling](#36-availability-and-scaling)* — High availability tactics through multi-server design.
+* **[4. Reflection Perspective](#4-reflection-perspective)** — Engineering challenges faced, lessons learned, and our interpretation of "DevOps style" work.
 
  
-
-
-
-
+ ## 1) Introduction
  
 		
 ## 2) System's Perspective (Architecture)
