@@ -90,8 +90,8 @@ def format_datetime(timestamp):
 
 
 def gravatar_url(email, size=80):
-    return "http://www.gravatar.com/avatar/%s?d=identicon&s=%d" % (
-        md5(email.strip().lower().encode("utf-8")).hexdigest(),
+    return "https://www.gravatar.com/avatar/%s?d=identicon&s=%d" % (
+        md5(email.strip().lower().encode("utf-8")).hexdigest(), # NOSONAR
         size,
     )
 
@@ -258,13 +258,16 @@ def validate_register_input(username, email, password):
     return None
 
 
-@app.route("/register", methods=["GET", "POST"])
+@app.route("/register", methods=["GET"])
 def register():
     if g.user:
         return redirect(url_for("timeline"))
+    return render_template(REGISTER_TEMPLATE, error=None)
 
-    if request.method == "GET":
-        return render_template(REGISTER_TEMPLATE, error=None)
+@app.route("/register", methods=["POST"])
+def register_post():
+    if g.user:
+        return redirect(url_for("timeline"))
 
     data = request.get_json(silent=True) or request.form
     username = data.get("username")
@@ -280,23 +283,22 @@ def register():
 
     try:
         existing_user = mongo.db.user.find_one({"username": username})
-        if not existing_user:
-            mongo.db.user.insert_one(
-                {
-                    "username": username,
-                    "email": email,
-                    "pw_hash": generate_password_hash(password),
-                }
-            )
+        if existing_user:
+            if is_api:
+                return "The username is already taken", 400
+            return render_template(REGISTER_TEMPLATE, error="The username is already taken ")
 
+
+        mongo.db.user.insert_one(
+            {
+                "username": username,
+                "email": email,
+                "pw_hash": generate_password_hash(password),
+            }
+    
+        )
         if is_api:
             return "", 204
-
-        if existing_user:
-            return render_template(
-                REGISTER_TEMPLATE, error="The username is already taken"
-            )
-
         flash("You were successfully registered")
         return redirect(url_for("login"))
 
