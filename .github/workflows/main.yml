@@ -32,7 +32,7 @@ jobs:
         run: black --check . || echo "Formatting issue, skipping..."
 
       - name: Run Hadolint (Dockerfile Linter)
-        uses: hadolint/hadolint-action@v3.1.0
+        uses: hadolint/hadolint-action@b2496a757e7a56107386d3e83f2316e6d140e698
         with:
           dockerfile: itu-minitwit_20260128/Dockerfile
 
