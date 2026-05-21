@@ -149,10 +149,10 @@ The user- and tweet total were pretty straight foward as we used these two simpl
 ### Logging
 (here we can refrence our demo vidos, explain our loggin further.)
 
-#### Logging Dashboards in Action:
+#### Logging Dashboards in Action
 ![Logging dashboard](img/logging.gif "logging dashboard")
 
-#### IaC in Action:
+#### IaC in Action
 ![IaC in Action](img/IaC5.gif "IaC in Action")	
 
 		What do you log in your systems and how do you aggregate logs?
