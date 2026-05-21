@@ -147,7 +147,8 @@ The user- and tweet total were pretty straight foward as we used these two simpl
 
 
 ### Logging
-(here we can refrence our demo vidos, explain our loggin further.)
+(here we can refrence our demo vidos, explain our loggin further.
+What do you log in your systems and how do you aggregate logs?)
 
 #### Logging Dashboards in Action
 ![Logging dashboard](img/logging.gif "logging dashboard")
@@ -155,11 +156,14 @@ The user- and tweet total were pretty straight foward as we used these two simpl
 #### IaC in Action
 ![IaC in Action](img/IaC5.gif "IaC in Action")	
 
-		What do you log in your systems and how do you aggregate logs?
+		
+### Security
+Brief description of how you security hardened your systems.
+- .dockerignore- and .env-files to keep sensitive information to getting uploaded online.
 
-		Brief description of how you security hardened your systems.
-			- .dockerignore- and .env-files to keep sensitive information to getting uploaded online.
-		How do you handle availability and scaling in your systems?
+### Availability and scaling
+How do you handle availability and scaling in your systems?
+
 
  ## 4) Reflection Perspective
 	Describe the biggest issues, how you solved them, and which are major lessons learned with regards to:
