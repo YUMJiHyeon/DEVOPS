@@ -18,10 +18,9 @@ matal@itu.dk
 
 
  ### (Formal Requirements - remove)
-	Make sure that you link all artifacts that you consider constitutional to your projects together with short descriptions of the linked artifacts from your reports, i.e., link all necessary repositories, issue trackers, monitoring/logging systems, etc.
+Make sure that you link all artifacts that you consider constitutional to your projects together with short descriptions of the linked artifacts from your reports, i.e., link all necessary repositories, issue trackers, monitoring/logging systems, etc.
 
-
-	Since this is a group project and the report is written by a group make sure to indicate for each section the respective author(s).
+Since this is a group project and the report is written by a group make sure to indicate for each section the respective author(s).
 
 
  ## 1) Introduction? (What to include in the report? )
@@ -53,13 +52,15 @@ For this project we used Flask which is a lightweight Python web framwork. It wa
 
 Regarding the backend, Flask handles all user requests and responses such as log ins, tweets, follow requests and logouts. Flask takes those requests and sends them to Flask-PyMongo which we use to send and recive data from our MongoDB server. Flask-PyMongo is built on top of PyMongo which is the official Python driver for MongoDB which allows us to access low-level functionality in our data base. 
 
-#### Module View diagram
+
+#### Module View
 ![Module view](img/moduleviewdig.png "Module view")
 
 The core of the application logic is handled by minitwit.py, which maps incoming web traffic to spesific python function. As shown in the diagram, we organized our main application features into different logical sections. Authentication controls user registration and login, Message handles posting new tweets or retweeting others posts, Follow handles starting to follow or unfollowing other users, Timeline queries the database to build the public and personal feeds. We also have a Metrics module that hooks into our Prometheus configuration to track system performance. All these functional pieces feed down into a shared data-access tier, MongoDB access, which is the "last stop" for the information before it translates to code readable for the database, and reaches the storage. This modular structure improves maintainability by separating responsibilities into focused components. It also simplifies testing and future development, since changes to one feature area can often be made without affecting unrelated parts of the system.
 
 
-#### Component and Connector view diagram 
+
+#### Component and Connector view  
 ![Component and Connector view](img/c&cdiagram.png "Component and Connector view")
 
 This sequence diagram shows the lifecycle of registering a user in our system. The prosess starts when a client, either a User or a Simulator, sends their information through clicking submit. Gunicorn catches the data and forwards it to our Flask application. Flask queries MongoDB with find_one to look for the username in the database, and MongoDB returns if the username is taken or not.
@@ -70,6 +71,8 @@ Here the logic splits into alternative branches.
 After successful registration the execution enters the inner alternative block, which handles whether the registration is done by a Simulator or a Human User.
 - Path B1 represents if the client is a Simulator. The system returns an empty string and a HTTP 204 to register the success, but not use necessary internet speed with opening the login page.
 - Path B2 represents if the client is a Human user. Then Flask activates the redirect function, which sends the user to the login page.
+
+
 
 ### 2.3) Dependencies
 Note (remove): All dependencies of your ITU-MiniTwit systems on all levels of abstraction and development stages. That is, list and briefly describe all technologies and tools you applied and depend on.
@@ -97,12 +100,12 @@ Note (remove): Describe the current state of your systems, for example using res
 
 
 ## 3) Process perspective
-		This perspective should clarify how code or other artifacts come from idea into the running system and everything that happens on the way.
+Note (remove): This perspective should clarify how code or other artifacts come from idea into the running system and everything that happens on the way.
 
-		In particular, the following descriptions should be included:
+In particular, the following descriptions should be included:
 
-		A complete description and illustration of stages and tools included in the CI/CD pipelines, including deployment and release of your systems.
-			- Diagram: CI/CD Pipeline
+A complete description and illustration of stages and tools included in the CI/CD pipelines, including deployment and release of your systems.
+	- Diagram: CI/CD Pipeline
 
 
 ### CI/CD Pipeline
@@ -116,6 +119,7 @@ Once all checks have successfully passed, the changes are merged into the main b
 
 This CI/CD pipeline automates large parts of the development and deployment workflow, reducing manual configuration errors and supporting continuous integration and continuous deployment practices.
 
+#### CI/CD in Action
 ![CI/CD pipeline gif](img/CiCdPl.gif "CI/CD pipeline gif")
 
 
