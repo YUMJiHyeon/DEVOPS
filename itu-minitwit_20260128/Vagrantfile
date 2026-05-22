@@ -38,6 +38,11 @@ Vagrant.configure("2") do |config|
       until apt-get update -y; do sleep 5; done
       until apt-get install -y mongodb-org; do sleep 5; done
       sed -i '/bindIp:/ s/127.0.0.1/0.0.0.0/' /etc/mongod.conf
+      
+      ufw allow 27017/tcp
+      ufw allow 22/tcp
+      ufw --force enable
+
       systemctl start mongod
       systemctl enable mongod
 
