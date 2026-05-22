@@ -228,15 +228,3 @@ Compared to previous projects, this work was much more operationally focused and
  
 We have used Gen AI to help identify the cause of cryptic error messages, a lot of this is from trying to deploy and some cryptic error message gets sent back. Using AI for error messages helped us when working with packages we dont have experience in. We have also used AI for vibe coding, this makes our workflow center more on fixing errors and making design decisions. We used Ai for helping our report structure. We used ChatGPT, Claude and Gemini for error finding and vibe coding, we used Gemini and ChatGPT for oour report structure.
  
-
-#### 1.) TODO: Assure Information Correctness 
-
-#### 2.) TODO: Polish Project Repositories and Documentation 
-
-#### 2.3.) TODO: Update the main readme file 
-	
-TODO: Process' perspective 
-
-
-
-
