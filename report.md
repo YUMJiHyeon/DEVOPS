@@ -19,7 +19,7 @@ matal@itu.dk
 
 ## Table of content
 * **[1. Introduction](#1-introduction)**
-* **[2. System's Perspective](#2-systems-perspective-architecture)**
+* **[2. System's Perspective](#2-systems-perspective)**
   * *[2.1 System Architecture](#21-system-architecture)*
   * *[2.2 System Design](#22-system-design)* 
   * *[2.3 Dependencies](#23-dependencies)* 
