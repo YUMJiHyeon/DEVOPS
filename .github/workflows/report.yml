@@ -1,0 +1,25 @@
+name: Build Report PDF
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build-report:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Pandoc + LaTeX
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pandoc texlive-latex-base texlive-latex-extra texlive-fonts-recommended
+
+      - name: Create build directory
+        run: mkdir -p report/build
+
+      - name: Build PDF
+        run: |
+          pandoc report/report.md -o report/build/BSc_group_o.pdf
