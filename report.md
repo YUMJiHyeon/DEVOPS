@@ -130,8 +130,17 @@ To ensure environments are entirely reproducible and resilient against hardware 
 
 #### IaC in Action
 ![IaC in Action](img/IaC5.gif "IaC in Action")	
-We implemented Infrastructure as Code (IaC) using Vagrant combined with the DigitalOcean provider to ensure our production environment is reproducible and standardized. Our entire infrastructure is orchestrated via a single Vagrantfile, which automates the creation and configuration of three virtual droplets: dbserver, webserver (Primary), and secondary. The Vagrantfile includes shell provisioning scripts that automate the installation of core dependencies, including Docker, Docker Compose, and Nginx. It also handles complex network configurations, such as setting up Keepalived on both web servers to manage a Virtual IP (VIP) for automated failover. Furthermore, the IaC layer handles the specific preparation required for Observability in a multi-process environment. This includes the automated creation of shared memory directories (e.g., /app/prometheus_metrics) with restricted permissions (755) to enable consistent metric aggregation across Gunicorn workers. By executing a single command, vagrant up, the entire production-grade infrastructure is built from scratch in minutes, eliminating manual configuration errors and ensuring high system reliability
-Our provisioning setup builds up our isolated environment from a blank slate. As captured in the animation above, our scripts handle downloading core dependency layers, initializing the Docker daemon engines, structuring the virtual container bridges, and linking our web nodes cleanly to our isolated database servers without causing configuration drift between staging and production nodes. (is it tho? it is definetly some problems somewhere)
+We used **Vagrant** with the DigitalOcean provider to manage our Infrastructure as Code (IaC), allowing us to spin up our entire production environment using a single `Vagrantfile`. 
+
+Running `vagrant up` automatically builds and configures three virtual droplets from scratch:
+* **`dbserver`** (Our MongoDB database)
+* **`webserver`** (Primary server)
+* **`secondary`** (Backup server)
+
+Our shell provisioning scripts handle the heavy lifting: installing core dependencies (Docker, Docker Compose, and Nginx), configuring **Keepalived** with a Virtual IP (VIP) for automated failover, and setting up shared directories (like `/app/prometheus_metrics` with `755` permissions) so Gunicorn can aggregate Prometheus metrics properly.
+
+This automated setup builds our isolated system from a blank slate, ensuring our staging and production nodes stay consistent. While configuration drift is always a challenge in real-world deployments—especially when managing network synchronization and container storage across multiple nodes—this IaC approach eliminates manual setup errors and significantly improves system reliability.
+
 
 ### 3.2) CI/CD Pipeline
 
