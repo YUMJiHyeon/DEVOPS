@@ -17,12 +17,6 @@ matal@itu.dk
 
 
 
-### (Formal Requirements - remove)
-Make sure that you link all artifacts that you consider constitutional to your projects together with short descriptions of the linked artifacts from your reports, i.e., link all necessary repositories, issue trackers, monitoring/logging systems, etc.
-
-Since this is a group project and the report is written by a group make sure to indicate for each section the respective author(s).
-
-
 ## Table of content
 * **[1. Introduction](#1-introduction)**
 * **[2. System's Perspective](#2-systems-perspective-architecture)**
@@ -38,6 +32,8 @@ Since this is a group project and the report is written by a group make sure to 
   * *[3.5 Security Hardening](#35-security-hardening)* 
   * *[3.6 Availability and Scaling](#36-availability-and-scaling)* 
 * **[4. Reflection Perspective](#4-reflection-perspective)** 
+* **[5. Use of Generative AI](#4-use-of-generative-ai)** 
+
 
  
 ## 1) Introduction
