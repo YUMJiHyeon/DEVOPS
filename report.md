@@ -34,7 +34,14 @@ matal@itu.dk
 * **[4. Reflection Perspective](#4-reflection-perspective)** 
 * **[5. Use of Generative AI](#5-use-of-generative-ai)** 
 
+## Contribution Distribution
 
+| Member | Main contributions |
+|---|---|
+| Erle Sognnæs | CI/CD, Architecture, System Design |
+| Jihyeon Yum |  Availability and scaling, Dependencies, Security hardening |
+| Margrét Edda Friðgeirsdóttir | Monitoring, reflections, Current state |
+| Mathias Anakin Alm | Infrastructure, Logging, Use of Generative AI |
  
 ## 1) Introduction
 This report describes the design, evolution, and operation of our ITU-MiniTwit system. Our group’s goal was to upgrade the old application into a robust, scalable application by using DevOps principles.
@@ -114,12 +121,7 @@ The system is implemented in Python using the Flask web framework and MongoDB vi
 The production setup currently remains stable across both web nodes and supports concurrent traffic from our automated simulator. Automated formatting via Black and linting via Flake8 improved our code maintainability and consistency. However, parts of minitwit.py still directly access MongoDB instead of using a fully isolated data-access layer, creating tighter coupling between application logic and the database. A remaining improvement goal is to fully decouple this integration to reduce the impact of future schema or infrastructure changes.
 
 ## 3) Process perspective
-<<<<<<< Updated upstream
-
-The Process Perspective highlights the automated lifecycles that construct, validate, provision, and maintain our systems. This section outlines how an updated code snippet evolves from an engineer's machine into a stable piece of infrastructure running in production, along with the continuous runtime monitoring that keeps it healthy. (this kinda sounds like our program works flawlessly, how do we write it less so lol)
-=======
 The Process Perspective highlights the automated lifecycles that construct, validate, provision, and maintain our systems.
->>>>>>> Stashed changes
 
 ### 3.1) Infrastructure as Code (IaC)
 
@@ -127,24 +129,10 @@ To ensure our environments are reproducible and resilient against hardware failu
 
 #### IaC in Action
 ![IaC in Action](img/IaC5.gif "IaC in Action")	
-<<<<<<< Updated upstream
-We used **Vagrant** with the DigitalOcean provider to manage our Infrastructure as Code (IaC), allowing us to spin up our entire production environment using a single `Vagrantfile`. 
-
-Running `vagrant up` automatically builds and configures three virtual droplets from scratch:
-* **`dbserver`** (Our MongoDB database)
-* **`webserver`** (Primary server)
-* **`secondary`** (Backup server)
-
-Our shell provisioning scripts handle the heavy lifting: installing core dependencies (Docker, Docker Compose, and Nginx), configuring **Keepalived** with a Virtual IP (VIP) for automated failover, and setting up shared directories (like `/app/prometheus_metrics` with `755` permissions) so Gunicorn can aggregate Prometheus metrics properly.
-
-This automated setup builds our isolated system from a blank slate, ensuring our staging and production nodes stay consistent. While configuration drift is always a challenge in real-world deployments—especially when managing network synchronization and container storage across multiple nodes—this IaC approach eliminates manual setup errors and significantly improves system reliability.
-
-=======
 We implemented Infrastructure as Code (IaC) via Vagrant and the DigitalOcean provider to ensure our environment is reproducible. Our infrastructure is orchestrated via a single Vagrantfile, which automates the creation and configuration of three virtual droplets: dbserver, webserver (Primary), and secondary.
 
 The Vagrantfile includes shell provisioning scripts that automate the installation of core dependencies, including Docker, Docker Compose, and Nginx. It also handles complex network configurations, such as setting up Keepalived on both web servers to manage a Virtual IP (VIP) for automated failover. Furthermore, the IaC layer handles the preparation required for Observability in a multi-process environment. This includes automated creation of shared memory directories (e.g., /app/prometheus_metrics) with restricted permissions (755) to enable consistent metric collection via Gunicorn workers. By executing a single command ```vagrant up```, the entire infrastructure is built from scratch in minutes, eliminating manual configuration errors and ensuring high system reliability.
 Our provisioning setup builds up our environment from a blank slate. As captured in the GIF above, our scripts handle downloading dependency layers, initializing the Docker engines, structuring the virtual container bridges, and linking our web nodes cleanly to our database servers minimizing configuration drift between staging and production nodes.
->>>>>>> Stashed changes
 
 ### 3.2) CI/CD Pipeline
 
