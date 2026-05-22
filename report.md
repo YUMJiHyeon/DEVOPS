@@ -158,17 +158,16 @@ To handle Gunicorn’s multiprocess architecture, we implemented GunicornInterna
 
 
 ### 3.4) Logging
-Our system logged textual event data using Grafana Loki for centralized aggreation, collected via Alloy. While monitoring tracked request counts, our logs capure the actual content of HTTP requests, including methods, paths, and client details.
+Our system logged used Grafana Loki for centralized aggreation, collected via Alloy. While Prometheus monitored numerical metrics, Loki captured the textual content of HTTP requests, including methods, paths, and client details.
 
-We recorded application-level debug messages, such as user registrations and tweet attempts, alongside critcal system errors like Gunicorn worker timeouts and Python tracebackes. This textual record was essential for detailed root-cause analysis. By correlating Prometheus metric spikes with specific Loki log entries, we significantly reduced our mean time to resolution (MTTR) during system incidents. 
+We recorded application-level debug messages, such as user registrations and tweet attempts, alongside critcal system errors like Gunicorn worker timeouts and Python tracebackes. Correlating Prometheus metric spikes with Loki log entries significantly reduced our mean time to resolution (MTTR) during incidents.
 
 #### Logging Dashboards in Action
 ![Logging dashboard](img/logging.gif "logging dashboard")
 
-As visualized in the logging dashboard above, our system continuously sends all application logs directly into Grafana Loki. Whenever an application exception triggers, or an unrecognized scanner resource pathway is encountered, the stack traces are indexed and searchable in real time. This keeps our debugging workflow fast and data-driven without requiring explicit, manual shell access to our active production servers.
-(are they indexed? also the logs are a bit messy tho, should we maybe write that it could have been cleaned up or something?)
+As showen above, our system continuously logs directly into Grafana Loki.Exceptions, stack traces, and suspicious scanner requests became searchable in real time. Tenabling faster debugging and reducing the need for manual shell access to production servers.
 
-		
+
 ### 3.5) Security hardening
 
 
