@@ -141,16 +141,16 @@ Our provisioning setup builds up our isolated environment from a blank slate. As
 
 ### 3.2) CI/CD Pipeline
 
-Our software deployment loop runs automatically whenever a branch update is committed to source control.
+Our software deployment loop runs automatically whenever updates are committed to source control.
 
 ![CI/CD pipeline](img/cicddig.png "CI/CD pipeline")
-As seen in the diagram above, our CI/CD pipeline starts when a developer pushes their code onto our Github reposoitory. Then the Github Actions is activated and the tests run automaticlly and in parellel. 
+As shown above, our pipeline starts when code is pushed onto our Github reposoitory.Github Actions then runs tests automaticlly and in parellel. 
 
 The pipeline includes automated build processes, dynamic page deployments, SonarCloud static code analysis, CodeQL security analysis, and Docker image build and scan operations. These automated checks help ensure code quality, security, and deployment consistency before changes are merged into the main branch.
 
-Once all checks have successfully passed, the changes are merged into the main branch. The updated application is then deployed to both the primary web server and the secondary web server using Docker Compose restart procedures.
+Once all checks have pass, the application is then deployed to both the primary web server and secondary web server using Docker Compose restart procedures.
 
-This CI/CD pipeline automates large parts of the development and deployment workflow, reducing manual configuration errors and supporting continuous integration and continuous deployment practices.
+This CI/CD pipeline automates much of the development and deployment workflow, reducing manual configuration errors and supporting continuous integration and continuous deployment practices.
 
 #### CI/CD in Action
 ![CI/CD pipeline gif](img/CiCdPl.gif "CI/CD pipeline gif")
@@ -158,20 +158,13 @@ This CI/CD pipeline automates large parts of the development and deployment work
 
 ### 3.3) Monitoring 
 
-We monitored our system using a Prometheus and Grafana stack to ensure infrastructure health, application performance, and business visibility. Monitoring focused on numerical metrics to identify trends and system states. 
+We monitored our system using a Prometheus and Grafana stack to ensure infrastructure health, application performance, and business visibility. Resource consumption was monitored through cAdvisor, collecting real-time data from Docker containers. We tracked CPU usage per container helping us to identify bottlenecks in services like MongoDB or the web server.
 
-To monitor resource consumption, we utilized cAdvisor, collecting real-time data from Docker containers. We specifically tracked CPU usage per container using the query:sum(rate(container_cpu_usage_seconds_total{id!="/"}[1m])) by (name) * 100. This allowed us to identify performance bottlenecks in services like MongoDB or the web server.
-Application health was monitored via prometheus-flask-exporter in minitwit.py. We tracked flask_http_request_total for 4 diffrent types of HTTP requests such as: 
+Application health was monitored via prometheus-flask-exporter in minitwit.py. We tracked flask_http_request_total across several HTTP response types, including successful requests (200), redirects (302), missing routes (404), and unsupported methods (405). This also helped detect suspicious traffic patterns from vulnerability scanners such as BXJZ, PROPFIND, and HIAS. 
 
-		- successful request (200)
-		- redirects (302) 
-		- missing routes (404) 
-		- unsupported request methhods (405)
-		
-This numerical tracking enabled the detection of security anomalies, such as vulnerability-scanning traffic (e.g., BXJZ, PROPFIND, HIAS). 
-Business KPIs were tracked with straightforward PromQL queries. We monitored total registered users using max(minitwit_users_total). The max function was essential in our Gunicorn multiprocess environment to ensure a consistent total was displayed despite multiple workers reporting independently. User activity was visualized through tweet frequency using rate(minitwit_tweets_total[5m]), providing insights into real-time system engagement.
+Business KPIs were monitored through PromQL queries. Total registered users were tracked using max(minitwit_users_total), where the max function ensured consistent values across Gunicorn worker processes. User activity was visualized through tweet frequency providing insights into real-time system engagement.
 
-To handle Gunicorn’s multiprocess architecture, we implemented GunicornInternalPrometheusMetrics and configured the PROMETHEUS_MULTIPROC_DIR environment variable. This ensures that metrics from all workers are aggregated into a single consistent state rather than reporting inconsistent partial data.
+To handle Gunicorn’s multiprocess architecture, we implemented GunicornInternalPrometheusMetrics and configured the PROMETHEUS_MULTIPROC_DIR, ensuring metrics from multiple workers were aggregated into a consistent shared state.
 
 #### Monitoring Dashboard in Action
 ![Monotoring dashboard](img/monotoring.gif "monotoring dashboard")
@@ -250,17 +243,3 @@ We have used Gen AI to help identify the cause of cryptic error messages, a lot 
 #### 2.1.) Create a .mailmap file in the root of your repositories 
 
 #### 2.2.) Create Four Videos Demonstrating your ITU-MiniTwit System in Production 
-
-
-#### 2.3.) TODO: Update the main readme file 
-	
-TODO: System's Perspective 
-
-TODO: Process' perspective 
-
-TODO: Reflection Perspective 
-
-TODO: Use of Generative AI -> ✨ YES ✨ 
-
- idea: We used it when we got stuck or encountered unexpected errors.  It has been a life saver for the most part.  
-
