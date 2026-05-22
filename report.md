@@ -19,7 +19,7 @@ matal@itu.dk
 
 ## Table of content
 * **[1. Introduction](#1-introduction)**
-* **[2. System's Perspective](#2-systems-perspective-architecture)**
+* **[2. System's Perspective](#2-systems-perspective)**
   * *[2.1 System Architecture](#21-system-architecture)*
   * *[2.2 System Design](#22-system-design)* 
   * *[2.3 Dependencies](#23-dependencies)* 
@@ -46,7 +46,7 @@ We implemented Infrastructure as Code (IaC) using Vagrant to ensure our environm
 This section explains the layout of our ITU-MiniTwit, from physical servers down to the code. By breaking the system into separate pieces, we make sure our environments stay consistent, prevent isolated bugs from crashing the whole application, and make it easy to add servers when traffic grows.
 
 ### 2.1) System Architecture
-The three-tier architecture we implemented splits our system into user interface, core application logic, and database storage. With this we can safely update our UI code without risking or breaking our underlying data.
+The three-tier architecture we implemented splits our system into user interface, core application logic, and database storage.
 
 #### Allocation View
 ![Allocation View](img/UML-Deployment-Diagram.png "Allocation view")
@@ -61,6 +61,7 @@ We used Flask, a lightweight Python web framework, to build our application beca
 Our Flask setup is broken down into two main responsibilities:
 -	Frontend Rendering: Flask uses the Jinja2 templating engine to generate the HTML pages users see, dynamically injecting Python data like usernames and tweets directly into the frontend.
 -	Backend Operations: Flask handles all core user actions (logins, tweets, and follow requests). It relies on its built-in utility library, Werkzeug, to securely hash user passwords and manage secure sessions.
+
 To talk to our database, Flask routes these backend requests through Flask-PyMongo. This extension acts as our direct bridge to the MongoDB server, utilizing the official PyMongo driver to execute queries and manage data collections.
 
 
@@ -122,9 +123,17 @@ To ensure environments are entirely reproducible and resilient against hardware 
 
 #### IaC in Action
 ![IaC in Action](img/IaC5.gif "IaC in Action")	
-We implemented Infrastructure as Code (IaC) using Vagrant combined with the DigitalOcean provider to ensure our production environment is reproducible and standardized. Our entire infrastructure is orchestrated via a single Vagrantfile, which automates the creation and configuration of three virtual droplets: dbserver, webserver (Primary), and secondary. The Vagrantfile includes shell provisioning scripts that automate the installation of core dependencies, including Docker, Docker Compose, and Nginx. It also handles complex network configurations, such as setting up Keepalived on both web servers to manage a Virtual IP (VIP) for automated failover. Furthermore, the IaC layer handles the specific preparation required for Observability in a multi-process environment. This includes the automated creation of shared memory directories (e.g., /app/prometheus_metrics) with restricted permissions (755) to enable consistent metric aggregation across Gunicorn workers. By executing a single command, vagrant up, the entire production-grade infrastructure is built from scratch in minutes, eliminating manual configuration errors and ensuring high system reliability.
+We used **Vagrant** with the DigitalOcean provider to manage our Infrastructure as Code (IaC), allowing us to spin up our entire production environment using a single `Vagrantfile`. 
 
-Our provisioning setup builds up our isolated environment from a blank slate. As captured in the animation above, our scripts handle downloading core dependency layers, initializing the Docker daemon engines, structuring the virtual container bridges, and linking our web nodes cleanly to our isolated database servers without causing configuration drift between staging and production nodes. 
+Running `vagrant up` automatically builds and configures three virtual droplets from scratch:
+* **`dbserver`** (Our MongoDB database)
+* **`webserver`** (Primary server)
+* **`secondary`** (Backup server)
+
+Our shell provisioning scripts handle the heavy lifting: installing core dependencies (Docker, Docker Compose, and Nginx), configuring **Keepalived** with a Virtual IP (VIP) for automated failover, and setting up shared directories (like `/app/prometheus_metrics` with `755` permissions) so Gunicorn can aggregate Prometheus metrics properly.
+
+This automated setup builds our isolated system from a blank slate, ensuring our staging and production nodes stay consistent. While configuration drift is always a challenge in real-world deployments—especially when managing network synchronization and container storage across multiple nodes—this IaC approach eliminates manual setup errors and significantly improves system reliability.
+
 
 ### 3.2) CI/CD Pipeline
 
