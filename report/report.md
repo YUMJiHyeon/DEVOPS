@@ -90,7 +90,7 @@ All these features communicate with a shared MongoDB access layer using PyMongo.
 
 
 #### Component and Connector view  
-![Component and Connector view](img/c&cdiagram.png "Component and Connector view")
+![Component and Connector view](img/ccdiagram.png "Component and Connector view")
 
 This sequence diagram shows the lifecycle of registering a user. The prosess starts when a client, either User or Simulator, sends in their information. Gunicorn catches the data and forwards it to our Flask application. Flask queries MongoDB with find_one to look for the username in the database. MongoDB returns if the username is taken or not.
 Here the logic splits into alternative branches.
