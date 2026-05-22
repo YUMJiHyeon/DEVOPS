@@ -32,7 +32,7 @@ matal@itu.dk
   * *[3.5 Security Hardening](#35-security-hardening)* 
   * *[3.6 Availability and Scaling](#36-availability-and-scaling)* 
 * **[4. Reflection Perspective](#4-reflection-perspective)** 
-* **[5. Use of Generative AI](#4-use-of-generative-ai)** 
+* **[5. Use of Generative AI](#5-use-of-generative-ai)** 
 
 
  
@@ -203,7 +203,7 @@ Our application ensures high availability through a redundant web server layer. 
 this needs to be made easier, and lowkey write something about that this is the purpose/idea, but it doesn't always work..
 
 
- ## 4) Reflection Perspective
+## 4) Reflection Perspective
 
 One major issue during the evolution of our system was migrating from the  SQLite-based Flask application to a MongoDB-backed. The original system used a local database file. That made it simple but Unfit for a distributed setup. The refactored version used flask_pymongo and MONGO_URI, making the database external and configurable. That also introduced challenges like networking, firewall rules, and database availability. The system's evolution is reflected in commits such as 6598b74 (Docker hardening), 0bb4adf (Grafana monitoring fixes), and c011bde (secondary webserver and scaling support).
 
@@ -232,7 +232,7 @@ A recurring issue was that Grafana monitoring would initially function correctly
 Compared to previous projects, this work was much more operationally focused and aligned more closely with DevOps practices. Unlike prior projects where infrastructure was set up once and left alone, here provisioning scripts were updated alongside application code, making deployment a continuous concern. However, our process had a significant gap: unlike many other groups, we did not inherit a previous semester’s Chirp project and instead worked from the teacher-provided legacy MiniTwit codebase. Although a new group member later had access to a prior project, this happened several weeks into the course, and switching codebases at that stage was considered too disruptive. As a result, a large amount of time was spent building infrastructure and adapting legacy code before we could focus on stable iteration and release routines. Despite this, the project gave us practical experience with Infrastructure as Code, distributed systems debugging, observability, and high-availability infrastructure, while also highlighting how much operational complexity a greenfield distributed system introduces even before feature development begins.
 
 
- ## 5) Use of Generative AI
+## 5) Use of Generative AI
  
 We have used Gen AI to help identify the cause of cryptic error messages, a lot of this is from trying to deploy and some cryptic error message gets sent back. Using AI for error messages helped us when working with packages we dont have experience in. We have also used AI for vibe coding, this makes our workflow center more on fixing errors and making design decisions. We used Ai for helping our report structure. We used ChatGPT, Claude and Gemini for error finding and vibe coding, we used Gemini and ChatGPT for oour report structure.
  
