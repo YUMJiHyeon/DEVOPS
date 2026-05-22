@@ -46,7 +46,7 @@ matal@itu.dk
 ## 1) Introduction
 This report describes the design, evolution, and operation of our ITU-MiniTwit system. Our group’s goal was to upgrade the old application into a robust, scalable application by using DevOps principles.
 
-We implemented Infrastructure as Code (IaC) using Vagrant to ensure our environments stay identical. We then deployed a Nginx load balancer integrated with Keepalived to achieve high availability, to automatically handle server failures. We then implemented Prometheus and Grafana for observing the system through monitoring and logging. The development lifecycle is managed through a CI/CD pipeline, which automates testing and deployment processes.
+We implemented Infrastructure as Code (IaC) using Vagrant to ensure our environments stay identical. We then implemented Prometheus and Grafana for observing the system through monitoring and logging. We then deployed a Nginx load balancer integrated with Keepalived to achieve high availability, to automatically handle server failures. The development lifecycle is managed through a CI/CD pipeline, which automates testing and deployment processes.
 
 
 ## 2) System's Perspective
