@@ -204,11 +204,7 @@ As shown in the picture, a hacker bot managed to enter our database early in the
 
 ### 3.6) Availability and scaling
 
-<<<<<<< Updated upstream
-Our application ensures high availability through a redundant web server layer. By deploying identical primary and secondary web server instances behind Gunicorn, the system can withstand unexpected traffic spikes or individual container restarts. If a rolling update is triggered during a CI/CD pipeline execution, one server continues processing incoming simulator loads while its partner reinitializes, completely reducing downtime for active clients. Storage constraints are reduced by utilizing document-based MongoDB instances which can be scaled horizontally through sharding as our tweet metrics and user data volumes expand.
-=======
-Our application ensures high availability through a redundant server layer. By deploying identical primary and secondary server instances behind Gunicorn, the system can withstand unexpected traffic spikes or individual container restarts. If a rolling update is triggered during a CI/CD pipeline execution, one server continues while its partner reinitializes, reducing downtime for active clients. Storage constraints are reduced by utilizing document-based MongoDB instances which can be scaled horizontally through sharding as our data volumes expand.
->>>>>>> Stashed changes
+Our application ensures high availability through a redundant server layer. By deploying identical primary and secondary server instances behind Gunicorn, the system can withstand unexpected traffic spikes or individual container restarts. If a rolling update is triggered during a CI/CD pipeline execution, one server should continue while its partner reinitializes, reducing downtime for active clients, however we could not get this to work, for some reason updating the main server doesn't make nginx route traffick through the secondary server. Storage constraints are reduced by utilizing document-based MongoDB instances which can be scaled horizontally through sharding as our data volumes expand.
 
 
 ## 4) Reflection Perspective
@@ -217,7 +213,6 @@ One major issue during the evolution of our system was migrating from the  SQLit
 
 The scope of the refactoring is summarised below: 
 
-<<<<<<< Updated upstream
 | First app        | Second app                   |
 | ---------------- | ---------------------------- |
 | Uses SQLite      | Uses MongoDB                 |
@@ -243,10 +238,6 @@ Compared to previous projects, this work was much more operationally focused and
 
 ## 5) Use of Generative AI
  
-=======
- ## 5) Use of Generative AI
-
->>>>>>> Stashed changes
 We have used Gen AI to help identify the cause of cryptic error messages, a lot of this is from trying to deploy and some cryptic error message gets sent back. Using AI for error messages helped us when working with packages we dont have experience in. We have also used AI for vibe coding, this makes our workflow center more on fixing errors and making design decisions. We used Ai for helping our report structure. We used ChatGPT, Claude and Gemini for error finding and vibe coding, we used Gemini and ChatGPT for oour report structure.
  
 
