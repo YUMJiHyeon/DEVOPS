@@ -41,7 +41,10 @@ Since this is a group project and the report is written by a group make sure to 
 
  
 ## 1) Introduction
- 
+(200/2500 word)
+This report details the design, evolution, and operation of the ITU-MiniTwit system for the 'DevOps, Software Evolution, and Software Maintenance' course. Our group aimed to transform the legacy application into a robust, scalable service by applying modern DevOps principles.
+
+We implemented Infrastructure as Code (IaC) using Vagrant to ensure reproducible environments. To achieve high availability, we deployed an Nginx load balancer integrated with Keepalived, creating an automated failover mechanism. Furthermore, we established comprehensive observability by integrating Prometheus and Grafana for system monitoring and log aggregation. The entire development lifecycle is managed through a CI/CD pipeline, which automates testing and deployment processes.
 		
 ## 2) System's Perspective (Architecture)
 
@@ -51,14 +54,14 @@ A description and illustration of the:
 	-Describe the current state of your systems, for example using results of static analysis and quality assessments.
 
 ### 2.1) System Architecture
-
+(150/2500 word)
 #### Allocation View
 ![Allocation View](img/UML-Deployment-Diagram.png "Allocation view")
 
 As seen in the Allocation View above, our system is split into three layers. We have the frontend/UI layer, which consists of the MiniTwit browser application that we received at the beginning of the course. The logic layer is comprised of two web servers: a primary web server and a secondary web server. We implemented Docker containers to run our application together with all required dependencies, ensuring that the application remains consistent across different servers and environments. We also implemented Gunicorn, which hosts the MiniTwit Flask application. Gunicorn handles incoming HTTP requests before forwarding them to the main application. Both web servers communicate with the MongoDB database server, which stores the application’s data. Finally, Prometheus monitors the system by scraping metrics data from the web servers. As a side note, our system is not a perfectly separated three-layer architecture, since parts of the logic layer also interact directly with the data layer.
 
 ### 2.2) System Design
-
+(150/2500 word)
 For this project we used Flask which is a lightweight Python web framwork. It was chosen as it was recommended to us for this project and provided us a simple way to build the MiniTwit application in Python. Flask was used to implement routing, user authentication, and database integration. For the frontend it shows all the pages the users sees using HTML templates that we get from Jinja2, Flasks template engine. It also sends data from Python into the HTML like tweets and usernames. Flask has a internal support library Wekzeug. In our project it used for securely hashing passwords, validating requests, handling sessions and routing internally. 
 
 Regarding the backend, Flask handles all user requests and responses such as log ins, tweets, follow requests and logouts. Flask takes those requests and sends them to Flask-PyMongo which we use to send and recive data from our MongoDB server. Flask-PyMongo is built on top of PyMongo which is the official Python driver for MongoDB which allows us to access low-level functionality in our data base. 
@@ -86,6 +89,7 @@ After successful registration the execution enters the inner alternative block, 
 
 
 ### 2.3) Dependencies
+(150/2500 word)
 Note (remove): All dependencies of your ITU-MiniTwit systems on all levels of abstraction and development stages. That is, list and briefly describe all technologies and tools you applied and depend on.
 
 The system is implemented mainly in Python using the Flask web framework. It uses MongoDB as the database through PyMongo. Passwords are handled with Werkzeug security utilities. Monitoring is supported through Prometheus using prometheus_client and prometheus_flask_exporter. The application is containerized with Docker and orchestrated through Docker Compose. Development and version control are handled with Git and GitHub, while CI/CD is handled through GitHub Actions. Code quality/security analysis is configured through Sonar using sonar-project.properties.
@@ -95,6 +99,7 @@ Our deployment dependencies are illustrated in our Allocation view diagram.
 
 
 ### 2.4) Current state
+(150/2500 word)
 Note (remove): Describe the current state of your systems, for example using results of static analysis and quality assessments.
 
 | Area             | Current state                            |
@@ -120,13 +125,15 @@ A complete description and illustration of stages and tools included in the CI/C
 
 
 ### 3.1) Infrastructure as Code (IaC)
-
+(150/2500 word)
 #### IaC in Action
 ![IaC in Action](img/IaC5.gif "IaC in Action")	
+We implemented Infrastructure as Code (IaC) using Vagrant combined with the DigitalOcean provider to ensure our production environment is reproducible and standardized. Our entire infrastructure is orchestrated via a single Vagrantfile, which automates the creation and configuration of three virtual droplets: dbserver, webserver (Primary), and secondary.
 
+The Vagrantfile includes shell provisioning scripts that automate the installation of core dependencies, including Docker, Docker Compose, and Nginx. It also handles complex network configurations, such as setting up Keepalived on both web servers to manage a Virtual IP (VIP) for automated failover. Furthermore, the IaC layer handles the specific preparation required for Observability in a multi-process environment. This includes the automated creation of shared memory directories (e.g., /app/prometheus_metrics) with restricted permissions (755) to enable consistent metric aggregation across Gunicorn workers. By executing a single command, vagrant up, the entire production-grade infrastructure is built from scratch in minutes, eliminating manual configuration errors and ensuring high system reliability
 
 ### 3.2) CI/CD Pipeline
-
+(200/2500 word)
 ![CI/CD pipeline](img/cicddig.png "CI/CD pipeline")
 As seen in the diagram above our CI/CD pipeline starts when a developer pushes their code onto our Github reposoitory. Then the Github Actions is activated and and the tests and are run automaticlly and in parellel. 
 
@@ -141,32 +148,35 @@ This CI/CD pipeline automates large parts of the development and deployment work
 
 
 ### 3.3) Monitoring 
+(200/2500 word)
 (Note - remove: How do you monitor your systems and what precisely do you monitor?)
 
-We monitored our system by keeping track of logging, our webservers CPU usage, the total of users in our system, the rate of which users tweeted as well as our HTTP requests. For logging we used Grafana Loki while for the rest we used Grafana Prometheus. We tracked 4 diffrent types of HTTP requests such as: 
+We monitored our system using a Prometheus and Grafana stack to ensure infrastructure health, application performance, and business visibility. Monitoring focused on numerical metrics to identify trends and system states. 
+
+To monitor resource consumption, we utilized cAdvisor, collecting real-time data from Docker containers. We specifically tracked CPU usage per container using the query:sum(rate(container_cpu_usage_seconds_total{id!="/"}[1m])) by (name) * 100. This allowed us to identify performance bottlenecks in services like MongoDB or the web server.
+Application health was monitored via prometheus-flask-exporter in minitwit.py. We tracked flask_http_request_total for 4 diffrent types of HTTP requests such as: 
 
 		- successful request (200)
 		- redirects (302) 
 		- missing routes (404) 
 		- unsupported request methhods (405)
 		
-Our monotoring also help us see some unusual requests such as:
+This numerical tracking enabled the detection of security anomalies, such as vulnerability-scanning traffic (e.g., BXJZ, PROPFIND, HIAS). 
+Business KPIs were tracked with straightforward PromQL queries. We monitored total registered users using max(minitwit_users_total). The max function was essential in our Gunicorn multiprocess environment to ensure a consistent total was displayed despite multiple workers reporting independently. User activity was visualized through tweet frequency using rate(minitwit_tweets_total[5m]), providing insights into real-time system engagement.
 
-		- BXJZ
-		- HIAS 
-		- PROPFIND
-		
-These were most likely vulnerability-scanning traffic against our server. 
-The user- and tweet total were pretty straight foward as we used these two simple PromQL queries: max(minitwit_users_total), rate(minitwit_tweets_total[5m]). For our CPU monotroing we used the following query: sum(rate(container_cpu_usage_seconds_total{id!="/"}[1m])) by (name) * 100. But that helped us see our resource consumption and preformance bottlenecks for induvidual containers. 
-
+To handle Gunicorn’s multiprocess architecture, we implemented GunicornInternalPrometheusMetrics and configured the PROMETHEUS_MULTIPROC_DIR environment variable. This ensures that metrics from all workers are aggregated into a single consistent state rather than reporting inconsistent partial data.
 
 #### Monitoring Dashboard in Action
 ![Monotoring dashboard](img/monotoring.gif "monotoring dashboard")
 
 
 ### 3.4) Logging
+(100/2500 word)
 (here we can refrence our demo vidos, explain our loggin further.
 What do you log in your systems and how do you aggregate logs?)
+Our system logged textual event data using Grafana Loki for centralized aggreation, collected via Alloy. While monitoring tracked request counts, our logs capure the actual content of HTTP requests, including methods, paths, and client details.
+
+We recorded application-level debug messages, such as user registrations and tweet attempts, alongside critcal system errors like Gunicorn worker timeouts and Python tracebackes. This textual record was essential for detailed root-cause analysis. By correlating Prometheus metric spikes with specific Loki log entries, we significantly reduced our mean time to resolution (MTTR) during system incidents. 
 
 #### Logging Dashboards in Action
 ![Logging dashboard](img/logging.gif "logging dashboard")
@@ -174,14 +184,24 @@ What do you log in your systems and how do you aggregate logs?)
 
 		
 ### 3.5) Security hardening
+(200/2500 word)
+
+![Security hardening](img/hackingbot.png "Security hardening")
 Brief description of how you security hardened your systems.
 - .dockerignore- and .env-files to keep sensitive information to getting uploaded online.
 
+To secure our system, we implemented multiple defensive layers focusing on secrets management, the principle of least privilege, and application level security.
+A critical turning point occurred when an .env file containing the dbserver admin credentials was accidentally pushed to our public repository. We responded by performing credential rotation, changing the admin password via mongosh, and strictly configuring.gitignore and .dockerignore to ensure secrets remained local. Specifically, the .dockerignore file prevented sensitive data and .git history from entering the Docker build context, reducing the attack surface.
+
+Following the principle of least privilege, we configured our Dockerfile to run the application under a non-root user, myuser, instead of the default root account. We also restricted directory permissions for the shared metrics folder to 755 to prevent unauthorized access. On the application level, we used werkzeug.security to store user passwords as secure hashes, protecting user data even if the database were compromised. Finally, our monitoring setup allowed us to detect security anomalies—such as vulnerability-scanning traffic requesting paths like BXJZ and PROPFIND—providing vital real-time visibility into potential threats against our production environment.
+
 ### 3.6) Availability and scaling
+(150/2500 word)
 How do you handle availability and scaling in your systems?
 
 
  ## 4) Reflection Perspective
+ (500/2500 word)
 Describe the biggest issues, how you solved them, and which are major lessons learned with regards to:
 
 	- evolution and refactoring
@@ -190,6 +210,9 @@ Describe the biggest issues, how you solved them, and which are major lessons le
 
 Also reflect and describe what was the "DevOps" style of your work. For example, what did you do differently to previous development projects and how did it work?
 
+ ## 5) Use of Generative AI
+ (100/2500 word)
+describe how generative AI tools have been used and briefly reflect and discuss how they supported or hindered your work process.
 
 
 #### 1.) TODO: Assure Information Correctness 
