@@ -17,13 +17,13 @@ matal@itu.dk
 
 
 
- ### (Formal Requirements - remove)
+### (Formal Requirements - remove)
 Make sure that you link all artifacts that you consider constitutional to your projects together with short descriptions of the linked artifacts from your reports, i.e., link all necessary repositories, issue trackers, monitoring/logging systems, etc.
 
 Since this is a group project and the report is written by a group make sure to indicate for each section the respective author(s).
 
 
- ## Table of content
+## Table of content
 * **[1. Introduction](#1-introduction)**
 * **[2. System's Perspective (Architecture)](#2-systems-perspective-architecture)**
   * *[2.1 System Architecture](#21-system-architecture)*
@@ -47,6 +47,8 @@ This report details the design, evolution, and operation of the ITU-MiniTwit sys
 We implemented Infrastructure as Code (IaC) using Vagrant to ensure reproducible environments. To achieve high availability, we deployed an Nginx load balancer integrated with Keepalived, creating an automated failover mechanism. Furthermore, we established comprehensive observability by integrating Prometheus and Grafana for system monitoring and log aggregation. The entire development lifecycle is managed through a CI/CD pipeline, which automates testing and deployment processes.
 		
 ## 2) System's Perspective (Architecture)
+Write something here?
+The System's Perspective explains the structural layout, component boundaries, and runtime behaviors of our ITU-MiniTwit infrastructure. By analyzing our system at different levels, from the physical servers down to individual code modules, we show how our modular design keeps our development and production environments consistent, isolates components to prevent system-wide failures, and allows us to easily add server capacity as traffic grows.
 
 A description and illustration of the:
 	-Design and architecture of your ITU-MiniTwit systems.
@@ -54,7 +56,8 @@ A description and illustration of the:
 	-Describe the current state of your systems, for example using results of static analysis and quality assessments.
 
 ### 2.1) System Architecture
-(150/2500 word)
+Our system architecture focuses on separating UI logic, business logic, and long-term storage to ensure compatibilitiy across our resources and make software updates safer to manage.
+
 #### Allocation View
 ![Allocation View](img/UML-Deployment-Diagram.png "Allocation view")
 
@@ -113,6 +116,8 @@ Note (remove): Describe the current state of your systems, for example using res
 | Monitoring       | Prometheus exporter                      |
 | Main improvement | Record actual test/lint results in CI/CD |
 
+Write here - description of current state
+The production setup currently remains stable across both web nodes, processing heavy, concurrent client traffic from our automated simulator. By introducing automated formatting via Black and code quality linting via Flake8, our code maintainability metrics have improved significantly. However, a remaining architectural gap is our tight coupling between the application logic and the database layer; parts of `minitwit.py` circumvent an isolated data-access layer to communicate directly with MongoDB. Our near-term goal is to fully decouple this integration so database schema variations will not disrupt business logic downstream. (check! - dont know if the table is correct, and the text is based of the table)
 
 
 ## 3) Process perspective
@@ -123,19 +128,26 @@ In particular, the following descriptions should be included:
 A complete description and illustration of stages and tools included in the CI/CD pipelines, including deployment and release of your systems.
 	- Diagram: CI/CD Pipeline
 
+Write here
+The Process Perspective highlights the automated lifecycles that construct, validate, provision, and maintain our systems. This section outlines how an updated code snippet evolves from an engineer's machine into a stable piece of infrastructure running in production, along with the continuous runtime monitoring that keeps it healthy. (this kinda sounds like our program works flawlessly, how do we write it less so lol)
 
 ### 3.1) Infrastructure as Code (IaC)
-(150/2500 word)
+Write here
+To ensure environments are entirely reproducible and resilient against hardware failures, our absolute state configuration is managed as code rather than manual server commands. (is this correct?)
+
 #### IaC in Action
 ![IaC in Action](img/IaC5.gif "IaC in Action")	
 We implemented Infrastructure as Code (IaC) using Vagrant combined with the DigitalOcean provider to ensure our production environment is reproducible and standardized. Our entire infrastructure is orchestrated via a single Vagrantfile, which automates the creation and configuration of three virtual droplets: dbserver, webserver (Primary), and secondary.
 
 The Vagrantfile includes shell provisioning scripts that automate the installation of core dependencies, including Docker, Docker Compose, and Nginx. It also handles complex network configurations, such as setting up Keepalived on both web servers to manage a Virtual IP (VIP) for automated failover. Furthermore, the IaC layer handles the specific preparation required for Observability in a multi-process environment. This includes the automated creation of shared memory directories (e.g., /app/prometheus_metrics) with restricted permissions (755) to enable consistent metric aggregation across Gunicorn workers. By executing a single command, vagrant up, the entire production-grade infrastructure is built from scratch in minutes, eliminating manual configuration errors and ensuring high system reliability
+Our provisioning setup builds up our isolated environment from a blank slate. As captured in the animation above, our scripts handle downloading core dependency layers, initializing the Docker daemon engines, structuring the virtual container bridges, and linking our web nodes cleanly to our isolated database servers without causing configuration drift between staging and production nodes. (is it tho? it is definetly some problems somewhere)
 
 ### 3.2) CI/CD Pipeline
-(200/2500 word)
+
+Our software deployment loop runs automatically whenever a branch update is committed to source control.
+
 ![CI/CD pipeline](img/cicddig.png "CI/CD pipeline")
-As seen in the diagram above our CI/CD pipeline starts when a developer pushes their code onto our Github reposoitory. Then the Github Actions is activated and and the tests and are run automaticlly and in parellel. 
+As seen in the diagram above, our CI/CD pipeline starts when a developer pushes their code onto our Github reposoitory. Then the Github Actions is activated and the tests run automaticlly and in parellel. 
 
 The pipeline includes automated build processes, dynamic page deployments, SonarCloud static code analysis, CodeQL security analysis, and Docker image build and scan operations. These automated checks help ensure code quality, security, and deployment consistency before changes are merged into the main branch.
 
@@ -181,14 +193,21 @@ We recorded application-level debug messages, such as user registrations and twe
 #### Logging Dashboards in Action
 ![Logging dashboard](img/logging.gif "logging dashboard")
 
+As visualized in the logging dashboard above, our system continuously sends all application logs directly into Grafana Loki. Whenever an application exception triggers, or an unrecognized scanner resource pathway is encountered, the stack traces are indexed and searchable in real time. This keeps our debugging workflow fast and data-driven without requiring explicit, manual shell access to our active production servers.
+(are they indexed? also the logs are a bit messy tho, should we maybe write that it could have been cleaned up or something?)
 
 		
 ### 3.5) Security hardening
 (200/2500 word)
 
 ![Security hardening](img/hackingbot.png "Security hardening")
-Brief description of how you security hardened your systems.
-- .dockerignore- and .env-files to keep sensitive information to getting uploaded online.
+remove - Brief description of how you security hardened your systems.
+
+We security hardened our deployment by making sure production host data boundaries are fully isolated from our public code history:
+* **Environment Files (`.env`):** We use `.env` files to store all our database passwords and secret keys locally on the server. This keeps our sensitive credentials completely safe from being accidentally pushed to GitHub where anyone could see them.
+* **Docker Ignore (`.dockerignore`):** This file acts like a filter during our builds. It makes sure that random junk files, local test logs, and temporary development data don't get accidentally bundled into our live production containers.
+* **Runtime Scans:** We set up CodeQL inside our GitHub pipeline to act as an automated security check. Every time someone pushes a new pull request, the pipeline automatically scans the code for security bugs, unescaped database queries, or leaked keys before we are allowed to merge it.
+(are all these right?)
 
 To secure our system, we implemented multiple defensive layers focusing on secrets management, the principle of least privilege, and application level security.
 A critical turning point occurred when an .env file containing the dbserver admin credentials was accidentally pushed to our public repository. We responded by performing credential rotation, changing the admin password via mongosh, and strictly configuring.gitignore and .dockerignore to ensure secrets remained local. Specifically, the .dockerignore file prevented sensitive data and .git history from entering the Docker build context, reducing the attack surface.
@@ -198,6 +217,10 @@ Following the principle of least privilege, we configured our Dockerfile to run 
 ### 3.6) Availability and scaling
 (150/2500 word)
 How do you handle availability and scaling in your systems?
+Write here
+Our application ensures high availability through a redundant web server layer. By deploying identical primary and secondary web server instances behind Gunicorn, the system can withstand unexpected traffic spikes or individual container restarts. If a rolling update is triggered during a CI/CD pipeline execution, one server continues processing incoming simulator loads while its partner reinitializes, completely reducing downtime for active clients. Storage constraints are reduced by utilizing document-based MongoDB instances which can be scaled horizontally through sharding as our tweet metrics and user data volumes expand.
+(i guess we should be carefull with writing "high availability" since it's like down half of the time...)
+this needs to be made easier, and lowkey write something about that this is the purpose/idea, but it doesn't always work..
 
 
  ## 4) Reflection Perspective
