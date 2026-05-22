@@ -56,7 +56,7 @@ This section explains the layout of our ITU-MiniTwit, from physical servers down
 The three-tier architecture we implemented splits our system into user interface, core application logic, and database storage.
 
 #### Allocation View
-![Allocation View](img/UML-Deployment-Diagram.png "Allocation view")
+![Allocation View](../img/UML-Deployment-Diagram.png "Allocation view")
 
 The diagram shows how we implemented the three-tier architecture. The User Interface Layer consists of the user's web browser, which displays the MiniTwit UI. The Application Logic Layer has two identical web servers running in parallel, each implemented with a Docker, for consistency across different servers. Gunicorn hosts the MiniTwit Flask application, handles incoming HTTP requests and passes them to our main application. The Database Layer includes MongoDB which communicates with both servers, and stores all application data. Additionally, Prometheus monitors and scrapes performance metrics from both web servers.
 
@@ -75,7 +75,7 @@ To talk to our database, Flask routes these backend requests through Flask-PyMon
 
 
 #### Module View
-![Module view](img/moduleviewdig.png "Module view")
+![Module view](../img/moduleviewdig.png "Module view")
 
 As shown in the diagram, Minitwit.py is our core application code acts as the entry point, routing incoming web traffic to specific Python features:
 
@@ -90,7 +90,7 @@ All these features communicate with a shared MongoDB access layer using PyMongo.
 
 
 #### Component and Connector view  
-![Component and Connector view](img/ccdiagram.png "Component and Connector view")
+![Component and Connector view](../img/ccdiagram.png "Component and Connector view")
 
 This sequence diagram shows the lifecycle of registering a user. The prosess starts when a client, either User or Simulator, sends in their information. Gunicorn catches the data and forwards it to our Flask application. Flask queries MongoDB with find_one to look for the username in the database. MongoDB returns if the username is taken or not.
 Here the logic splits into alternative branches.
@@ -128,7 +128,7 @@ The Process Perspective highlights the automated lifecycles that construct, vali
 To ensure our environments are reproducible and resilient against hardware failures, our state configuration is managed as code.
 
 #### IaC in Action
-![IaC in Action](img/IaC5.gif "IaC in Action")	
+![IaC in Action](../img/IaC5.gif "IaC in Action")	
 We implemented Infrastructure as Code (IaC) via Vagrant and the DigitalOcean provider to ensure our environment is reproducible. Our infrastructure is orchestrated via a single Vagrantfile, which automates the creation and configuration of three virtual droplets: dbserver, webserver (Primary), and secondary.
 
 The Vagrantfile includes shell provisioning scripts that automate the installation of core dependencies, including Docker, Docker Compose, and Nginx. It also handles complex network configurations, such as setting up Keepalived on both web servers to manage a Virtual IP (VIP) for automated failover. Furthermore, the IaC layer handles the preparation required for Observability in a multi-process environment. This includes automated creation of shared memory directories (e.g., /app/prometheus_metrics) with restricted permissions (755) to enable consistent metric collection via Gunicorn workers. By executing a single command ```vagrant up```, the entire infrastructure is built from scratch in minutes, eliminating manual configuration errors and ensuring high system reliability.
@@ -138,7 +138,7 @@ Our provisioning setup builds up our environment from a blank slate. As captured
 
 Our software deployment loop runs automatically whenever updates are committed to source control.
 
-![CI/CD pipeline](img/cicddig.png "CI/CD pipeline")
+![CI/CD pipeline](../img/cicddig.png "CI/CD pipeline")
 As shown above, our pipeline starts when code is pushed onto our Github reposoitory.Github Actions then runs tests automaticlly and in parellel. 
 
 The pipeline includes automated build processes, dynamic page deployments, SonarCloud static code analysis, CodeQL security analysis, and Docker image build and scan operations. These automated checks help ensure code quality, security, and deployment consistency before changes are merged into the main branch.
@@ -148,7 +148,7 @@ Once all checks have pass, the application is then deployed to both the primary 
 This CI/CD pipeline automates much of the development and deployment workflow, reducing manual configuration errors and supporting continuous integration and continuous deployment practices.
 
 #### CI/CD in Action
-![CI/CD pipeline gif](img/CiCdPl.gif "CI/CD pipeline gif")
+![CI/CD pipeline gif](../img/CiCdPl.gif "CI/CD pipeline gif")
 
 
 ### 3.3) Monitoring 
@@ -162,7 +162,7 @@ Business KPIs were monitored through PromQL queries. Total registered users were
 To handle Gunicorn’s multiprocess architecture, we implemented GunicornInternalPrometheusMetrics and configured the PROMETHEUS_MULTIPROC_DIR, ensuring metrics from multiple workers were aggregated into a consistent shared state.
 
 #### Monitoring Dashboard in Action
-![Monotoring dashboard](img/monotoring.gif "monotoring dashboard")
+![Monotoring dashboard](../img/monotoring.gif "monotoring dashboard")
 
 
 ### 3.4) Logging
@@ -171,7 +171,7 @@ Our system logged used Grafana Loki for centralized aggreation, collected via Al
 We recorded application-level debug messages, such as user registrations and tweet attempts, alongside critcal system errors like Gunicorn worker timeouts and Python tracebackes. Correlating Prometheus metric spikes with Loki log entries significantly reduced our mean time to resolution (MTTR) during incidents.
 
 #### Logging Dashboards in Action
-![Logging dashboard](img/logging.gif "logging dashboard")
+![Logging dashboard](../img/logging.gif "logging dashboard")
 
 As showen above, our system continuously logs directly into Grafana Loki.Exceptions, stack traces, and suspicious scanner requests became searchable in real time. Tenabling faster debugging and reducing the need for manual shell access to production servers.
 
@@ -179,7 +179,7 @@ As showen above, our system continuously logs directly into Grafana Loki.Excepti
 ### 3.5) Security hardening
 
 
-![Security hardening](img/hackingbot.png "Security hardening")
+![Security hardening](../img/hackingbot.png "Security hardening")
 
 
 We security hardened our deployment by making sure production host data boundaries are fully isolated from our public code history:
