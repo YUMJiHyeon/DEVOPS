@@ -16,6 +16,7 @@ Mathias Anakin Alm:
 matal@itu.dk
 
 
+
 ## Overview 
 
 This project details the design, evolution, and operation of the ITU-MiniTwit system for the 'DevOps, Software Evolution, and Software Maintenance' course. Our group aimed to transform the legacy application into a robust, scalable service by applying modern DevOps principles. The major features of our system are as follows:
