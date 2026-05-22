@@ -75,14 +75,15 @@ The core of the application logic is handled by minitwit.py, which maps incoming
 #### Component and Connector view  
 ![Component and Connector view](img/c&cdiagram.png "Component and Connector view")
 
-This sequence diagram shows the lifecycle of registering a user in our system. The prosess starts when a client, either a User or a Simulator, sends their information through clicking submit. Gunicorn catches the data and forwards it to our Flask application. Flask queries MongoDB with find_one to look for the username in the database, and MongoDB returns if the username is taken or not.
+This sequence diagram shows the lifecycle of registering a user. The prosess starts when a client, either User or Simulator, sends in their information. Gunicorn catches the data and forwards it to our Flask application. Flask queries MongoDB with find_one to look for the username in the database. MongoDB returns if the username is taken or not.
 Here the logic splits into alternative branches.
-- Path A represents when the username is taken. If this is the case, execution stops and an error message is sent through the system which is shown to the user as "The username is already taken"
-- Path B represents when the username is free. In this case Flask hashes the password, and sends insert_one to the database.
+- Path A: username is taken. In this case, execution stops and an error message, "The username is already taken", is sent through the system and shown to the user.
+- Path B: username is free. In this case Flask hashes the password and sends the users information to the database through insert_one.
 
-After successful registration the execution enters the inner alternative block, which handles whether the registration is done by a Simulator or a Human User.
-- Path B1 represents if the client is a Simulator. The system returns an empty string and a HTTP 204 to register the success, but not use necessary internet speed with opening the login page.
-- Path B2 represents if the client is a Human user. Then Flask activates the redirect function, which sends the user to the login page.
+After successful registration the execution enters the inner alternative block
+- Path B1: if client is a Simulator. The system returns an empty string and a HTTP 204 to register success, but not use unnecessary internet speed with redirecting to login.
+- Path B2: if client is a Human user. Flask activates the redirect function, which sends the user to the login page.
+
 
 
 
