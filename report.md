@@ -25,7 +25,7 @@ Since this is a group project and the report is written by a group make sure to 
 
 ## Table of content
 * **[1. Introduction](#1-introduction)**
-* **[2. System's Perspective (Architecture)](#2-systems-perspective-architecture)**
+* **[2. System's Perspective](#2-systems-perspective-architecture)**
   * *[2.1 System Architecture](#21-system-architecture)*
   * *[2.2 System Design](#22-system-design)* 
   * *[2.3 Dependencies](#23-dependencies)* 
@@ -46,7 +46,7 @@ This report describes the design, evolution, and operation of our ITU-MiniTwit s
 We implemented Infrastructure as Code (IaC) using Vagrant to ensure our environments stay identical. We then deployed a Nginx load balancer integrated with Keepalived to achieve high availability, to automatically handle server failures. We then implemented Prometheus and Grafana for observing the system through monitoring and logging. The development lifecycle is managed through a CI/CD pipeline, which automates testing and deployment processes.
 
 
-## 2) System's Perspective (Architecture)
+## 2) System's Perspective
 This section explains the layout of our ITU-MiniTwit, from physical servers down to the code. By breaking the system into separate pieces, we make sure our environments stay consistent, prevent isolated bugs from crashing the whole application, and make it easy to add servers when traffic grows.
 
 ### 2.1) System Architecture
