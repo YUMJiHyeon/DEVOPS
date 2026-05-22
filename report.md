@@ -196,11 +196,7 @@ We security hardened our deployment by making sure production host data boundari
 
 ### 3.6) Availability and scaling
 
-How do you handle availability and scaling in your systems?
-Write here
 Our application ensures high availability through a redundant web server layer. By deploying identical primary and secondary web server instances behind Gunicorn, the system can withstand unexpected traffic spikes or individual container restarts. If a rolling update is triggered during a CI/CD pipeline execution, one server continues processing incoming simulator loads while its partner reinitializes, completely reducing downtime for active clients. Storage constraints are reduced by utilizing document-based MongoDB instances which can be scaled horizontally through sharding as our tweet metrics and user data volumes expand.
-(i guess we should be carefull with writing "high availability" since it's like down half of the time...)
-this needs to be made easier, and lowkey write something about that this is the purpose/idea, but it doesn't always work..
 
 
 ## 4) Reflection Perspective
