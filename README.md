@@ -18,7 +18,7 @@ matal@itu.dk
 
 ## Overview 
 
-This project details the design, evolution, and operation of the ITU-MiniTwit system for the 'DevOps, Software Evolution, and Software Maintenance' course. Our group aimed to transform the legacy application into a robust, scalable service by applying modern DevOps principles. 
+This project details the design, evolution, and operation of the ITU-MiniTwit system for the 'DevOps, Software Evolution, and Software Maintenance' course. Our group aimed to transform the legacy application into a robust, scalable service by applying modern DevOps principles. The major features of our system are as follows:
 
 
 ### a) Monitoring Dashboards
@@ -39,7 +39,7 @@ This video shows our CI/CD pipeline using GitHub Actions. Once merged into the m
 
 ## Deployment
 ### Live System
-The application is currently hosted at [here](https://devopsgroupo.me)
+The application is currently hosted at [https://devopsgroupo.me](https://devopsgroupo.me)
 ### Infrastructure
 We use DigitalOcean for the VPS droplet. Domain management and DNS resolution are handled through DigitalOcean. To ensure high availability, we use Keepalived and Nginx to manage a Virtual IP (VIP: 129.212.212.105) for automated failover between the primary and secondary nodes. A distributed MongoDB instance running on a dedicated database server. 
 
