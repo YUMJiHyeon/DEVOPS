@@ -17,12 +17,6 @@ matal@itu.dk
 
 
 
-### (Formal Requirements - remove)
-Make sure that you link all artifacts that you consider constitutional to your projects together with short descriptions of the linked artifacts from your reports, i.e., link all necessary repositories, issue trackers, monitoring/logging systems, etc.
-
-Since this is a group project and the report is written by a group make sure to indicate for each section the respective author(s).
-
-
 ## Table of content
 * **[1. Introduction](#1-introduction)**
 * **[2. System's Perspective](#2-systems-perspective-architecture)**
@@ -38,6 +32,8 @@ Since this is a group project and the report is written by a group make sure to 
   * *[3.5 Security Hardening](#35-security-hardening)* 
   * *[3.6 Availability and Scaling](#36-availability-and-scaling)* 
 * **[4. Reflection Perspective](#4-reflection-perspective)** 
+* **[5. Use of Generative AI](#4-use-of-generative-ai)** 
+
 
  
 ## 1) Introduction
@@ -60,9 +56,14 @@ The diagram shows how we implemented the three-tier architecture. The User Inter
 Note: To keep our system horizontally scalable, our logic tier is stateless. The servers run independently and use the Flask-PyMongo client as bridge to fetch and update data from the shared database.
 
 ### 2.2) System Design
-For this project we used Flask which is a lightweight Python web framwork. It was chosen as it was recommended to us for this project and provided us a simple way to build the MiniTwit application in Python. Flask was used to implement routing, user authentication, and database integration. For the frontend it shows all the pages the users sees using HTML templates that we get from Jinja2, Flasks template engine. It also sends data from Python into the HTML like tweets and usernames. Flask has a internal support library Wekzeug. In our project it used for securely hashing passwords, validating requests, handling sessions and routing internally. 
+We used Flask, a lightweight Python web framework, to build our application because it provides a simple way to manage routing, user authentication, and database integration. 
 
-Regarding the backend, Flask handles all user requests and responses such as log ins, tweets, follow requests and logouts. Flask takes those requests and sends them to Flask-PyMongo which we use to send and recive data from our MongoDB server. Flask-PyMongo is built on top of PyMongo which is the official Python driver for MongoDB which allows us to access low-level functionality in our data base. 
+Our Flask setup is broken down into two main responsibilities:
+-	Frontend Rendering: Flask uses the Jinja2 templating engine to generate the HTML pages users see, dynamically injecting Python data like usernames and tweets directly into the frontend.
+-	Backend Operations: Flask handles all core user actions (logins, tweets, and follow requests). It relies on its built-in utility library, Werkzeug, to securely hash user passwords and manage secure sessions.
+To talk to our database, Flask routes these backend requests through Flask-PyMongo. This extension acts as our direct bridge to the MongoDB server, utilizing the official PyMongo driver to execute queries and manage data collections.
+
+
 
 
 #### Module View
@@ -120,14 +121,7 @@ The production setup currently remains stable across both web nodes, processing 
 
 
 ## 3) Process perspective
-Note (remove): This perspective should clarify how code or other artifacts come from idea into the running system and everything that happens on the way.
 
-In particular, the following descriptions should be included:
-
-A complete description and illustration of stages and tools included in the CI/CD pipelines, including deployment and release of your systems.
-	- Diagram: CI/CD Pipeline
-
-Write here
 The Process Perspective highlights the automated lifecycles that construct, validate, provision, and maintain our systems. This section outlines how an updated code snippet evolves from an engineer's machine into a stable piece of infrastructure running in production, along with the continuous runtime monitoring that keeps it healthy. (this kinda sounds like our program works flawlessly, how do we write it less so lol)
 
 ### 3.1) Infrastructure as Code (IaC)
@@ -240,6 +234,10 @@ We have used Gen AI to help identify the cause of cryptic error messages, a lot 
 
 #### 2.) TODO: Polish Project Repositories and Documentation 
 
-#### 2.1.) Create a .mailmap file in the root of your repositories 
+#### 2.3.) TODO: Update the main readme file 
+	
+TODO: Process' perspective 
 
-#### 2.2.) Create Four Videos Demonstrating your ITU-MiniTwit System in Production 
+
+
+
