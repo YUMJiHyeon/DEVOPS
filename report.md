@@ -127,9 +127,7 @@ To ensure environments are entirely reproducible and resilient against hardware 
 
 #### IaC in Action
 ![IaC in Action](img/IaC5.gif "IaC in Action")	
-We implemented Infrastructure as Code (IaC) using Vagrant combined with the DigitalOcean provider to ensure our production environment is reproducible and standardized. Our entire infrastructure is orchestrated via a single Vagrantfile, which automates the creation and configuration of three virtual droplets: dbserver, webserver (Primary), and secondary.
-
-The Vagrantfile includes shell provisioning scripts that automate the installation of core dependencies, including Docker, Docker Compose, and Nginx. It also handles complex network configurations, such as setting up Keepalived on both web servers to manage a Virtual IP (VIP) for automated failover. Furthermore, the IaC layer handles the specific preparation required for Observability in a multi-process environment. This includes the automated creation of shared memory directories (e.g., /app/prometheus_metrics) with restricted permissions (755) to enable consistent metric aggregation across Gunicorn workers. By executing a single command, vagrant up, the entire production-grade infrastructure is built from scratch in minutes, eliminating manual configuration errors and ensuring high system reliability
+We implemented Infrastructure as Code (IaC) using Vagrant combined with the DigitalOcean provider to ensure our production environment is reproducible and standardized. Our entire infrastructure is orchestrated via a single Vagrantfile, which automates the creation and configuration of three virtual droplets: dbserver, webserver (Primary), and secondary. The Vagrantfile includes shell provisioning scripts that automate the installation of core dependencies, including Docker, Docker Compose, and Nginx. It also handles complex network configurations, such as setting up Keepalived on both web servers to manage a Virtual IP (VIP) for automated failover. Furthermore, the IaC layer handles the specific preparation required for Observability in a multi-process environment. This includes the automated creation of shared memory directories (e.g., /app/prometheus_metrics) with restricted permissions (755) to enable consistent metric aggregation across Gunicorn workers. By executing a single command, vagrant up, the entire production-grade infrastructure is built from scratch in minutes, eliminating manual configuration errors and ensuring high system reliability
 Our provisioning setup builds up our isolated environment from a blank slate. As captured in the animation above, our scripts handle downloading core dependency layers, initializing the Docker daemon engines, structuring the virtual container bridges, and linking our web nodes cleanly to our isolated database servers without causing configuration drift between staging and production nodes. (is it tho? it is definetly some problems somewhere)
 
 ### 3.2) CI/CD Pipeline
@@ -203,14 +201,33 @@ this needs to be made easier, and lowkey write something about that this is the 
 
 
  ## 4) Reflection Perspective
- (500/2500 word)
-Describe the biggest issues, how you solved them, and which are major lessons learned with regards to:
 
-	- evolution and refactoring
-	- operation, and maintenance of your ITU-MiniTwit systems. 
-		- Link back to respective commit messages, issues, tickets, etc. to illustrate these.
+One major issue during the evolution of our system was migrating from the  SQLite-based Flask application to a MongoDB-backed. The original system used a local database file. That made it simple but Unfit for a distributed setup. The refactored version used flask_pymongo and MONGO_URI, making the database external and configurable. That also introduced challenges like networking, firewall rules, and database availability. The system's evolution is reflected in commits such as 6598b74 (Docker hardening), 0bb4adf (Grafana monitoring fixes), and c011bde (secondary webserver and scaling support).
 
-Also reflect and describe what was the "DevOps" style of your work. For example, what did you do differently to previous development projects and how did it work?
+The scope of the refactoring is summarised below: 
+
+| First app        | Second app                   |
+| ---------------- | ---------------------------- |
+| Uses SQLite      | Uses MongoDB                 |
+| Local DB file    | External DB server           |
+| Simple Flask app | Production-style app         |
+| No metrics       | Prometheus/Grafana metrics   |
+| No API routes    | Has API endpoints            |
+| Runs standalone  | Designed for Docker/Gunicorn |
+| No env vars      | Uses `.env` + `MONGO_URI`    |
+
+The biggest technical challenges we faced were related to high availability, distributed infrastructure, and operational stability. One of the most difficult parts was introducing a secondary webserver and making failover between servers work reliably. We attempted to scale the system toward a high-availability architecture using multiple webservers, nginx reverse proxying, Docker containers, and keepalived for virtual IP failover. While the architecture worked, ensuring that both servers remained synchronized and operational after redeployments proved difficult.
+
+A recurring issue was that Grafana monitoring would initially function correctly after deployment, but later stop receiving data without any direct changes being made to the system. Although we never fully identified the exact cause, we suspect the failures were related to resource limitations, monitoring load, container restarts, or networking inconsistencies between services. Also nginx reverse proxy configuration sometimes pointed to incorrect services such as Grafana or cAdvisor instead of the Flask application container. This helped us relize that monitoring systems themselves must also be treated as production infrastructure. They require persistent configuration, stable provisioning, and operational maintenance. In this project, success depended on Docker, Nginx, MongoDB, firewall rules, Vagrant, keepalived, monitoring, and HTTPS all functioning simultaneously. This significantly changed our development workflow. Much of our time was spent debugging infrastructure interactions rather than only application code. Our process became highly iterative:
+
+		- Deploy infrastructure
+		- Observe failures
+		- Inspect logs and metrics
+		- Fix configuration issues
+		- Encode the fixes into provisioning scripts
+
+Compared to previous projects, this work was much more operationally focused and aligned more closely with DevOps practices. Unlike prior projects where infrastructure was set up once and left alone, here provisioning scripts were updated alongside application code, making deployment a continuous concern. However, our process had a significant gap: unlike many other groups, we did not inherit a previous semester’s Chirp project and instead worked from the teacher-provided legacy MiniTwit codebase. Although a new group member later had access to a prior project, this happened several weeks into the course, and switching codebases at that stage was considered too disruptive. As a result, a large amount of time was spent building infrastructure and adapting legacy code before we could focus on stable iteration and release routines. Despite this, the project gave us practical experience with Infrastructure as Code, distributed systems debugging, observability, and high-availability infrastructure, while also highlighting how much operational complexity a greenfield distributed system introduces even before feature development begins.
+
 
  ## 5) Use of Generative AI
  
