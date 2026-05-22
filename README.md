@@ -42,7 +42,8 @@ This video shows our CI/CD pipeline using GitHub Actions. Once merged into the m
 
 ## Deployment
 ### Live System
-The application is currently hosted at [https://devopsgroupo.me](https://devopsgroupo.me)
+The application is currently hosted at [https://devopsgroupo.me](https://devopsgroupo.me).
+
 We utilize Certbot for secure HTTPS communication, but perform configuration manually post-deployment to avoid 'Let's Encrypt' rate limits during frequent automated provisioning.
 
 ### Infrastructure
