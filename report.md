@@ -121,14 +121,7 @@ The production setup currently remains stable across both web nodes, processing 
 
 
 ## 3) Process perspective
-Note (remove): This perspective should clarify how code or other artifacts come from idea into the running system and everything that happens on the way.
 
-In particular, the following descriptions should be included:
-
-A complete description and illustration of stages and tools included in the CI/CD pipelines, including deployment and release of your systems.
-	- Diagram: CI/CD Pipeline
-
-Write here
 The Process Perspective highlights the automated lifecycles that construct, validate, provision, and maintain our systems. This section outlines how an updated code snippet evolves from an engineer's machine into a stable piece of infrastructure running in production, along with the continuous runtime monitoring that keeps it healthy. (this kinda sounds like our program works flawlessly, how do we write it less so lol)
 
 ### 3.1) Infrastructure as Code (IaC)
@@ -248,20 +241,10 @@ We have used Gen AI to help identify the cause of cryptic error messages, a lot 
 
 #### 2.) TODO: Polish Project Repositories and Documentation 
 
-#### 2.1.) Create a .mailmap file in the root of your repositories 
-
-#### 2.2.) Create Four Videos Demonstrating your ITU-MiniTwit System in Production 
-
-
 #### 2.3.) TODO: Update the main readme file 
 	
-TODO: System's Perspective 
-
 TODO: Process' perspective 
 
-TODO: Reflection Perspective 
 
-TODO: Use of Generative AI -> ✨ YES ✨ 
 
- idea: We used it when we got stuck or encountered unexpected errors.  It has been a life saver for the most part.  
 
