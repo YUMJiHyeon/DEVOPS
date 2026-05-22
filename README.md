@@ -43,6 +43,8 @@ This video shows our CI/CD pipeline using GitHub Actions. Once merged into the m
 ## Deployment
 ### Live System
 The application is currently hosted at [https://devopsgroupo.me](https://devopsgroupo.me)
+We utilize Certbot for secure HTTPS communication, but perform configuration manually post-deployment to avoid 'Let's Encrypt' rate limits during frequent automated provisioning.
+
 ### Infrastructure
 We use DigitalOcean for the VPS droplet. Domain management and DNS resolution are handled through DigitalOcean. To ensure high availability, we use Keepalived and Nginx to manage a Virtual IP (VIP: 129.212.212.105) for automated failover between the primary and secondary nodes. A distributed MongoDB instance running on a dedicated database server. 
 
