@@ -41,11 +41,10 @@ Since this is a group project and the report is written by a group make sure to 
 
  
 ## 1) Introduction
-(200/2500 word)
 This report details the design, evolution, and operation of the ITU-MiniTwit system for the 'DevOps, Software Evolution, and Software Maintenance' course. Our group aimed to transform the legacy application into a robust, scalable service by applying modern DevOps principles.
 
-We implemented Infrastructure as Code (IaC) using Vagrant to ensure reproducible environments. To achieve high availability, we deployed an Nginx load balancer integrated with Keepalived, creating an automated failover mechanism. Furthermore, we established comprehensive observability by integrating Prometheus and Grafana for system monitoring and log aggregation. The entire development lifecycle is managed through a CI/CD pipeline, which automates testing and deployment processes.
-		
+We implemented Infrastructure as Code (IaC) using Vagrant to ensure reproducible environments. To achieve high availability, we deployed an Nginx load balancer integrated with Keepalived, creating an automated failover mechanism. Furthermore, we established comprehensive observability by integrating Prometheus and Grafana for system monitoring and log aggregation. The entire development lifecycle is managed through a CI/CD pipeline, which automates testing and deployment processes. The following sections evaluate our engineering choices across three major domains: the *System's Perspective* (our physical and structural layouts), the *Process Perspective* (our automated integration, testing, provisioning, and observation loops), and the *Reflection Perspective* (the lessons, friction points, and culture shifts encountered along the way).
+
 ## 2) System's Perspective (Architecture)
 Write something here?
 The System's Perspective explains the structural layout, component boundaries, and runtime behaviors of our ITU-MiniTwit infrastructure. By analyzing our system at different levels, from the physical servers down to individual code modules, we show how our modular design keeps our development and production environments consistent, isolates components to prevent system-wide failures, and allows us to easily add server capacity as traffic grows.
@@ -64,7 +63,6 @@ Our system architecture focuses on separating UI logic, business logic, and long
 As seen in the Allocation View above, our system is split into three layers. We have the frontend/UI layer, which consists of the MiniTwit browser application that we received at the beginning of the course. The logic layer is comprised of two web servers: a primary web server and a secondary web server. We implemented Docker containers to run our application together with all required dependencies, ensuring that the application remains consistent across different servers and environments. We also implemented Gunicorn, which hosts the MiniTwit Flask application. Gunicorn handles incoming HTTP requests before forwarding them to the main application. Both web servers communicate with the MongoDB database server, which stores the application’s data. Finally, Prometheus monitors the system by scraping metrics data from the web servers. As a side note, our system is not a perfectly separated three-layer architecture, since parts of the logic layer also interact directly with the data layer.
 
 ### 2.2) System Design
-(150/2500 word)
 For this project we used Flask which is a lightweight Python web framwork. It was chosen as it was recommended to us for this project and provided us a simple way to build the MiniTwit application in Python. Flask was used to implement routing, user authentication, and database integration. For the frontend it shows all the pages the users sees using HTML templates that we get from Jinja2, Flasks template engine. It also sends data from Python into the HTML like tweets and usernames. Flask has a internal support library Wekzeug. In our project it used for securely hashing passwords, validating requests, handling sessions and routing internally. 
 
 Regarding the backend, Flask handles all user requests and responses such as log ins, tweets, follow requests and logouts. Flask takes those requests and sends them to Flask-PyMongo which we use to send and recive data from our MongoDB server. Flask-PyMongo is built on top of PyMongo which is the official Python driver for MongoDB which allows us to access low-level functionality in our data base. 
@@ -92,9 +90,6 @@ After successful registration the execution enters the inner alternative block, 
 
 
 ### 2.3) Dependencies
-(150/2500 word)
-Note (remove): All dependencies of your ITU-MiniTwit systems on all levels of abstraction and development stages. That is, list and briefly describe all technologies and tools you applied and depend on.
-
 The system is implemented mainly in Python using the Flask web framework. It uses MongoDB as the database through PyMongo. Passwords are handled with Werkzeug security utilities. Monitoring is supported through Prometheus using prometheus_client and prometheus_flask_exporter. The application is containerized with Docker and orchestrated through Docker Compose. Development and version control are handled with Git and GitHub, while CI/CD is handled through GitHub Actions. Code quality/security analysis is configured through Sonar using sonar-project.properties.
 
 Our deployment dependencies are illustrated in our Allocation view diagram. 
@@ -102,8 +97,6 @@ Our deployment dependencies are illustrated in our Allocation view diagram.
 
 
 ### 2.4) Current state
-(150/2500 word)
-Note (remove): Describe the current state of your systems, for example using results of static analysis and quality assessments.
 
 | Area             | Current state                            |
 | ---------------- | ---------------------------------------- |
@@ -132,8 +125,8 @@ Write here
 The Process Perspective highlights the automated lifecycles that construct, validate, provision, and maintain our systems. This section outlines how an updated code snippet evolves from an engineer's machine into a stable piece of infrastructure running in production, along with the continuous runtime monitoring that keeps it healthy. (this kinda sounds like our program works flawlessly, how do we write it less so lol)
 
 ### 3.1) Infrastructure as Code (IaC)
-Write here
-To ensure environments are entirely reproducible and resilient against hardware failures, our absolute state configuration is managed as code rather than manual server commands. (is this correct?)
+
+To ensure environments are entirely reproducible and resilient against hardware failures, our absolute state configuration is managed as code rather than manual server commands.
 
 #### IaC in Action
 ![IaC in Action](img/IaC5.gif "IaC in Action")	
@@ -160,8 +153,6 @@ This CI/CD pipeline automates large parts of the development and deployment work
 
 
 ### 3.3) Monitoring 
-(200/2500 word)
-(Note - remove: How do you monitor your systems and what precisely do you monitor?)
 
 We monitored our system using a Prometheus and Grafana stack to ensure infrastructure health, application performance, and business visibility. Monitoring focused on numerical metrics to identify trends and system states. 
 
@@ -183,9 +174,6 @@ To handle Gunicorn’s multiprocess architecture, we implemented GunicornInterna
 
 
 ### 3.4) Logging
-(100/2500 word)
-(here we can refrence our demo vidos, explain our loggin further.
-What do you log in your systems and how do you aggregate logs?)
 Our system logged textual event data using Grafana Loki for centralized aggreation, collected via Alloy. While monitoring tracked request counts, our logs capure the actual content of HTTP requests, including methods, paths, and client details.
 
 We recorded application-level debug messages, such as user registrations and tweet attempts, alongside critcal system errors like Gunicorn worker timeouts and Python tracebackes. This textual record was essential for detailed root-cause analysis. By correlating Prometheus metric spikes with specific Loki log entries, we significantly reduced our mean time to resolution (MTTR) during system incidents. 
@@ -198,24 +186,18 @@ As visualized in the logging dashboard above, our system continuously sends all 
 
 		
 ### 3.5) Security hardening
-(200/2500 word)
+
 
 ![Security hardening](img/hackingbot.png "Security hardening")
-remove - Brief description of how you security hardened your systems.
+
 
 We security hardened our deployment by making sure production host data boundaries are fully isolated from our public code history:
 * **Environment Files (`.env`):** We use `.env` files to store all our database passwords and secret keys locally on the server. This keeps our sensitive credentials completely safe from being accidentally pushed to GitHub where anyone could see them.
 * **Docker Ignore (`.dockerignore`):** This file acts like a filter during our builds. It makes sure that random junk files, local test logs, and temporary development data don't get accidentally bundled into our live production containers.
 * **Runtime Scans:** We set up CodeQL inside our GitHub pipeline to act as an automated security check. Every time someone pushes a new pull request, the pipeline automatically scans the code for security bugs, unescaped database queries, or leaked keys before we are allowed to merge it.
-(are all these right?)
-
-To secure our system, we implemented multiple defensive layers focusing on secrets management, the principle of least privilege, and application level security.
-A critical turning point occurred when an .env file containing the dbserver admin credentials was accidentally pushed to our public repository. We responded by performing credential rotation, changing the admin password via mongosh, and strictly configuring.gitignore and .dockerignore to ensure secrets remained local. Specifically, the .dockerignore file prevented sensitive data and .git history from entering the Docker build context, reducing the attack surface.
-
-Following the principle of least privilege, we configured our Dockerfile to run the application under a non-root user, myuser, instead of the default root account. We also restricted directory permissions for the shared metrics folder to 755 to prevent unauthorized access. On the application level, we used werkzeug.security to store user passwords as secure hashes, protecting user data even if the database were compromised. Finally, our monitoring setup allowed us to detect security anomalies—such as vulnerability-scanning traffic requesting paths like BXJZ and PROPFIND—providing vital real-time visibility into potential threats against our production environment.
 
 ### 3.6) Availability and scaling
-(150/2500 word)
+
 How do you handle availability and scaling in your systems?
 Write here
 Our application ensures high availability through a redundant web server layer. By deploying identical primary and secondary web server instances behind Gunicorn, the system can withstand unexpected traffic spikes or individual container restarts. If a rolling update is triggered during a CI/CD pipeline execution, one server continues processing incoming simulator loads while its partner reinitializes, completely reducing downtime for active clients. Storage constraints are reduced by utilizing document-based MongoDB instances which can be scaled horizontally through sharding as our tweet metrics and user data volumes expand.
