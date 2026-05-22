@@ -46,7 +46,7 @@ We implemented Infrastructure as Code (IaC) using Vagrant to ensure our environm
 This section explains the layout of our ITU-MiniTwit, from physical servers down to the code. By breaking the system into separate pieces, we make sure our environments stay consistent, prevent isolated bugs from crashing the whole application, and make it easy to add servers when traffic grows.
 
 ### 2.1) System Architecture
-The three-tier architecture we implemented splits our system into user interface, core application logic, and database storage. With this we can safely update our UI code without risking or breaking our underlying data.
+The three-tier architecture we implemented splits our system into user interface, core application logic, and database storage.
 
 #### Allocation View
 ![Allocation View](img/UML-Deployment-Diagram.png "Allocation view")
