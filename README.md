@@ -51,6 +51,7 @@ Our infrastructure is managed as code using Vagrant. If you want to use a differ
     Vagrant & DigitalOcean Provider plugin 
     DigitalOcean API Token
     SSH Private Key
+    Pre-created Reserved IP
     
 ### b) Repository Cloning
 
