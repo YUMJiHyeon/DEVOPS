@@ -94,31 +94,23 @@ After successful registration the execution enters the inner alternative block
 - Path B2: if client is a Human user. Flask activates the redirect function, which sends the user to the login page.
 
 
-
-
 ### 2.3) Dependencies
-The system is implemented mainly in Python using the Flask web framework. It uses MongoDB as the database through PyMongo. Passwords are handled with Werkzeug security utilities. Monitoring is supported through Prometheus using prometheus_client and prometheus_flask_exporter. The application is containerized with Docker and orchestrated through Docker Compose. Development and version control are handled with Git and GitHub, while CI/CD is handled through GitHub Actions. Code quality/security analysis is configured through Sonar using sonar-project.properties.
-
-Our deployment dependencies are illustrated in our Allocation view diagram. 
-
-
+The system is implemented in Python using the Flask web framework and MongoDB via PyMongo. Passwords are handled with Werkzeug security utilities. Monitoring is supported through Prometheus using prometheus_client and prometheus_flask_exporter. The application is containerized with Docker and orchestrated through Docker Compose. Development and version control are handled with Git and GitHub, while CI/CD is handled through GitHub Actions. Code quality/security analysis is configured through Sonar using sonar-project.properties. Our deployment dependencies are illustrated in our Allocation view diagram. 
 
 ### 2.4) Current state
 
-| Area             | Current state                            |
-| ---------------- | ---------------------------------------- |
-| Web framework    | Flask                                    |
-| Database         | MongoDB via Flask-PyMongo/PyMongo        |
-| Testing          | Pytest and Selenium                      |
-| Static analysis  | Flake8                                   |
-| Formatting       | Black                                    |
-| Deployment       | Gunicorn                                 |
-| Monitoring       | Prometheus exporter                      |
-| Main improvement | Record actual test/lint results in CI/CD |
+| Area             | Current state                                   |
+| ---------------- | ----------------------------------------------- |
+| Web framework    | Flask                                           |
+| Database         | MongoDB via Flask-PyMongo/PyMongo               |
+| Testing          | Pytest and Selenium                             |
+| Static analysis  | Flake8 and SonarCloud                           |
+| Formatting       | Black                                           |
+| Deployment       | Docker, Docker Compose, Gunicorn                |
+| Monitoring       | Prometheus, Grafana, Loki, cAdvisor             |
+| Main improvement | Further decouple application and database logic |
 
-Write here - description of current state
-The production setup currently remains stable across both web nodes, processing heavy, concurrent client traffic from our automated simulator. By introducing automated formatting via Black and code quality linting via Flake8, our code maintainability metrics have improved significantly. However, a remaining architectural gap is our tight coupling between the application logic and the database layer; parts of `minitwit.py` circumvent an isolated data-access layer to communicate directly with MongoDB. Our near-term goal is to fully decouple this integration so database schema variations will not disrupt business logic downstream. (check! - dont know if the table is correct, and the text is based of the table)
-
+The production setup currently remains stable across both web nodes and supports concurrent traffic from our automated simulator. Automated formatting via Black and linting via Flake8 improved our code maintainability and consistency. However, parts of minitwit.py still directly access MongoDB instead of using a fully isolated data-access layer, creating tighter coupling between application logic and the database. A remaining improvement goal is to fully decouple this integration to reduce the impact of future schema or infrastructure changes.
 
 ## 3) Process perspective
 
