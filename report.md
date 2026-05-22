@@ -176,9 +176,12 @@ As visualized in the logging dashboard above, our system continuously sends all 
 
 
 We security hardened our deployment by making sure production host data boundaries are fully isolated from our public code history:
-* **Environment Files (`.env`):** We use `.env` files to store all our database passwords and secret keys locally on the server. This keeps our sensitive credentials completely safe from being accidentally pushed to GitHub where anyone could see them.
-* **Docker Ignore (`.dockerignore`):** This file acts like a filter during our builds. It makes sure that random junk files, local test logs, and temporary development data don't get accidentally bundled into our live production containers.
+* **Environment Files (`.env`):** We use `.env` files to store our database passwords and secret keys locally on the server. This prevents it from accidentally being pushed to GitHub.
+* **Docker Ignore (`.dockerignore`):** Acts like a filter during builds. It makes sure that junk files, local test logs, and temporary development data don't get accidentally bundled into our live production containers.
 * **Runtime Scans:** We set up CodeQL inside our GitHub pipeline to act as an automated security check. Every time someone pushes a new pull request, the pipeline automatically scans the code for security bugs, unescaped database queries, or leaked keys before we are allowed to merge it.
+
+As shown in the picture, a hacker bot managed to enter our database early in the course, when we hadn’t been able to make it secure yet. We realized when the simulator stopped, and this made for big confusion.
+
 
 ### 3.6) Availability and scaling
 
