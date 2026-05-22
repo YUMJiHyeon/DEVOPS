@@ -41,26 +41,23 @@ Since this is a group project and the report is written by a group make sure to 
 
  
 ## 1) Introduction
-This report details the design, evolution, and operation of the ITU-MiniTwit system for the 'DevOps, Software Evolution, and Software Maintenance' course. Our group aimed to transform the legacy application into a robust, scalable service by applying modern DevOps principles.
+This report describes the design, evolution, and operation of our ITU-MiniTwit system. Our group’s goal was to upgrade the old application into a robust, scalable application by using DevOps principles.
 
-We implemented Infrastructure as Code (IaC) using Vagrant to ensure reproducible environments. To achieve high availability, we deployed an Nginx load balancer integrated with Keepalived, creating an automated failover mechanism. Furthermore, we established comprehensive observability by integrating Prometheus and Grafana for system monitoring and log aggregation. The entire development lifecycle is managed through a CI/CD pipeline, which automates testing and deployment processes. The following sections evaluate our engineering choices across three major domains: the *System's Perspective* (our physical and structural layouts), the *Process Perspective* (our automated integration, testing, provisioning, and observation loops), and the *Reflection Perspective* (the lessons, friction points, and culture shifts encountered along the way).
+We implemented Infrastructure as Code (IaC) using Vagrant to ensure our environments stay identical. We then deployed a Nginx load balancer integrated with Keepalived to achieve high availability, to automatically handle server failures. We then implemented Prometheus and Grafana for observing the system through monitoring and logging. The development lifecycle is managed through a CI/CD pipeline, which automates testing and deployment processes.
+
 
 ## 2) System's Perspective (Architecture)
-Write something here?
-The System's Perspective explains the structural layout, component boundaries, and runtime behaviors of our ITU-MiniTwit infrastructure. By analyzing our system at different levels, from the physical servers down to individual code modules, we show how our modular design keeps our development and production environments consistent, isolates components to prevent system-wide failures, and allows us to easily add server capacity as traffic grows.
-
-A description and illustration of the:
-	-Design and architecture of your ITU-MiniTwit systems.
-	-All dependencies of your ITU-MiniTwit systems on all levels of abstraction and development stages. That is, list and briefly describe all technologies and tools you applied and depend on.
-	-Describe the current state of your systems, for example using results of static analysis and quality assessments.
+This section explains the layout of our ITU-MiniTwit, from physical servers down to the code. By breaking the system into separate pieces, we make sure our environments stay consistent, prevent isolated bugs from crashing the whole application, and make it easy to add servers when traffic grows.
 
 ### 2.1) System Architecture
-Our system architecture focuses on separating UI logic, business logic, and long-term storage to ensure compatibilitiy across our resources and make software updates safer to manage.
+To achieve our intended outcome, the three-tier architecture splits our system into user interface, core application logic, and database storage. With this we can safely update our UI code without risking or breaking our underlying data.
 
 #### Allocation View
 ![Allocation View](img/UML-Deployment-Diagram.png "Allocation view")
 
-As seen in the Allocation View above, our system is split into three layers. We have the frontend/UI layer, which consists of the MiniTwit browser application that we received at the beginning of the course. The logic layer is comprised of two web servers: a primary web server and a secondary web server. We implemented Docker containers to run our application together with all required dependencies, ensuring that the application remains consistent across different servers and environments. We also implemented Gunicorn, which hosts the MiniTwit Flask application. Gunicorn handles incoming HTTP requests before forwarding them to the main application. Both web servers communicate with the MongoDB database server, which stores the application’s data. Finally, Prometheus monitors the system by scraping metrics data from the web servers. As a side note, our system is not a perfectly separated three-layer architecture, since parts of the logic layer also interact directly with the data layer.
+The diagram shows how we implemented the three-tier architecture. The Presentation/Frontend Layer consists of the user's web browser, which displays the MiniTwit UI. The Logic Layer has two identical web servers running in parallel, each implemented with a Docker, for consistency across different servers. Gunicorn hosts the MiniTwit Flask application, handles incoming HTTP requests and passes them to our main application. The Data Layer includes MongoDB which communicates with both servers, and stores all application data. Additionally, Prometheus monitors and scrapes performance metrics from both web servers.
+
+Note: To keep our system horizontally scalable, our logic tier is stateless. The servers run independently and use the Flask-PyMongo client as bridge to fetch and update data from the shared database.
 
 ### 2.2) System Design
 For this project we used Flask which is a lightweight Python web framwork. It was chosen as it was recommended to us for this project and provided us a simple way to build the MiniTwit application in Python. Flask was used to implement routing, user authentication, and database integration. For the frontend it shows all the pages the users sees using HTML templates that we get from Jinja2, Flasks template engine. It also sends data from Python into the HTML like tweets and usernames. Flask has a internal support library Wekzeug. In our project it used for securely hashing passwords, validating requests, handling sessions and routing internally. 
