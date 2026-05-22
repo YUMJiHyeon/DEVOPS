@@ -50,12 +50,12 @@ We implemented Infrastructure as Code (IaC) using Vagrant to ensure our environm
 This section explains the layout of our ITU-MiniTwit, from physical servers down to the code. By breaking the system into separate pieces, we make sure our environments stay consistent, prevent isolated bugs from crashing the whole application, and make it easy to add servers when traffic grows.
 
 ### 2.1) System Architecture
-To achieve our intended outcome, the three-tier architecture splits our system into user interface, core application logic, and database storage. With this we can safely update our UI code without risking or breaking our underlying data.
+The three-tier architecture we implemented splits our system into user interface, core application logic, and database storage. With this we can safely update our UI code without risking or breaking our underlying data.
 
 #### Allocation View
 ![Allocation View](img/UML-Deployment-Diagram.png "Allocation view")
 
-The diagram shows how we implemented the three-tier architecture. The Presentation/Frontend Layer consists of the user's web browser, which displays the MiniTwit UI. The Logic Layer has two identical web servers running in parallel, each implemented with a Docker, for consistency across different servers. Gunicorn hosts the MiniTwit Flask application, handles incoming HTTP requests and passes them to our main application. The Data Layer includes MongoDB which communicates with both servers, and stores all application data. Additionally, Prometheus monitors and scrapes performance metrics from both web servers.
+The diagram shows how we implemented the three-tier architecture. The User Interface Layer consists of the user's web browser, which displays the MiniTwit UI. The Application Logic Layer has two identical web servers running in parallel, each implemented with a Docker, for consistency across different servers. Gunicorn hosts the MiniTwit Flask application, handles incoming HTTP requests and passes them to our main application. The Database Layer includes MongoDB which communicates with both servers, and stores all application data. Additionally, Prometheus monitors and scrapes performance metrics from both web servers.
 
 Note: To keep our system horizontally scalable, our logic tier is stateless. The servers run independently and use the Flask-PyMongo client as bridge to fetch and update data from the shared database.
 
