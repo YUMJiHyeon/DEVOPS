@@ -216,9 +216,9 @@ Describe the biggest issues, how you solved them, and which are major lessons le
 Also reflect and describe what was the "DevOps" style of your work. For example, what did you do differently to previous development projects and how did it work?
 
  ## 5) Use of Generative AI
- (100/2500 word)
-describe how generative AI tools have been used and briefly reflect and discuss how they supported or hindered your work process.
-
+ 
+We have used Gen AI to help identify the cause of cryptic error messages, a lot of this is from trying to deploy and some cryptic error message gets sent back. Using AI for error messages helped us when working with packages we dont have experience in. We have also used AI for vibe coding, this makes our workflow center more on fixing errors and making design decisions. We used Ai for helping our report structure. We used ChatGPT, Claude and Gemini for error finding and vibe coding, we used Gemini and ChatGPT for oour report structure.
+ 
 
 #### 1.) TODO: Assure Information Correctness 
 
