@@ -192,7 +192,7 @@ As shown in the picture, a hacker bot managed to enter our database early in the
 
 ### 3.6) Availability and scaling
 
-Our application ensures high availability through a redundant server layer. By deploying identical primary and secondary server instances behind Gunicorn, the system can withstand unexpected traffic spikes or individual container restarts. If a rolling update is triggered during a CI/CD pipeline execution, one server should continue while its partner reinitializes, reducing downtime for active clients, however we could not get this to work, for some reason updating the main server doesn't make nginx route traffick through the secondary server. Storage constraints are reduced by utilizing document-based MongoDB instances which can be scaled horizontally through sharding as our data volumes expand.
+Our system successfully handed over the MASTER role by utilizing Keepalived and a custom script to call the DigitalOcean API. However, automated state monitoring and failover via real-time signals between nodes were not fully achievable. We identified that the DigitalOcean Cloud Firewall blocked the VRRP protocol, preventing the secondary node from receiving the primary node's heartbeat signals. While an API-based manual transition was functional, these network-level constraints limited the implementation of a fully automated and mutually monitored failover mechanism. 
 
 
 ## 4) Reflection Perspective
@@ -228,15 +228,3 @@ Compared to previous projects, this work was much more operationally focused and
  
 We have used Gen AI to help identify the cause of cryptic error messages, a lot of this is from trying to deploy and some cryptic error message gets sent back. Using AI for error messages helped us when working with packages we dont have experience in. We have also used AI for vibe coding, this makes our workflow center more on fixing errors and making design decisions. We used Ai for helping our report structure. We used ChatGPT, Claude and Gemini for error finding and vibe coding, we used Gemini and ChatGPT for oour report structure.
  
-
-#### 1.) TODO: Assure Information Correctness 
-
-#### 2.) TODO: Polish Project Repositories and Documentation 
-
-#### 2.3.) TODO: Update the main readme file 
-	
-TODO: Process' perspective 
-
-
-
-

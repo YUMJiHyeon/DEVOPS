@@ -21,19 +21,22 @@ matal@itu.dk
 This project details the design, evolution, and operation of the ITU-MiniTwit system for the 'DevOps, Software Evolution, and Software Maintenance' course. Our group aimed to transform the legacy application into a robust, scalable service by applying modern DevOps principles. The major features of our system are as follows:
 
 
-### a) Monitoring Dashboards
+### a) Twitter immitation
+Minitwit.py is a program immitating the most basic of twitters features. Accounts, messages, public and personal timelines, and following users.
+
+### b) Monitoring Dashboards
 ![Monitoring dashboard](img/monotoring.gif "monotoring dashboard")
 This video shows our monitoring dashboard on Grafana in action, visualizing real-application metrics and health collectied via Prometheus as system processes traffic from the simulator.
 
-### b) Logging Dashboards
+### c) Logging Dashboards
 ![Logging dashboard](img/logging.gif "logging dashboard")
 This video shows our logging dashboard on Grafana in action, utilizing Loki to aggregate and display real-time event logs as the system processes traffic from the simulator. 
 
-### c) Infrastructure as Code (Iac) 
+### d) Infrastructure as Code (Iac) 
 ![IaC in Action](img/IaC5.gif "IaC in Action")	
 This video shows the automated creation of three servers using Vagrant and the DigitalOcean provider. The shell provisiong scripts installing essential softwares. It also shows the Minitwit application being deployed and executed via Docker on both the primary and secondary servers.
 
-### d) Automated CI/CD pipeline
+### e) Automated CI/CD pipeline
 ![CI/CD pipeline gif](img/CiCdPl.gif "CI/CD pipeline gif")
 This video shows our CI/CD pipeline using GitHub Actions. Once merged into the main branch, the pipeline automatically connects to our production droplets via SSH to deploy the changes by restarting the Docker containers with the updated image.
 
