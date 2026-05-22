@@ -114,15 +114,20 @@ The system is implemented in Python using the Flask web framework and MongoDB vi
 The production setup currently remains stable across both web nodes and supports concurrent traffic from our automated simulator. Automated formatting via Black and linting via Flake8 improved our code maintainability and consistency. However, parts of minitwit.py still directly access MongoDB instead of using a fully isolated data-access layer, creating tighter coupling between application logic and the database. A remaining improvement goal is to fully decouple this integration to reduce the impact of future schema or infrastructure changes.
 
 ## 3) Process perspective
+<<<<<<< Updated upstream
 
 The Process Perspective highlights the automated lifecycles that construct, validate, provision, and maintain our systems. This section outlines how an updated code snippet evolves from an engineer's machine into a stable piece of infrastructure running in production, along with the continuous runtime monitoring that keeps it healthy. (this kinda sounds like our program works flawlessly, how do we write it less so lol)
+=======
+The Process Perspective highlights the automated lifecycles that construct, validate, provision, and maintain our systems.
+>>>>>>> Stashed changes
 
 ### 3.1) Infrastructure as Code (IaC)
 
-To ensure environments are entirely reproducible and resilient against hardware failures, our absolute state configuration is managed as code rather than manual server commands.
+To ensure our environments are reproducible and resilient against hardware failures, our state configuration is managed as code.
 
 #### IaC in Action
 ![IaC in Action](img/IaC5.gif "IaC in Action")	
+<<<<<<< Updated upstream
 We used **Vagrant** with the DigitalOcean provider to manage our Infrastructure as Code (IaC), allowing us to spin up our entire production environment using a single `Vagrantfile`. 
 
 Running `vagrant up` automatically builds and configures three virtual droplets from scratch:
@@ -134,6 +139,12 @@ Our shell provisioning scripts handle the heavy lifting: installing core depende
 
 This automated setup builds our isolated system from a blank slate, ensuring our staging and production nodes stay consistent. While configuration drift is always a challenge in real-world deployments—especially when managing network synchronization and container storage across multiple nodes—this IaC approach eliminates manual setup errors and significantly improves system reliability.
 
+=======
+We implemented Infrastructure as Code (IaC) via Vagrant and the DigitalOcean provider to ensure our environment is reproducible. Our infrastructure is orchestrated via a single Vagrantfile, which automates the creation and configuration of three virtual droplets: dbserver, webserver (Primary), and secondary.
+
+The Vagrantfile includes shell provisioning scripts that automate the installation of core dependencies, including Docker, Docker Compose, and Nginx. It also handles complex network configurations, such as setting up Keepalived on both web servers to manage a Virtual IP (VIP) for automated failover. Furthermore, the IaC layer handles the preparation required for Observability in a multi-process environment. This includes automated creation of shared memory directories (e.g., /app/prometheus_metrics) with restricted permissions (755) to enable consistent metric collection via Gunicorn workers. By executing a single command ```vagrant up```, the entire infrastructure is built from scratch in minutes, eliminating manual configuration errors and ensuring high system reliability.
+Our provisioning setup builds up our environment from a blank slate. As captured in the GIF above, our scripts handle downloading dependency layers, initializing the Docker engines, structuring the virtual container bridges, and linking our web nodes cleanly to our database servers minimizing configuration drift between staging and production nodes.
+>>>>>>> Stashed changes
 
 ### 3.2) CI/CD Pipeline
 
@@ -194,7 +205,11 @@ As shown in the picture, a hacker bot managed to enter our database early in the
 
 ### 3.6) Availability and scaling
 
+<<<<<<< Updated upstream
 Our application ensures high availability through a redundant web server layer. By deploying identical primary and secondary web server instances behind Gunicorn, the system can withstand unexpected traffic spikes or individual container restarts. If a rolling update is triggered during a CI/CD pipeline execution, one server continues processing incoming simulator loads while its partner reinitializes, completely reducing downtime for active clients. Storage constraints are reduced by utilizing document-based MongoDB instances which can be scaled horizontally through sharding as our tweet metrics and user data volumes expand.
+=======
+Our application ensures high availability through a redundant server layer. By deploying identical primary and secondary server instances behind Gunicorn, the system can withstand unexpected traffic spikes or individual container restarts. If a rolling update is triggered during a CI/CD pipeline execution, one server continues while its partner reinitializes, reducing downtime for active clients. Storage constraints are reduced by utilizing document-based MongoDB instances which can be scaled horizontally through sharding as our data volumes expand.
+>>>>>>> Stashed changes
 
 
 ## 4) Reflection Perspective
@@ -203,6 +218,7 @@ One major issue during the evolution of our system was migrating from the  SQLit
 
 The scope of the refactoring is summarised below: 
 
+<<<<<<< Updated upstream
 | First app        | Second app                   |
 | ---------------- | ---------------------------- |
 | Uses SQLite      | Uses MongoDB                 |
@@ -228,6 +244,10 @@ Compared to previous projects, this work was much more operationally focused and
 
 ## 5) Use of Generative AI
  
+=======
+ ## 5) Use of Generative AI
+
+>>>>>>> Stashed changes
 We have used Gen AI to help identify the cause of cryptic error messages, a lot of this is from trying to deploy and some cryptic error message gets sent back. Using AI for error messages helped us when working with packages we dont have experience in. We have also used AI for vibe coding, this makes our workflow center more on fixing errors and making design decisions. We used Ai for helping our report structure. We used ChatGPT, Claude and Gemini for error finding and vibe coding, we used Gemini and ChatGPT for oour report structure.
  
 
